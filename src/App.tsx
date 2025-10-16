@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Scholarships from "./pages/Scholarships";
 import Courses from "./pages/Courses";
 import CVBuilder from "./pages/CVBuilder";
+import Jobs from "./pages/Jobs";
 import Blog from "./pages/Blog";
 import About from "./pages/About";
 import Login from "./pages/Login";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/scholarships" element={<Scholarships />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/cv-builder" element={<CVBuilder />} />
+          <Route path="/jobs" element={<Jobs />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />

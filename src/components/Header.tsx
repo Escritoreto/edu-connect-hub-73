@@ -27,6 +27,9 @@ const Header = () => {
           <Link to="/cv-builder" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Criar Currículo
           </Link>
+          <Link to="/jobs" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+            Empregos
+          </Link>
           <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Blog
           </Link>
@@ -79,6 +82,13 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Criar Currículo
+            </Link>
+            <Link 
+              to="/jobs" 
+              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Empregos
             </Link>
             <Link 
               to="/blog" 
