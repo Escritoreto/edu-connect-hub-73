@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, Eye } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FileText, Download, Eye, Briefcase, Target } from "lucide-react";
 
 const CVBuilder = () => {
   return (
@@ -34,6 +35,58 @@ const CVBuilder = () => {
               </div>
 
               <form className="space-y-8">
+                {/* Purpose and Job Type */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    Finalidade do Currículo
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="purpose">Para que você precisa deste currículo?</Label>
+                      <Select>
+                        <SelectTrigger id="purpose">
+                          <SelectValue placeholder="Selecione a finalidade" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="first-job">Primeiro Emprego</SelectItem>
+                          <SelectItem value="internship">Estágio</SelectItem>
+                          <SelectItem value="job-change">Mudança de Emprego</SelectItem>
+                          <SelectItem value="career-change">Mudança de Carreira</SelectItem>
+                          <SelectItem value="promotion">Promoção Interna</SelectItem>
+                          <SelectItem value="freelance">Trabalho Freelance</SelectItem>
+                          <SelectItem value="scholarship">Candidatura a Bolsa</SelectItem>
+                          <SelectItem value="academic">Programa Acadêmico</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="jobType">Área/Tipo de Emprego</Label>
+                      <Select>
+                        <SelectTrigger id="jobType">
+                          <SelectValue placeholder="Selecione a área" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="technology">Tecnologia e TI</SelectItem>
+                          <SelectItem value="marketing">Marketing e Publicidade</SelectItem>
+                          <SelectItem value="finance">Finanças e Contabilidade</SelectItem>
+                          <SelectItem value="education">Educação e Ensino</SelectItem>
+                          <SelectItem value="health">Saúde e Medicina</SelectItem>
+                          <SelectItem value="engineering">Engenharia</SelectItem>
+                          <SelectItem value="sales">Vendas e Comércio</SelectItem>
+                          <SelectItem value="hr">Recursos Humanos</SelectItem>
+                          <SelectItem value="design">Design e Criação</SelectItem>
+                          <SelectItem value="law">Direito e Advocacia</SelectItem>
+                          <SelectItem value="admin">Administração</SelectItem>
+                          <SelectItem value="hospitality">Hotelaria e Turismo</SelectItem>
+                          <SelectItem value="construction">Construção Civil</SelectItem>
+                          <SelectItem value="other">Outra Área</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Personal Information */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground">Dados Pessoais</h3>
