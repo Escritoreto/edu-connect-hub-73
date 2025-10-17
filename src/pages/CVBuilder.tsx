@@ -5,9 +5,53 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileText, Download, Eye, Briefcase, Target } from "lucide-react";
+import { FileText, Download, Eye, Briefcase, Target, Layout } from "lucide-react";
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
 
 const CVBuilder = () => {
+  const [selectedPurpose, setSelectedPurpose] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("");
+
+  const templates = {
+    "first-job": [
+      { id: "simple", name: "Simples e Direto", description: "Foco em educação e habilidades" },
+      { id: "modern", name: "Moderno", description: "Visual jovem e dinâmico" }
+    ],
+    "internship": [
+      { id: "academic", name: "Acadêmico", description: "Destaca formação e projetos" },
+      { id: "simple", name: "Simples", description: "Limpo e profissional" }
+    ],
+    "job-change": [
+      { id: "professional", name: "Profissional", description: "Destaca experiência" },
+      { id: "executive", name: "Executivo", description: "Elegante e sofisticado" }
+    ],
+    "career-change": [
+      { id: "skills-focused", name: "Foco em Habilidades", description: "Destaca competências transferíveis" },
+      { id: "modern", name: "Moderno", description: "Visual inovador" }
+    ],
+    "promotion": [
+      { id: "professional", name: "Profissional", description: "Corporativo e formal" },
+      { id: "achievement", name: "Conquistas", description: "Destaca resultados" }
+    ],
+    "freelance": [
+      { id: "creative", name: "Criativo", description: "Design diferenciado" },
+      { id: "portfolio", name: "Portfólio", description: "Destaca projetos" }
+    ],
+    "scholarship": [
+      { id: "academic", name: "Acadêmico", description: "Formato universitário" },
+      { id: "research", name: "Pesquisa", description: "Destaca publicações" }
+    ],
+    "academic": [
+      { id: "academic", name: "Acadêmico Completo", description: "CV Lattes style" },
+      { id: "research", name: "Pesquisador", description: "Foco em publicações" }
+    ]
+  };
+
+  const getAvailableTemplates = () => {
+    return templates[selectedPurpose as keyof typeof templates] || [];
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -42,9 +86,9 @@ const CVBuilder = () => {
                     Finalidade do Currículo
                   </h3>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                  <div className="space-y-2">
                       <Label htmlFor="purpose">Para que você precisa deste currículo?</Label>
-                      <Select>
+                      <Select onValueChange={setSelectedPurpose}>
                         <SelectTrigger id="purpose">
                           <SelectValue placeholder="Selecione a finalidade" />
                         </SelectTrigger>
@@ -86,6 +130,49 @@ const CVBuilder = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Template Selection */}
+                {selectedPurpose && getAvailableTemplates().length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Layout className="h-5 w-5 text-primary" />
+                      Escolha a Estrutura do Currículo
+                    </h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {getAvailableTemplates().map((template) => (
+                        <Card
+                          key={template.id}
+                          className={`p-4 cursor-pointer transition-all hover:shadow-elegant border-2 ${
+                            selectedTemplate === template.id
+                              ? "border-primary bg-primary/5"
+                              : "border-border"
+                          }`}
+                          onClick={() => setSelectedTemplate(template.id)}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className={`w-4 h-4 rounded-full border-2 mt-1 flex-shrink-0 ${
+                              selectedTemplate === template.id
+                                ? "border-primary bg-primary"
+                                : "border-muted-foreground"
+                            }`}>
+                              {selectedTemplate === template.id && (
+                                <div className="w-full h-full rounded-full bg-background scale-50" />
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-foreground mb-1">
+                                {template.name}
+                              </h4>
+                              <p className="text-sm text-muted-foreground">
+                                {template.description}
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Personal Information */}
                 <div className="space-y-4">
