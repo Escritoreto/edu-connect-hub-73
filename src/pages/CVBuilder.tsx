@@ -5,13 +5,31 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileText, Download, Eye, Briefcase, Target, Layout } from "lucide-react";
+import { FileText, Download, Eye, Briefcase, Target, Layout, Upload, X } from "lucide-react";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const CVBuilder = () => {
   const [selectedPurpose, setSelectedPurpose] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [countryCode, setCountryCode] = useState("+55");
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removePhoto = () => {
+    setPhotoPreview(null);
+  };
 
   const templates = {
     "first-job": [
@@ -177,6 +195,43 @@ const CVBuilder = () => {
                 {/* Personal Information */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground">Dados Pessoais</h3>
+                  
+                  {/* Photo Upload */}
+                  <div className="space-y-2">
+                    <Label>Foto (Opcional)</Label>
+                    <div className="flex items-center gap-4">
+                      {photoPreview ? (
+                        <div className="relative">
+                          <Avatar className="h-24 w-24">
+                            <AvatarImage src={photoPreview} alt="Preview" />
+                            <AvatarFallback>Foto</AvatarFallback>
+                          </Avatar>
+                          <button
+                            type="button"
+                            onClick={removePhoto}
+                            className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary transition-colors">
+                          <Upload className="h-6 w-6 text-muted-foreground mb-1" />
+                          <span className="text-xs text-muted-foreground">Upload</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePhotoUpload}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
+                      <p className="text-sm text-muted-foreground">
+                        Adicione uma foto profissional (JPG, PNG)
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">Nome</Label>
@@ -192,7 +247,30 @@ const CVBuilder = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Telefone</Label>
-                      <Input id="phone" placeholder="+55 (11) 99999-9999" />
+                      <div className="flex gap-2">
+                        <Select value={countryCode} onValueChange={setCountryCode}>
+                          <SelectTrigger className="w-[120px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="+55">🇧🇷 +55</SelectItem>
+                            <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                            <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                            <SelectItem value="+351">🇵🇹 +351</SelectItem>
+                            <SelectItem value="+34">🇪🇸 +34</SelectItem>
+                            <SelectItem value="+33">🇫🇷 +33</SelectItem>
+                            <SelectItem value="+49">🇩🇪 +49</SelectItem>
+                            <SelectItem value="+39">🇮🇹 +39</SelectItem>
+                            <SelectItem value="+86">🇨🇳 +86</SelectItem>
+                            <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                            <SelectItem value="+81">🇯🇵 +81</SelectItem>
+                            <SelectItem value="+52">🇲🇽 +52</SelectItem>
+                            <SelectItem value="+54">🇦🇷 +54</SelectItem>
+                            <SelectItem value="+27">🇿🇦 +27</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input id="phone" placeholder="(11) 99999-9999" className="flex-1" />
+                      </div>
                     </div>
                     <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="location">Localização</Label>
