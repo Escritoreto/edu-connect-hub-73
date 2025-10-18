@@ -18,7 +18,8 @@ const Hero = () => {
             
             <h1 className="text-4xl lg:text-6xl font-bold text-primary-foreground leading-tight">Transforme Seu Futuro com UpMentor</h1>
             
-            <p className="text-lg text-primary-foreground/90 leading-relaxed">Encontre bolsas de estudo e empregos nacionais e internacionais. Temos cursos de inglês que vão facilitar a sua aceitação nas universidades ou empregos e oferecemos CV gratuitamente basta uns clicks ja está.</p>
+            <p className="text-lg text-primary-foreground/90 leading-relaxed">Encontre bolsas, empregos e cursos de inglês e mais em um só lugar. Prepare-se para estudar ou trabalhar no país e no exterior — e crie seu currículo gratuito em segundos.
+Tudo isso com apenas alguns cliques!</p>
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" variant="secondary" asChild className="text-base group">
