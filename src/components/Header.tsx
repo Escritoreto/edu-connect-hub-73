@@ -1,10 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Menu, X } from "lucide-react";
+import { GraduationCap, Menu, X, LogOut, Settings } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+  const { user, isAdmin, signOut } = useAuth();
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2 group">
           <GraduationCap className="h-8 w-8 text-primary transition-transform group-hover:scale-110" />
@@ -35,12 +40,31 @@ const Header = () => {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="ghost" asChild>
-            <Link to="/login">Entrar</Link>
-          </Button>
-          <Button variant="hero" asChild>
-            <Link to="/signup">Começar Agora</Link>
-          </Button>
+          {user ? (
+            <>
+              {isAdmin && (
+                <Button variant="outline" asChild>
+                  <Link to="/admin">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Admin
+                  </Link>
+                </Button>
+              )}
+              <Button variant="ghost" onClick={signOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sair
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link to="/auth">Entrar</Link>
+              </Button>
+              <Button variant="hero" asChild>
+                <Link to="/auth">Começar Agora</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -71,15 +95,38 @@ const Header = () => {
               Sobre
             </Link>
             <div className="flex flex-col space-y-2 pt-2">
-              <Button variant="ghost" asChild>
-                <Link to="/login" onClick={() => setIsMenuOpen(false)}>Entrar</Link>
-              </Button>
-              <Button variant="hero" asChild>
-                <Link to="/signup" onClick={() => setIsMenuOpen(false)}>Começar Agora</Link>
-              </Button>
+              {user ? (
+                <>
+                  {isAdmin && (
+                    <Button variant="outline" asChild>
+                      <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                        <Settings className="h-4 w-4 mr-2" />
+                        Admin
+                      </Link>
+                    </Button>
+                  )}
+                  <Button variant="ghost" onClick={() => {
+                    signOut();
+                    setIsMenuOpen(false);
+                  }}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sair
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild>
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Entrar</Link>
+                  </Button>
+                  <Button variant="hero" asChild>
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Começar Agora</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </nav>
         </div>}
-    </header>;
+    </header>
+  );
 };
 export default Header;
