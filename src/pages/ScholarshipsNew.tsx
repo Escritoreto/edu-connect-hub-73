@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PublicationCard from "@/components/PublicationCard";
 import PublicationFilters from "@/components/PublicationFilters";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ScholarshipsNew = () => {
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
   const [publications, setPublications] = useState<any[]>([]);
   const [filteredPublications, setFilteredPublications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,16 +15,8 @@ const ScholarshipsNew = () => {
   const [areaFilter, setAreaFilter] = useState("all");
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      navigate("/auth");
-    }
-  }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    if (user) {
-      fetchPublications();
-    }
-  }, [user]);
+    fetchPublications();
+  }, []);
 
   const fetchPublications = async () => {
     setLoading(true);
@@ -68,14 +56,6 @@ const ScholarshipsNew = () => {
   useEffect(() => {
     handleSearch();
   }, [searchQuery, countryFilter, areaFilter]);
-
-  if (authLoading || !user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Carregando...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col">

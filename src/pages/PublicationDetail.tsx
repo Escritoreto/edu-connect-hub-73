@@ -31,11 +31,11 @@ const PublicationDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id && user) {
+    if (id) {
       fetchPublication();
       trackView();
     }
-  }, [id, user]);
+  }, [id]);
 
   const fetchPublication = async () => {
     const { data, error } = await supabase
@@ -51,35 +51,36 @@ const PublicationDetail = () => {
   };
 
   const trackView = async () => {
-    if (!user || !id) return;
+    if (!id) return;
 
-    // Check if user already viewed this publication
-    const { data: existingView } = await supabase
-      .from("publication_views")
-      .select("id")
-      .eq("publication_id", id)
-      .eq("user_id", user.id)
-      .maybeSingle();
+    // Update views count (always increment)
+    const { data: currentPub } = await supabase
+      .from("publications")
+      .select("views_count")
+      .eq("id", id)
+      .single();
 
-    if (!existingView) {
-      // Insert new view
-      await supabase.from("publication_views").insert({
-        publication_id: id,
-        user_id: user.id,
-      });
-
-      // Update views count
-      const { data: currentPub } = await supabase
+    if (currentPub) {
+      await supabase
         .from("publications")
-        .select("views_count")
-        .eq("id", id)
-        .single();
+        .update({ views_count: (currentPub.views_count || 0) + 1 })
+        .eq("id", id);
+    }
 
-      if (currentPub) {
-        await supabase
-          .from("publications")
-          .update({ views_count: (currentPub.views_count || 0) + 1 })
-          .eq("id", id);
+    // Only track individual user views if user is logged in
+    if (user) {
+      const { data: existingView } = await supabase
+        .from("publication_views")
+        .select("id")
+        .eq("publication_id", id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!existingView) {
+        await supabase.from("publication_views").insert({
+          publication_id: id,
+          user_id: user.id,
+        });
       }
     }
   };
