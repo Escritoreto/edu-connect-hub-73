@@ -11,7 +11,7 @@ const Hero = () => {
           <div className="space-y-8 animate-fade-in">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/10 backdrop-blur-sm border border-primary-foreground/20">
               <Sparkles className="h-4 w-4 text-secondary" />
-              <span className="text-sm font-medium text-primary-foreground">Junte-se a nós e realize todos os seus sonhos  </span>
+              <span className="text-sm font-medium text-primary-foreground">Junte-se a nós e acesse as maiores oportunidades nacionais e internacionais </span>
             </div>
             
             <h1 className="text-4xl lg:text-6xl font-bold text-primary-foreground leading-tight">Transforme Seu Futuro com UpMentor</h1>
