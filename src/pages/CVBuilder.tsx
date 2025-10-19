@@ -86,6 +86,71 @@ const CVBuilder = () => {
     { code: "+44", country: "Reino Unido", flag: "🇬🇧" },
   ];
 
+  const professionalSummaries = [
+    "Profissional dedicado com sólida experiência em [sua área], buscando contribuir com habilidades analíticas e criativas para alcançar resultados excepcionais.",
+    "Especialista em [área de atuação] com histórico comprovado de sucesso em projetos desafiadores e trabalho em equipe.",
+    "Motivado(a) e orientado(a) a resultados, com forte capacidade de adaptação e aprendizado rápido em ambientes dinâmicos.",
+    "Profissional experiente com foco em inovação, eficiência e excelência no atendimento ao cliente.",
+    "Recém-formado(a) entusiasmado(a) em aplicar conhecimentos acadêmicos em um ambiente profissional desafiador."
+  ];
+
+  const academicDegrees = [
+    "Ensino Médio Completo",
+    "Técnico em",
+    "Tecnólogo em",
+    "Bacharelado em",
+    "Licenciatura em",
+    "MBA em",
+    "Mestrado em",
+    "Doutorado em",
+    "Pós-Doutorado em"
+  ];
+
+  const jobTitles = [
+    "Analista",
+    "Assistente",
+    "Coordenador(a)",
+    "Gerente",
+    "Supervisor(a)",
+    "Desenvolvedor(a)",
+    "Designer",
+    "Consultor(a)",
+    "Especialista",
+    "Estagiário(a)",
+    "Trainee"
+  ];
+
+  const responsibilities = [
+    "Gerenciamento de projetos e equipes multidisciplinares",
+    "Análise de dados e elaboração de relatórios gerenciais",
+    "Desenvolvimento e implementação de estratégias de marketing",
+    "Atendimento e relacionamento com clientes",
+    "Controle de qualidade e processos operacionais",
+    "Planejamento financeiro e orçamentário",
+    "Criação de conteúdo e gestão de redes sociais",
+    "Suporte técnico e resolução de problemas",
+    "Treinamento e desenvolvimento de equipes",
+    "Pesquisa e desenvolvimento de novos produtos"
+  ];
+
+  const skillsSuggestions = [
+    "Excel Avançado",
+    "Power BI",
+    "Python",
+    "JavaScript",
+    "Marketing Digital",
+    "SEO/SEM",
+    "Gestão de Projetos",
+    "Photoshop",
+    "AutoCAD",
+    "Inglês Fluente",
+    "Espanhol Intermediário",
+    "Comunicação Efetiva",
+    "Liderança",
+    "Trabalho em Equipe",
+    "Resolução de Problemas"
+  ];
+
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -290,9 +355,21 @@ const CVBuilder = () => {
                       {/* Professional Summary */}
                       <div className="space-y-2">
                         <Label htmlFor="summary">Resumo Profissional</Label>
+                        <Select onValueChange={(val) => updateField('summary', val)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma sugestão ou escreva o seu" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {professionalSummaries.map((summary, idx) => (
+                              <SelectItem key={idx} value={summary}>
+                                {summary.substring(0, 50)}...
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <Textarea 
                           id="summary" 
-                          placeholder="Descreva sua experiência, objetivos e principais qualificações..."
+                          placeholder="Ou escreva seu próprio resumo profissional..."
                           rows={4}
                           value={cvData.summary}
                           onChange={(e) => updateField('summary', e.target.value)}
@@ -305,9 +382,21 @@ const CVBuilder = () => {
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="degree">Grau</Label>
+                            <Select onValueChange={(val) => updateField('degree', val)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione o grau" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {academicDegrees.map((degree, idx) => (
+                                  <SelectItem key={idx} value={degree}>
+                                    {degree}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                             <Input 
                               id="degree" 
-                              placeholder="Ex: Bacharelado em..." 
+                              placeholder="Ou digite o grau acadêmico" 
                               value={cvData.degree}
                               onChange={(e) => updateField('degree', e.target.value)}
                             />
@@ -348,9 +437,21 @@ const CVBuilder = () => {
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <Label htmlFor="jobTitle">Cargo</Label>
+                            <Select onValueChange={(val) => updateField('jobTitle', val)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione um cargo" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {jobTitles.map((title, idx) => (
+                                  <SelectItem key={idx} value={title}>
+                                    {title}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                             <Input 
                               id="jobTitle" 
-                              placeholder="Ex: Analista de Marketing" 
+                              placeholder="Ou digite o cargo" 
                               value={cvData.jobTitle}
                               onChange={(e) => updateField('jobTitle', e.target.value)}
                             />
@@ -384,9 +485,21 @@ const CVBuilder = () => {
                           </div>
                           <div className="space-y-2 md:col-span-2">
                             <Label htmlFor="responsibilities">Responsabilidades</Label>
+                            <Select onValueChange={(val) => updateField('responsibilities', val)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione uma sugestão" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {responsibilities.map((resp, idx) => (
+                                  <SelectItem key={idx} value={resp}>
+                                    {resp}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                             <Textarea 
                               id="responsibilities" 
-                              placeholder="Descreva suas principais responsabilidades e conquistas..."
+                              placeholder="Ou descreva suas responsabilidades..."
                               rows={3}
                               value={cvData.responsibilities}
                               onChange={(e) => updateField('responsibilities', e.target.value)}
@@ -398,9 +511,27 @@ const CVBuilder = () => {
                       {/* Skills */}
                       <div className="space-y-2">
                         <Label htmlFor="skills">Habilidades</Label>
+                        <Select 
+                          onValueChange={(val) => {
+                            const current = cvData.skills;
+                            const newSkills = current ? `${current}, ${val}` : val;
+                            updateField('skills', newSkills);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Adicione habilidades da lista" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {skillsSuggestions.map((skill, idx) => (
+                              <SelectItem key={idx} value={skill}>
+                                {skill}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <Input 
                           id="skills" 
-                          placeholder="Ex: Excel, Python, Marketing Digital (separe por vírgula)"
+                          placeholder="Ou digite suas habilidades (separe por vírgula)"
                           value={cvData.skills}
                           onChange={(e) => updateField('skills', e.target.value)}
                         />
