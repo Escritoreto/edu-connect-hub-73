@@ -53,19 +53,19 @@ const CVBuilder = () => {
       id: "modern",
       name: "Moderno",
       description: "Design contemporâneo com barra lateral colorida",
-      preview: "/placeholder.svg"
+      preview: new URL('@/assets/cv-preview-modern.jpg', import.meta.url).href
     },
     {
       id: "classic",
       name: "Clássico",
       description: "Layout tradicional e profissional",
-      preview: "/placeholder.svg"
+      preview: new URL('@/assets/cv-preview-classic.jpg', import.meta.url).href
     },
     {
       id: "minimalist",
       name: "Minimalista",
       description: "Design limpo e elegante",
-      preview: "/placeholder.svg"
+      preview: new URL('@/assets/cv-preview-minimalist.jpg', import.meta.url).href
     }
   ];
 

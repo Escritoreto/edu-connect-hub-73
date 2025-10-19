@@ -55,12 +55,12 @@ export const MinimalistTemplate = ({ data }: Props) => {
       {/* Experience */}
       {data.jobTitle && data.company && (
         <div className="mb-10">
-          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-6">
+          <h2 className="text-xl font-bold text-gray-900 uppercase tracking-widest mb-6">
             Experiência
           </h2>
           <div className="mb-6">
             <div className="flex justify-between items-baseline mb-2">
-              <h3 className="text-xl font-bold text-gray-800">{data.jobTitle}</h3>
+              <h3 className="text-lg font-semibold text-gray-700">{data.jobTitle}</h3>
               {(data.expStartDate || data.expEndDate) && (
                 <span className="text-sm text-gray-500 font-light">
                   {data.expStartDate && new Date(data.expStartDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })} - {data.expEndDate ? new Date(data.expEndDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) : 'Presente'}
@@ -80,11 +80,11 @@ export const MinimalistTemplate = ({ data }: Props) => {
       {/* Education */}
       {data.degree && data.institution && (
         <div className="mb-10">
-          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-6">
+          <h2 className="text-xl font-bold text-gray-900 uppercase tracking-widest mb-6">
             Formação
           </h2>
           <div className="flex justify-between items-baseline mb-2">
-            <h3 className="text-xl font-bold text-gray-800">{data.degree}</h3>
+            <h3 className="text-lg font-semibold text-gray-700">{data.degree}</h3>
             {(data.startDate || data.endDate) && (
               <span className="text-sm text-gray-500 font-light">
                 {data.startDate && new Date(data.startDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })} - {data.endDate ? new Date(data.endDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) : 'Cursando'}
@@ -98,7 +98,7 @@ export const MinimalistTemplate = ({ data }: Props) => {
       {/* Skills */}
       {skills.length > 0 && (
         <div>
-          <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-6">
+          <h2 className="text-xl font-bold text-gray-900 uppercase tracking-widest mb-6">
             Habilidades
           </h2>
           <div className="flex flex-wrap gap-3">
