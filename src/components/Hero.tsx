@@ -35,17 +35,17 @@ Tudo isso com apenas alguns cliques!</p>
 
             <div className="flex items-center gap-8 pt-4">
               <div>
-                <div className="text-3xl font-bold text-primary-foreground">10k+</div>
+                <div className="text-3xl font-bold text-primary-foreground">1k+</div>
                 <div className="text-sm text-primary-foreground/80">Bolsas Disponíveis</div>
               </div>
               <div className="h-12 w-px bg-primary-foreground/20"></div>
               <div>
-                <div className="text-3xl font-bold text-primary-foreground">50+</div>
+                <div className="text-3xl font-bold text-primary-foreground">20+</div>
                 <div className="text-sm text-primary-foreground/80">Cursos Online</div>
               </div>
               <div className="h-12 w-px bg-primary-foreground/20"></div>
               <div>
-                <div className="text-3xl font-bold text-primary-foreground">100k+</div>
+                <div className="text-3xl font-bold text-primary-foreground">10k+</div>
                 <div className="text-sm text-primary-foreground/80">Estudantes Ativos</div>
               </div>
             </div>
