@@ -4,14 +4,14 @@ interface Props {
   data: CVData;
 }
 
-export const ModernTemplate = ({ data }: Props) => {
+export const ModernTemplate3 = ({ data }: Props) => {
   const skills = data.skills.split(',').map(s => s.trim()).filter(Boolean);
   
   return (
     <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl overflow-hidden" id="cv-preview">
       <div className="flex h-full">
-        {/* Left Sidebar - Accent Color */}
-        <div className="w-2/5 bg-gradient-to-b from-blue-600 to-blue-800 text-white p-6">
+        {/* Left Sidebar - Green Theme */}
+        <div className="w-2/5 bg-gradient-to-b from-emerald-600 to-emerald-800 text-white p-6">
           {/* Photo */}
           {data.photoPreview && (
             <div className="mb-4">
@@ -68,7 +68,7 @@ export const ModernTemplate = ({ data }: Props) => {
           <div>
             {/* Header */}
             <div className="mb-5">
-              <h1 className="text-4xl font-bold text-blue-600 mb-2">
+              <h1 className="text-4xl font-bold text-emerald-600 mb-2">
                 {data.firstName} {data.lastName}
               </h1>
               {data.jobTitle && (
@@ -79,7 +79,7 @@ export const ModernTemplate = ({ data }: Props) => {
             {/* Summary */}
             {data.summary && (
               <div className="mb-5">
-                <h2 className="text-2xl font-bold text-blue-600 mb-2 border-b-2 border-blue-200 pb-1">
+                <h2 className="text-2xl font-bold text-emerald-600 mb-2 border-b-2 border-emerald-200 pb-1">
                   Sobre Mim
                 </h2>
                 <p className="text-gray-700 leading-relaxed text-base">{data.summary}</p>
@@ -89,7 +89,7 @@ export const ModernTemplate = ({ data }: Props) => {
             {/* Experience */}
             {data.jobTitle && data.company && (
               <div className="mb-5">
-                <h2 className="text-2xl font-bold text-blue-600 mb-2 border-b-2 border-blue-200 pb-1">
+                <h2 className="text-2xl font-bold text-emerald-600 mb-2 border-b-2 border-emerald-200 pb-1">
                   Experiência
                 </h2>
                 <div>
@@ -110,7 +110,7 @@ export const ModernTemplate = ({ data }: Props) => {
             {/* Education */}
             {data.degree && data.institution && (
               <div>
-                <h2 className="text-2xl font-bold text-blue-600 mb-2 border-b-2 border-blue-200 pb-1">
+                <h2 className="text-2xl font-bold text-emerald-600 mb-2 border-b-2 border-emerald-200 pb-1">
                   Formação
                 </h2>
                 <div>

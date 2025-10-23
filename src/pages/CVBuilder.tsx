@@ -51,21 +51,75 @@ const CVBuilder = () => {
   const availableTemplates: CVTemplate[] = [
     {
       id: "modern",
-      name: "Moderno",
-      description: "Design contemporâneo com barra lateral colorida",
+      name: "Moderno Azul",
+      description: "Design contemporâneo com barra lateral azul",
       preview: new URL('@/assets/cv-preview-modern.jpg', import.meta.url).href
     },
     {
+      id: "modern2",
+      name: "Moderno Roxo",
+      description: "Design contemporâneo com barra lateral roxa",
+      preview: new URL('@/assets/cv-preview-modern2.jpg', import.meta.url).href
+    },
+    {
+      id: "modern3",
+      name: "Moderno Verde",
+      description: "Design contemporâneo com barra lateral verde",
+      preview: new URL('@/assets/cv-preview-modern3.jpg', import.meta.url).href
+    },
+    {
+      id: "modern4",
+      name: "Moderno Laranja",
+      description: "Design contemporâneo com barra lateral laranja",
+      preview: new URL('@/assets/cv-preview-modern4.jpg', import.meta.url).href
+    },
+    {
       id: "classic",
-      name: "Clássico",
+      name: "Clássico Preto",
       description: "Layout tradicional e profissional",
       preview: new URL('@/assets/cv-preview-classic.jpg', import.meta.url).href
     },
     {
+      id: "classic2",
+      name: "Clássico Azul",
+      description: "Layout tradicional com borda azul",
+      preview: new URL('@/assets/cv-preview-classic2.jpg', import.meta.url).href
+    },
+    {
+      id: "classic3",
+      name: "Clássico Verde",
+      description: "Layout tradicional com borda verde",
+      preview: new URL('@/assets/cv-preview-classic3.jpg', import.meta.url).href
+    },
+    {
+      id: "classic4",
+      name: "Clássico Roxo",
+      description: "Layout tradicional com borda roxa",
+      preview: new URL('@/assets/cv-preview-classic4.jpg', import.meta.url).href
+    },
+    {
       id: "minimalist",
-      name: "Minimalista",
+      name: "Minimalista Cinza",
       description: "Design limpo e elegante",
       preview: new URL('@/assets/cv-preview-minimalist.jpg', import.meta.url).href
+    },
+    {
+      id: "minimalist2",
+      name: "Minimalista Azul",
+      description: "Design limpo com detalhes azuis",
+      preview: new URL('@/assets/cv-preview-minimalist2.jpg', import.meta.url).href
+    },
+    {
+      id: "minimalist3",
+      name: "Minimalista Verde",
+      description: "Design limpo com detalhes verdes",
+      preview: new URL('@/assets/cv-preview-minimalist3.jpg', import.meta.url).href
+    },
+    {
+      id: "minimalist4",
+      name: "Minimalista Roxo",
+      description: "Design limpo com detalhes roxos",
+      preview: new URL('@/assets/cv-preview-minimalist4.jpg', import.meta.url).href
     }
   ];
 
