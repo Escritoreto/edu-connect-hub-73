@@ -11,7 +11,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
     <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl overflow-hidden" id="cv-preview">
       <div className="flex h-full">
         {/* Left Content */}
-        <div className="w-3/5 p-6 flex flex-col justify-between">
+        <div className="w-3/5 p-6 flex flex-col gap-6">
           <div>
             {/* Header */}
             <div className="mb-5">
