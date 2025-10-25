@@ -8,7 +8,7 @@ export const ClassicTemplate3 = ({ data }: Props) => {
   const skills = data.skills.split(',').map(s => s.trim()).filter(Boolean);
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl p-12" id="cv-preview">
+    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl p-12 overflow-hidden flex flex-col" id="cv-preview">
       {/* Header - Left aligned with vertical accent */}
       <div className="flex gap-4 mb-8 pb-6 border-b-2 border-green-200">
         {data.photoPreview && (

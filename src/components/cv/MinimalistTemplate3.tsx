@@ -8,7 +8,7 @@ export const MinimalistTemplate3 = ({ data }: Props) => {
   const skills = data.skills.split(',').map(s => s.trim()).filter(Boolean);
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl p-14" id="cv-preview">
+    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl p-14 overflow-hidden flex flex-col justify-between" id="cv-preview">
       {/* Centered minimalist header */}
       <div className="text-center mb-12">
         {data.photoPreview && (
