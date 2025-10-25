@@ -24,7 +24,7 @@ const CVBuilder = () => {
     lastName: "",
     email: "",
     phone: "",
-    countryCode: "+55",
+    countryCode: "+258",
     location: "",
     photoPreview: null,
     summary: "",

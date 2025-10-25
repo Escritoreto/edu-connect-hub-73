@@ -10,60 +10,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
   return (
     <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl overflow-hidden" id="cv-preview">
       <div className="flex h-full">
-        {/* Left Sidebar - Green Theme */}
-        <div className="w-2/5 bg-gradient-to-b from-emerald-600 to-emerald-800 text-white p-6">
-          {/* Photo */}
-          {data.photoPreview && (
-            <div className="mb-4">
-              <img 
-                src={data.photoPreview} 
-                alt="Profile" 
-                className="w-28 h-28 rounded-full mx-auto object-cover border-4 border-white shadow-lg"
-              />
-            </div>
-          )}
-          
-          {/* Contact Info */}
-          <div className="mb-6">
-            <h3 className="text-xl font-bold mb-3 border-b-2 border-white/30 pb-2">Contato</h3>
-            <div className="space-y-2.5 text-base">
-              {data.email && (
-                <div className="break-words">
-                  <p className="font-semibold">Email</p>
-                  <p className="opacity-90">{data.email}</p>
-                </div>
-              )}
-              {data.phone && (
-                <div>
-                  <p className="font-semibold">Telefone</p>
-                  <p className="opacity-90">{data.countryCode} {data.phone}</p>
-                </div>
-              )}
-              {data.location && (
-                <div>
-                  <p className="font-semibold">Localização</p>
-                  <p className="opacity-90">{data.location}</p>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Skills */}
-          {skills.length > 0 && (
-            <div>
-              <h3 className="text-xl font-bold mb-3 border-b-2 border-white/30 pb-2">Habilidades</h3>
-              <div className="space-y-2">
-                {skills.map((skill, index) => (
-                  <div key={index} className="bg-white/20 rounded px-3 py-2 text-sm">
-                    {skill}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-        
-        {/* Right Content */}
+        {/* Left Content */}
         <div className="w-3/5 p-6 flex flex-col justify-between">
           <div>
             {/* Header */}
@@ -125,6 +72,59 @@ export const ModernTemplate3 = ({ data }: Props) => {
               </div>
             )}
           </div>
+        </div>
+        
+        {/* Right Sidebar - Green Theme */}
+        <div className="w-2/5 bg-gradient-to-b from-emerald-600 to-emerald-800 text-white p-6">
+          {/* Photo */}
+          {data.photoPreview && (
+            <div className="mb-4">
+              <img 
+                src={data.photoPreview} 
+                alt="Profile" 
+                className="w-28 h-28 rounded-full mx-auto object-cover border-4 border-white shadow-lg"
+              />
+            </div>
+          )}
+          
+          {/* Contact Info */}
+          <div className="mb-6">
+            <h3 className="text-xl font-bold mb-3 border-b-2 border-white/30 pb-2">Contato</h3>
+            <div className="space-y-2.5 text-base">
+              {data.email && (
+                <div className="break-words">
+                  <p className="font-semibold">Email</p>
+                  <p className="opacity-90">{data.email}</p>
+                </div>
+              )}
+              {data.phone && (
+                <div>
+                  <p className="font-semibold">Telefone</p>
+                  <p className="opacity-90">{data.countryCode} {data.phone}</p>
+                </div>
+              )}
+              {data.location && (
+                <div>
+                  <p className="font-semibold">Localização</p>
+                  <p className="opacity-90">{data.location}</p>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Skills */}
+          {skills.length > 0 && (
+            <div>
+              <h3 className="text-xl font-bold mb-3 border-b-2 border-white/30 pb-2">Habilidades</h3>
+              <div className="space-y-2">
+                {skills.map((skill, index) => (
+                  <div key={index} className="bg-white/20 rounded px-3 py-2 text-sm">
+                    {skill}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
