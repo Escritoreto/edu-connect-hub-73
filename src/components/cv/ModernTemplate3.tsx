@@ -11,7 +11,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
     <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl overflow-hidden" id="cv-preview">
       <div className="flex h-full">
         {/* Left Content */}
-        <div className="w-3/5 p-6 flex flex-col gap-6">
+        <div className="w-3/5 p-8 flex flex-col gap-6">
           <div>
             {/* Header */}
             <div className="mb-5">
@@ -19,7 +19,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
                 {data.firstName} {data.lastName}
               </h1>
               {data.jobTitle && (
-                <p className="text-xl text-gray-600">{data.jobTitle}</p>
+                <p className="text-2xl text-gray-600">{data.jobTitle}</p>
               )}
             </div>
             
@@ -29,7 +29,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
                 <h2 className="text-2xl font-bold text-emerald-600 mb-2 border-b-2 border-emerald-200 pb-1">
                   Sobre Mim
                 </h2>
-                <p className="text-gray-700 leading-relaxed text-base">{data.summary}</p>
+                <p className="text-gray-700 leading-relaxed text-lg">{data.summary}</p>
               </div>
             )}
             
@@ -41,14 +41,14 @@ export const ModernTemplate3 = ({ data }: Props) => {
                 </h2>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">{data.jobTitle}</h3>
-                  <p className="text-gray-600 text-base mb-1">{data.company}</p>
+                  <p className="text-gray-600 text-lg mb-1">{data.company}</p>
                   {(data.expStartDate || data.expEndDate) && (
                     <p className="text-sm text-gray-500 mb-2">
                       {data.expStartDate && new Date(data.expStartDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })} - {data.expEndDate ? new Date(data.expEndDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) : 'Presente'}
                     </p>
                   )}
                   {data.responsibilities && (
-                    <p className="text-gray-700 leading-relaxed text-base">{data.responsibilities}</p>
+                    <p className="text-gray-700 leading-relaxed text-lg">{data.responsibilities}</p>
                   )}
                 </div>
               </div>
@@ -75,7 +75,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
         </div>
         
         {/* Right Sidebar - Green Theme */}
-        <div className="w-2/5 bg-gradient-to-b from-emerald-600 to-emerald-800 text-white p-6">
+        <div className="w-2/5 bg-gradient-to-b from-emerald-600 to-emerald-800 text-white p-8">
           {/* Photo */}
           {data.photoPreview && (
             <div className="mb-4">
@@ -88,13 +88,13 @@ export const ModernTemplate3 = ({ data }: Props) => {
           )}
           
           {/* Contact Info */}
-          <div className="mb-6">
-            <h3 className="text-xl font-bold mb-3 border-b-2 border-white/30 pb-2">Contato</h3>
-            <div className="space-y-2.5 text-base">
-              {data.email && (
-                <div className="break-words">
-                  <p className="font-semibold">Email</p>
-                  <p className="opacity-90">{data.email}</p>
+            <div className="mb-6">
+              <h3 className="text-xl font-bold mb-3 border-b-2 border-white/30 pb-2">Contato</h3>
+              <div className="space-y-2.5 text-lg">
+                {data.email && (
+                  <div className="break-words">
+                    <p className="font-semibold">Email</p>
+                    <p className="opacity-90">{data.email}</p>
                 </div>
               )}
               {data.phone && (
@@ -118,7 +118,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
               <h3 className="text-xl font-bold mb-3 border-b-2 border-white/30 pb-2">Habilidades</h3>
               <div className="space-y-2">
                 {skills.map((skill, index) => (
-                  <div key={index} className="bg-white/20 rounded px-3 py-2 text-sm">
+                  <div key={index} className="bg-white/20 rounded px-3 py-2 text-base">
                     {skill}
                   </div>
                 ))}
