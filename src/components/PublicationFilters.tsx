@@ -10,6 +10,12 @@ interface PublicationFiltersProps {
   setCountryFilter: (country: string) => void;
   areaFilter: string;
   setAreaFilter: (area: string) => void;
+  scholarshipTypeFilter: string;
+  setScholarshipTypeFilter: (type: string) => void;
+  studyLevelFilter: string;
+  setStudyLevelFilter: (level: string) => void;
+  statusFilter: string;
+  setStatusFilter: (status: string) => void;
   onSearch: () => void;
 }
 
@@ -20,6 +26,12 @@ const PublicationFilters = ({
   setCountryFilter,
   areaFilter,
   setAreaFilter,
+  scholarshipTypeFilter,
+  setScholarshipTypeFilter,
+  studyLevelFilter,
+  setStudyLevelFilter,
+  statusFilter,
+  setStatusFilter,
   onSearch,
 }: PublicationFiltersProps) => {
   return (
@@ -41,36 +53,72 @@ const PublicationFilters = ({
           <SelectTrigger>
             <SelectValue placeholder="País" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background z-50">
             <SelectItem value="all">Todos os países</SelectItem>
+            <SelectItem value="Canadá">Canadá</SelectItem>
+            <SelectItem value="Turquia">Turquia</SelectItem>
+            <SelectItem value="China">China</SelectItem>
+            <SelectItem value="Índia">Índia</SelectItem>
             <SelectItem value="Brasil">Brasil</SelectItem>
             <SelectItem value="Estados Unidos">Estados Unidos</SelectItem>
             <SelectItem value="Reino Unido">Reino Unido</SelectItem>
             <SelectItem value="Alemanha">Alemanha</SelectItem>
-            <SelectItem value="Canadá">Canadá</SelectItem>
           </SelectContent>
         </Select>
         <Button variant="hero" className="w-full" onClick={onSearch}>
           Buscar
         </Button>
       </div>
-      {areaFilter && (
-        <div className="mt-4">
-          <Select value={areaFilter} onValueChange={setAreaFilter}>
-            <SelectTrigger>
-              <SelectValue placeholder="Área" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as áreas</SelectItem>
-              <SelectItem value="Tecnologia">Tecnologia</SelectItem>
-              <SelectItem value="Saúde">Saúde</SelectItem>
-              <SelectItem value="Engenharia">Engenharia</SelectItem>
-              <SelectItem value="Administração">Administração</SelectItem>
-              <SelectItem value="Educação">Educação</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      )}
+      
+      <div className="grid md:grid-cols-4 gap-4 mt-4">
+        <Select value={scholarshipTypeFilter} onValueChange={setScholarshipTypeFilter}>
+          <SelectTrigger>
+            <SelectValue placeholder="Tipo de Bolsa" />
+          </SelectTrigger>
+          <SelectContent className="bg-background z-50">
+            <SelectItem value="all">Todos os tipos</SelectItem>
+            <SelectItem value="Completa">Bolsa Completa</SelectItem>
+            <SelectItem value="Parcial">Bolsa Parcial</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={studyLevelFilter} onValueChange={setStudyLevelFilter}>
+          <SelectTrigger>
+            <SelectValue placeholder="Nível de Estudo" />
+          </SelectTrigger>
+          <SelectContent className="bg-background z-50">
+            <SelectItem value="all">Todos os níveis</SelectItem>
+            <SelectItem value="Licenciatura">Licenciatura</SelectItem>
+            <SelectItem value="Mestrado">Mestrado</SelectItem>
+            <SelectItem value="Doutoramento">Doutoramento</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger>
+            <SelectValue placeholder="Prazo" />
+          </SelectTrigger>
+          <SelectContent className="bg-background z-50">
+            <SelectItem value="all">Todas</SelectItem>
+            <SelectItem value="Aberta">Abertas</SelectItem>
+            <SelectItem value="Fechada">Fechadas</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={areaFilter} onValueChange={setAreaFilter}>
+          <SelectTrigger>
+            <SelectValue placeholder="Área" />
+          </SelectTrigger>
+          <SelectContent className="bg-background z-50">
+            <SelectItem value="all">Todas as áreas</SelectItem>
+            <SelectItem value="Tecnologia">Tecnologia</SelectItem>
+            <SelectItem value="Saúde">Saúde</SelectItem>
+            <SelectItem value="Engenharia">Engenharia</SelectItem>
+            <SelectItem value="Administração">Administração</SelectItem>
+            <SelectItem value="Educação">Educação</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 };

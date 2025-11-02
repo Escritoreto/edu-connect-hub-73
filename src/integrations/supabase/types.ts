@@ -73,8 +73,10 @@ export type Database = {
       publications: {
         Row: {
           area: string | null
+          benefits: Json | null
           category: Database["public"]["Enums"]["publication_category"]
           country: string | null
+          country_info: Json | null
           created_at: string
           created_by: string | null
           deadline: string | null
@@ -82,15 +84,26 @@ export type Database = {
           external_link: string | null
           id: string
           image_url: string | null
+          important_dates: Json | null
+          is_featured: boolean | null
+          requirements: string | null
+          scholarship_type: string | null
+          short_description: string | null
+          status: string | null
+          study_level: string | null
           title: string
+          university_logo: string | null
           updated_at: string
+          vacancies_by_country: Json | null
           value: string | null
           views_count: number | null
         }
         Insert: {
           area?: string | null
+          benefits?: Json | null
           category: Database["public"]["Enums"]["publication_category"]
           country?: string | null
+          country_info?: Json | null
           created_at?: string
           created_by?: string | null
           deadline?: string | null
@@ -98,15 +111,26 @@ export type Database = {
           external_link?: string | null
           id?: string
           image_url?: string | null
+          important_dates?: Json | null
+          is_featured?: boolean | null
+          requirements?: string | null
+          scholarship_type?: string | null
+          short_description?: string | null
+          status?: string | null
+          study_level?: string | null
           title: string
+          university_logo?: string | null
           updated_at?: string
+          vacancies_by_country?: Json | null
           value?: string | null
           views_count?: number | null
         }
         Update: {
           area?: string | null
+          benefits?: Json | null
           category?: Database["public"]["Enums"]["publication_category"]
           country?: string | null
+          country_info?: Json | null
           created_at?: string
           created_by?: string | null
           deadline?: string | null
@@ -114,8 +138,17 @@ export type Database = {
           external_link?: string | null
           id?: string
           image_url?: string | null
+          important_dates?: Json | null
+          is_featured?: boolean | null
+          requirements?: string | null
+          scholarship_type?: string | null
+          short_description?: string | null
+          status?: string | null
+          study_level?: string | null
           title?: string
+          university_logo?: string | null
           updated_at?: string
+          vacancies_by_country?: Json | null
           value?: string | null
           views_count?: number | null
         }
@@ -147,10 +180,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_registered_users_count: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      get_registered_users_count: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

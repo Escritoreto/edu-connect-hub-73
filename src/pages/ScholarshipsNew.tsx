@@ -13,6 +13,9 @@ const ScholarshipsNew = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [countryFilter, setCountryFilter] = useState("all");
   const [areaFilter, setAreaFilter] = useState("all");
+  const [scholarshipTypeFilter, setScholarshipTypeFilter] = useState("all");
+  const [studyLevelFilter, setStudyLevelFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     fetchPublications();
@@ -50,12 +53,24 @@ const ScholarshipsNew = () => {
       filtered = filtered.filter((pub) => pub.area === areaFilter);
     }
 
+    if (scholarshipTypeFilter && scholarshipTypeFilter !== "all") {
+      filtered = filtered.filter((pub) => pub.scholarship_type === scholarshipTypeFilter);
+    }
+
+    if (studyLevelFilter && studyLevelFilter !== "all") {
+      filtered = filtered.filter((pub) => pub.study_level === studyLevelFilter);
+    }
+
+    if (statusFilter && statusFilter !== "all") {
+      filtered = filtered.filter((pub) => pub.status === statusFilter);
+    }
+
     setFilteredPublications(filtered);
   };
 
   useEffect(() => {
     handleSearch();
-  }, [searchQuery, countryFilter, areaFilter]);
+  }, [searchQuery, countryFilter, areaFilter, scholarshipTypeFilter, studyLevelFilter, statusFilter]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -77,6 +92,12 @@ const ScholarshipsNew = () => {
               setCountryFilter={setCountryFilter}
               areaFilter={areaFilter}
               setAreaFilter={setAreaFilter}
+              scholarshipTypeFilter={scholarshipTypeFilter}
+              setScholarshipTypeFilter={setScholarshipTypeFilter}
+              studyLevelFilter={studyLevelFilter}
+              setStudyLevelFilter={setStudyLevelFilter}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
               onSearch={handleSearch}
             />
           </div>

@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Eye, GraduationCap, Briefcase, BookOpen } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Calendar, Eye, GraduationCap, Briefcase, BookOpen, Star } from "lucide-react";
 import { format } from "date-fns";
 
 interface Publication {
   id: string;
   title: string;
   description: string;
+  short_description?: string | null;
   category: string;
   country: string | null;
   area: string | null;
@@ -16,6 +18,10 @@ interface Publication {
   value: string | null;
   views_count: number;
   created_at: string;
+  is_featured?: boolean;
+  scholarship_type?: string | null;
+  study_level?: string | null;
+  status?: string | null;
 }
 
 interface PublicationCardProps {
@@ -49,8 +55,19 @@ const getCategoryLabel = (category: string) => {
 };
 
 const PublicationCard = ({ publication }: PublicationCardProps) => {
+  const displayDescription = publication.short_description || publication.description;
+  
   return (
-    <Card className="hover:shadow-card transition-all overflow-hidden">
+    <Card className="hover:shadow-card transition-all overflow-hidden relative">
+      {publication.is_featured && (
+        <div className="absolute top-4 right-4 z-10">
+          <Badge className="bg-primary text-primary-foreground flex items-center gap-1">
+            <Star className="h-3 w-3 fill-current" />
+            Em Destaque
+          </Badge>
+        </div>
+      )}
+      
       <div className="flex flex-col lg:flex-row">
         {publication.image_url && (
           <div className="lg:w-48 h-48 lg:h-auto overflow-hidden">
@@ -64,8 +81,8 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
         
         <div className="flex-1 p-6">
           <div className="flex items-start justify-between gap-4 mb-3">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
                   {getCategoryIcon(publication.category)}
                   {getCategoryLabel(publication.category)}
@@ -77,9 +94,31 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
                 )}
               </div>
               <h3 className="text-xl font-semibold mb-2">{publication.title}</h3>
-              <p className="text-muted-foreground line-clamp-2 mb-3">
-                {publication.description}
+              <p className="text-muted-foreground line-clamp-3 mb-3">
+                {displayDescription}
               </p>
+              
+              {/* New badges */}
+              <div className="flex gap-2 flex-wrap mb-3">
+                {publication.scholarship_type && (
+                  <Badge variant="outline" className="text-xs">
+                    {publication.scholarship_type}
+                  </Badge>
+                )}
+                {publication.study_level && (
+                  <Badge variant="outline" className="text-xs">
+                    {publication.study_level}
+                  </Badge>
+                )}
+                {publication.status && (
+                  <Badge 
+                    variant={publication.status === 'Aberta' ? 'default' : 'secondary'}
+                    className="text-xs"
+                  >
+                    {publication.status}
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
 
