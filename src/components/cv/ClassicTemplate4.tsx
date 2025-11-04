@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const ClassicTemplate4 = ({ data }: Props) => {
-  const firstJob = data.experience[0];
+  const skills = data.skills.split(',').map(s => s.trim()).filter(Boolean);
   
   return (
     <div className="bg-gradient-to-br from-purple-50 to-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl p-12 overflow-hidden flex flex-col" id="cv-preview">
@@ -15,8 +15,8 @@ export const ClassicTemplate4 = ({ data }: Props) => {
           <h1 className="text-6xl font-serif font-bold text-purple-800 mb-2 leading-tight">
             {data.firstName}<br/>{data.lastName}
           </h1>
-          {firstJob && (
-            <p className="text-2xl text-purple-600 italic mb-3">{firstJob.jobTitle}</p>
+          {data.jobTitle && (
+            <p className="text-2xl text-purple-600 italic mb-3">{data.jobTitle}</p>
           )}
         </div>
         {data.photoPreview && (
@@ -51,48 +51,40 @@ export const ClassicTemplate4 = ({ data }: Props) => {
         {/* Main Content - 2 columns */}
         <div className="col-span-2 space-y-8">
           {/* Experience */}
-          {data.experience.length > 0 && (
+          {data.jobTitle && data.company && (
             <div>
               <h2 className="text-3xl font-serif font-bold text-purple-800 mb-4">
                 Experiência Profissional
               </h2>
-              <div className="space-y-4">
-                {data.experience.map((exp) => (
-                  <div key={exp.id} className="bg-white p-5 rounded shadow-md border-t-4 border-purple-600">
-                    <h3 className="text-xl font-bold text-gray-800">{exp.jobTitle}</h3>
-                    <p className="text-purple-600 font-semibold text-lg mb-2">{exp.company}</p>
-                    {(exp.startDate || exp.endDate) && (
-                      <p className="text-sm text-gray-500 mb-3">
-                        {exp.startDate && new Date(exp.startDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} - {exp.endDate ? new Date(exp.endDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : 'Presente'}
-                      </p>
-                    )}
-                    {exp.responsibilities && (
-                      <p className="text-gray-700 leading-relaxed">{exp.responsibilities}</p>
-                    )}
-                  </div>
-                ))}
+              <div className="bg-white p-5 rounded shadow-md border-t-4 border-purple-600">
+                <h3 className="text-xl font-bold text-gray-800">{data.jobTitle}</h3>
+                <p className="text-purple-600 font-semibold text-lg mb-2">{data.company}</p>
+                {(data.expStartDate || data.expEndDate) && (
+                  <p className="text-sm text-gray-500 mb-3">
+                    {data.expStartDate && new Date(data.expStartDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} - {data.expEndDate ? new Date(data.expEndDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : 'Presente'}
+                  </p>
+                )}
+                {data.responsibilities && (
+                  <p className="text-gray-700 leading-relaxed">{data.responsibilities}</p>
+                )}
               </div>
             </div>
           )}
           
           {/* Education */}
-          {data.education.length > 0 && (
+          {data.degree && data.institution && (
             <div>
               <h2 className="text-3xl font-serif font-bold text-purple-800 mb-4">
                 Formação Acadêmica
               </h2>
-              <div className="space-y-3">
-                {data.education.map((edu) => (
-                  <div key={edu.id} className="bg-white p-5 rounded shadow-md border-t-4 border-purple-600">
-                    <h3 className="text-xl font-bold text-gray-800">{edu.degree}</h3>
-                    <p className="text-purple-600 font-semibold text-lg mb-2">{edu.institution}</p>
-                    {(edu.startDate || edu.endDate) && (
-                      <p className="text-sm text-gray-500">
-                        {edu.startDate && new Date(edu.startDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} - {edu.endDate ? new Date(edu.endDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : 'Cursando'}
-                      </p>
-                    )}
-                  </div>
-                ))}
+              <div className="bg-white p-5 rounded shadow-md border-t-4 border-purple-600">
+                <h3 className="text-xl font-bold text-gray-800">{data.degree}</h3>
+                <p className="text-purple-600 font-semibold text-lg mb-2">{data.institution}</p>
+                {(data.startDate || data.endDate) && (
+                  <p className="text-sm text-gray-500">
+                    {data.startDate && new Date(data.startDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} - {data.endDate ? new Date(data.endDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : 'Cursando'}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -100,13 +92,13 @@ export const ClassicTemplate4 = ({ data }: Props) => {
         
         {/* Sidebar - Skills */}
         <div>
-          {data.skills.length > 0 && (
+          {skills.length > 0 && (
             <div>
               <h2 className="text-3xl font-serif font-bold text-purple-800 mb-4">
                 Habilidades
               </h2>
               <div className="space-y-3">
-                {data.skills.map((skill, index) => (
+                {skills.map((skill, index) => (
                   <div key={index} className="bg-purple-600 text-white px-4 py-2 rounded shadow text-center text-sm font-semibold">
                     {skill}
                   </div>

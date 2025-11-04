@@ -5,11 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileText, Download, Eye, Upload, X, ArrowLeft, ArrowRight, Plus, Trash2 } from "lucide-react";
+import { FileText, Download, Eye, Upload, X, ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { CVData, CVTemplate, Education, Experience } from "@/types/cv";
+import { CVData, CVTemplate } from "@/types/cv";
 import { TemplateGallery } from "@/components/cv/TemplateGallery";
 import { CVPreview } from "@/components/cv/CVPreview";
 import { ProgressSteps } from "@/components/cv/ProgressSteps";
@@ -28,9 +28,16 @@ const CVBuilder = () => {
     location: "",
     photoPreview: null,
     summary: "",
-    education: [],
-    experience: [],
-    skills: [],
+    degree: "",
+    institution: "",
+    startDate: "",
+    endDate: "",
+    jobTitle: "",
+    company: "",
+    expStartDate: "",
+    expEndDate: "",
+    responsibilities: "",
+    skills: "",
     selectedTemplate: "",
     selectedPurpose: ""
   });
@@ -263,76 +270,8 @@ const CVBuilder = () => {
     setCVData({ ...cvData, photoPreview: null });
   };
   
-  const updateField = (field: keyof CVData, value: any) => {
+  const updateField = (field: keyof CVData, value: string) => {
     setCVData({ ...cvData, [field]: value });
-  };
-
-  const addEducation = () => {
-    const newEducation: Education = {
-      id: Date.now().toString(),
-      degree: "",
-      institution: "",
-      startDate: "",
-      endDate: ""
-    };
-    setCVData({ ...cvData, education: [...cvData.education, newEducation] });
-  };
-
-  const updateEducation = (id: string, field: keyof Education, value: string) => {
-    setCVData({
-      ...cvData,
-      education: cvData.education.map(edu =>
-        edu.id === id ? { ...edu, [field]: value } : edu
-      )
-    });
-  };
-
-  const removeEducation = (id: string) => {
-    setCVData({
-      ...cvData,
-      education: cvData.education.filter(edu => edu.id !== id)
-    });
-  };
-
-  const addExperience = () => {
-    const newExperience: Experience = {
-      id: Date.now().toString(),
-      jobTitle: "",
-      company: "",
-      startDate: "",
-      endDate: "",
-      responsibilities: ""
-    };
-    setCVData({ ...cvData, experience: [...cvData.experience, newExperience] });
-  };
-
-  const updateExperience = (id: string, field: keyof Experience, value: string) => {
-    setCVData({
-      ...cvData,
-      experience: cvData.experience.map(exp =>
-        exp.id === id ? { ...exp, [field]: value } : exp
-      )
-    });
-  };
-
-  const removeExperience = (id: string) => {
-    setCVData({
-      ...cvData,
-      experience: cvData.experience.filter(exp => exp.id !== id)
-    });
-  };
-
-  const addSkill = (skill: string) => {
-    if (skill && !cvData.skills.includes(skill)) {
-      setCVData({ ...cvData, skills: [...cvData.skills, skill] });
-    }
-  };
-
-  const removeSkill = (index: number) => {
-    setCVData({
-      ...cvData,
-      skills: cvData.skills.filter((_, i) => i !== index)
-    });
   };
   
   const handleNextStep = () => {
@@ -543,230 +482,163 @@ const CVBuilder = () => {
 
                       {/* Education */}
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Formação Acadêmica</h3>
-                          <Button type="button" onClick={addEducation} size="sm" variant="outline">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Adicionar
-                          </Button>
-                        </div>
-                        
-                        {cvData.education.map((edu, index) => (
-                          <Card key={edu.id} className="p-4 border-2">
-                            <div className="flex items-center justify-between mb-3">
-                              <h4 className="font-semibold text-sm">Formação {index + 1}</h4>
-                              {cvData.education.length > 1 && (
-                                <Button 
-                                  type="button" 
-                                  onClick={() => removeEducation(edu.id)} 
-                                  size="sm" 
-                                  variant="ghost"
-                                  className="text-destructive"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              )}
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <Label>Grau</Label>
-                                <Select onValueChange={(val) => updateEducation(edu.id, 'degree', val)}>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o grau" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {academicDegrees.map((degree, idx) => (
-                                      <SelectItem key={idx} value={degree}>
-                                        {degree}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Input 
-                                  placeholder="Ou digite o grau acadêmico" 
-                                  value={edu.degree}
-                                  onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label>Instituição</Label>
-                                <Input 
-                                  placeholder="Nome da universidade" 
-                                  value={edu.institution}
-                                  onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)}
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label>Data de Início</Label>
-                                <Input 
-                                  type="month" 
-                                  value={edu.startDate}
-                                  onChange={(e) => updateEducation(edu.id, 'startDate', e.target.value)}
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label>Data de Conclusão</Label>
-                                <Input 
-                                  type="month" 
-                                  value={edu.endDate}
-                                  onChange={(e) => updateEducation(edu.id, 'endDate', e.target.value)}
-                                />
-                              </div>
-                            </div>
-                          </Card>
-                        ))}
-                        
-                        {cvData.education.length === 0 && (
-                          <div className="text-center py-8 text-muted-foreground">
-                            <p>Nenhuma formação adicionada. Clique em "Adicionar" para começar.</p>
+                        <h3 className="text-lg font-semibold">Formação Acadêmica</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="degree">Grau</Label>
+                            <Select onValueChange={(val) => updateField('degree', val)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione o grau" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {academicDegrees.map((degree, idx) => (
+                                  <SelectItem key={idx} value={degree}>
+                                    {degree}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Input 
+                              id="degree" 
+                              placeholder="Ou digite o grau acadêmico" 
+                              value={cvData.degree}
+                              onChange={(e) => updateField('degree', e.target.value)}
+                            />
                           </div>
-                        )}
+                          <div className="space-y-2">
+                            <Label htmlFor="institution">Instituição</Label>
+                            <Input 
+                              id="institution" 
+                              placeholder="Nome da universidade" 
+                              value={cvData.institution}
+                              onChange={(e) => updateField('institution', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="startDate">Data de Início</Label>
+                            <Input 
+                              id="startDate" 
+                              type="month" 
+                              value={cvData.startDate}
+                              onChange={(e) => updateField('startDate', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="endDate">Data de Conclusão</Label>
+                            <Input 
+                              id="endDate" 
+                              type="month" 
+                              value={cvData.endDate}
+                              onChange={(e) => updateField('endDate', e.target.value)}
+                            />
+                          </div>
+                        </div>
                       </div>
 
                       {/* Experience */}
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Experiência Profissional</h3>
-                          <Button type="button" onClick={addExperience} size="sm" variant="outline">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Adicionar
-                          </Button>
-                        </div>
-                        
-                        {cvData.experience.map((exp, index) => (
-                          <Card key={exp.id} className="p-4 border-2">
-                            <div className="flex items-center justify-between mb-3">
-                              <h4 className="font-semibold text-sm">Experiência {index + 1}</h4>
-                              {cvData.experience.length > 1 && (
-                                <Button 
-                                  type="button" 
-                                  onClick={() => removeExperience(exp.id)} 
-                                  size="sm" 
-                                  variant="ghost"
-                                  className="text-destructive"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              )}
-                            </div>
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <Label>Cargo</Label>
-                                <Select onValueChange={(val) => updateExperience(exp.id, 'jobTitle', val)}>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Selecione um cargo" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {jobTitles.map((title, idx) => (
-                                      <SelectItem key={idx} value={title}>
-                                        {title}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Input 
-                                  placeholder="Ou digite o cargo" 
-                                  value={exp.jobTitle}
-                                  onChange={(e) => updateExperience(exp.id, 'jobTitle', e.target.value)}
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label>Empresa</Label>
-                                <Input 
-                                  placeholder="Nome da empresa" 
-                                  value={exp.company}
-                                  onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label>Data de Início</Label>
-                                <Input 
-                                  type="month" 
-                                  value={exp.startDate}
-                                  onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label>Data de Término</Label>
-                                <Input 
-                                  type="month" 
-                                  value={exp.endDate}
-                                  onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
-                                />
-                              </div>
-                              <div className="space-y-2 md:col-span-2">
-                                <Label>Responsabilidades</Label>
-                                <Select onValueChange={(val) => updateExperience(exp.id, 'responsibilities', val)}>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Selecione uma sugestão" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {responsibilities.map((resp, idx) => (
-                                      <SelectItem key={idx} value={resp}>
-                                        {resp}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Textarea 
-                                  placeholder="Ou descreva suas responsabilidades..."
-                                  rows={3}
-                                  value={exp.responsibilities}
-                                  onChange={(e) => updateExperience(exp.id, 'responsibilities', e.target.value)}
-                                />
-                              </div>
-                            </div>
-                          </Card>
-                        ))}
-                        
-                        {cvData.experience.length === 0 && (
-                          <div className="text-center py-8 text-muted-foreground">
-                            <p>Nenhuma experiência adicionada. Clique em "Adicionar" para começar.</p>
+                        <h3 className="text-lg font-semibold">Experiência Profissional</h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="jobTitle">Cargo</Label>
+                            <Select onValueChange={(val) => updateField('jobTitle', val)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione um cargo" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {jobTitles.map((title, idx) => (
+                                  <SelectItem key={idx} value={title}>
+                                    {title}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Input 
+                              id="jobTitle" 
+                              placeholder="Ou digite o cargo" 
+                              value={cvData.jobTitle}
+                              onChange={(e) => updateField('jobTitle', e.target.value)}
+                            />
                           </div>
-                        )}
+                          <div className="space-y-2">
+                            <Label htmlFor="company">Empresa</Label>
+                            <Input 
+                              id="company" 
+                              placeholder="Nome da empresa" 
+                              value={cvData.company}
+                              onChange={(e) => updateField('company', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="expStartDate">Data de Início</Label>
+                            <Input 
+                              id="expStartDate" 
+                              type="month" 
+                              value={cvData.expStartDate}
+                              onChange={(e) => updateField('expStartDate', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="expEndDate">Data de Término</Label>
+                            <Input 
+                              id="expEndDate" 
+                              type="month" 
+                              value={cvData.expEndDate}
+                              onChange={(e) => updateField('expEndDate', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label htmlFor="responsibilities">Responsabilidades</Label>
+                            <Select onValueChange={(val) => updateField('responsibilities', val)}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione uma sugestão" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {responsibilities.map((resp, idx) => (
+                                  <SelectItem key={idx} value={resp}>
+                                    {resp}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Textarea 
+                              id="responsibilities" 
+                              placeholder="Ou descreva suas responsabilidades..."
+                              rows={3}
+                              value={cvData.responsibilities}
+                              onChange={(e) => updateField('responsibilities', e.target.value)}
+                            />
+                          </div>
+                        </div>
                       </div>
 
                       {/* Skills */}
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Habilidades</h3>
-                          <Select onValueChange={addSkill}>
-                            <SelectTrigger className="w-[200px]">
-                              <SelectValue placeholder="Adicionar habilidade" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {skillsSuggestions.map((skill, idx) => (
-                                <SelectItem key={idx} value={skill}>
-                                  {skill}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-2">
-                          {cvData.skills.map((skill, index) => (
-                            <div 
-                              key={index}
-                              className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full"
-                            >
-                              <span className="text-sm">{skill}</span>
-                              <button
-                                type="button"
-                                onClick={() => removeSkill(index)}
-                                className="hover:bg-primary/20 rounded-full p-0.5"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                        
-                        {cvData.skills.length === 0 && (
-                          <div className="text-center py-6 text-muted-foreground text-sm">
-                            <p>Nenhuma habilidade adicionada. Selecione da lista acima.</p>
-                          </div>
-                        )}
+                      <div className="space-y-2">
+                        <Label htmlFor="skills">Habilidades</Label>
+                        <Select 
+                          onValueChange={(val) => {
+                            const current = cvData.skills;
+                            const newSkills = current ? `${current}, ${val}` : val;
+                            updateField('skills', newSkills);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Adicione habilidades da lista" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {skillsSuggestions.map((skill, idx) => (
+                              <SelectItem key={idx} value={skill}>
+                                {skill}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Input 
+                          id="skills" 
+                          placeholder="Ou digite suas habilidades (separe por vírgula)"
+                          value={cvData.skills}
+                          onChange={(e) => updateField('skills', e.target.value)}
+                        />
                       </div>
                     </div>
 

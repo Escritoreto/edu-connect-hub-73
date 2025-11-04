@@ -1,20 +1,3 @@
-export interface Education {
-  id: string;
-  degree: string;
-  institution: string;
-  startDate: string;
-  endDate: string;
-}
-
-export interface Experience {
-  id: string;
-  jobTitle: string;
-  company: string;
-  startDate: string;
-  endDate: string;
-  responsibilities: string;
-}
-
 export interface CVData {
   // Personal Info
   firstName: string;
@@ -28,14 +11,21 @@ export interface CVData {
   // Professional
   summary: string;
   
-  // Education - Array
-  education: Education[];
+  // Education
+  degree: string;
+  institution: string;
+  startDate: string;
+  endDate: string;
   
-  // Experience - Array
-  experience: Experience[];
+  // Experience
+  jobTitle: string;
+  company: string;
+  expStartDate: string;
+  expEndDate: string;
+  responsibilities: string;
   
-  // Skills - Array
-  skills: string[];
+  // Skills
+  skills: string;
   
   // Template
   selectedTemplate: string;
