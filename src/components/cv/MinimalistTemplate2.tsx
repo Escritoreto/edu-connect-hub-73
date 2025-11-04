@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const MinimalistTemplate2 = ({ data }: Props) => {
-  const skills = data.skills.split(',').map(s => s.trim()).filter(Boolean);
+  const firstJob = data.experience[0];
   
   return (
     <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl p-16 overflow-hidden flex flex-col" id="cv-preview">
@@ -15,9 +15,9 @@ export const MinimalistTemplate2 = ({ data }: Props) => {
           <h1 className="text-5xl font-light text-blue-900 mb-1">
             {data.firstName} <span className="font-bold">{data.lastName}</span>
           </h1>
-          {data.jobTitle && (
+          {firstJob && (
             <p className="text-lg text-blue-600 font-light uppercase tracking-widest mt-2">
-              {data.jobTitle}
+              {firstJob.jobTitle}
             </p>
           )}
         </div>
@@ -54,42 +54,50 @@ export const MinimalistTemplate2 = ({ data }: Props) => {
           )}
           
           {/* Experience */}
-          {data.jobTitle && data.company && (
+          {data.experience.length > 0 && (
             <div>
               <h2 className="text-sm font-bold text-blue-900 uppercase tracking-widest mb-4 pb-2 border-b border-blue-200">
                 Experiência
               </h2>
-              <div>
-                <h3 className="text-lg font-semibold text-blue-700">{data.jobTitle}</h3>
-                <p className="text-blue-600 mb-1 font-light">{data.company}</p>
-                {(data.expStartDate || data.expEndDate) && (
-                  <p className="text-xs text-gray-500 font-light mb-3">
-                    {data.expStartDate && new Date(data.expStartDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })} - {data.expEndDate ? new Date(data.expEndDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) : 'Presente'}
-                  </p>
-                )}
-                {data.responsibilities && (
-                  <p className="text-gray-700 leading-relaxed font-light text-sm">
-                    {data.responsibilities}
-                  </p>
-                )}
+              <div className="space-y-5">
+                {data.experience.map((exp) => (
+                  <div key={exp.id}>
+                    <h3 className="text-lg font-semibold text-blue-700">{exp.jobTitle}</h3>
+                    <p className="text-blue-600 mb-1 font-light">{exp.company}</p>
+                    {(exp.startDate || exp.endDate) && (
+                      <p className="text-xs text-gray-500 font-light mb-3">
+                        {exp.startDate && new Date(exp.startDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })} - {exp.endDate ? new Date(exp.endDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) : 'Presente'}
+                      </p>
+                    )}
+                    {exp.responsibilities && (
+                      <p className="text-gray-700 leading-relaxed font-light text-sm">
+                        {exp.responsibilities}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
           
           {/* Education */}
-          {data.degree && data.institution && (
+          {data.education.length > 0 && (
             <div>
               <h2 className="text-sm font-bold text-blue-900 uppercase tracking-widest mb-4 pb-2 border-b border-blue-200">
                 Formação
               </h2>
-              <div>
-                <h3 className="text-lg font-semibold text-blue-700">{data.degree}</h3>
-                <p className="text-blue-600 font-light mb-1">{data.institution}</p>
-                {(data.startDate || data.endDate) && (
-                  <p className="text-xs text-gray-500 font-light">
-                    {data.startDate && new Date(data.startDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })} - {data.endDate ? new Date(data.endDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) : 'Cursando'}
-                  </p>
-                )}
+              <div className="space-y-4">
+                {data.education.map((edu) => (
+                  <div key={edu.id}>
+                    <h3 className="text-lg font-semibold text-blue-700">{edu.degree}</h3>
+                    <p className="text-blue-600 font-light mb-1">{edu.institution}</p>
+                    {(edu.startDate || edu.endDate) && (
+                      <p className="text-xs text-gray-500 font-light">
+                        {edu.startDate && new Date(edu.startDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })} - {edu.endDate ? new Date(edu.endDate).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) : 'Cursando'}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -97,13 +105,13 @@ export const MinimalistTemplate2 = ({ data }: Props) => {
         
         {/* Sidebar */}
         <div>
-          {skills.length > 0 && (
+          {data.skills.length > 0 && (
             <div>
               <h2 className="text-sm font-bold text-blue-900 uppercase tracking-widest mb-4 pb-2 border-b border-blue-200">
                 Habilidades
               </h2>
               <div className="space-y-2">
-                {skills.map((skill, index) => (
+                {data.skills.map((skill, index) => (
                   <div 
                     key={index} 
                     className="text-gray-700 font-light text-sm py-1 border-l-2 border-blue-400 pl-3"

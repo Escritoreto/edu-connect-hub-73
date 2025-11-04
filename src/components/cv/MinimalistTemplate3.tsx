@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const MinimalistTemplate3 = ({ data }: Props) => {
-  const skills = data.skills.split(',').map(s => s.trim()).filter(Boolean);
+  const firstJob = data.experience[0];
   
   return (
     <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl p-14 overflow-hidden flex flex-col justify-between" id="cv-preview">
@@ -22,9 +22,9 @@ export const MinimalistTemplate3 = ({ data }: Props) => {
           {data.firstName} {data.lastName}
         </h1>
         <div className="w-16 h-px bg-emerald-400 mx-auto my-3"></div>
-        {data.jobTitle && (
+        {firstJob && (
           <p className="text-sm text-emerald-600 uppercase tracking-widest font-light">
-            {data.jobTitle}
+            {firstJob.jobTitle}
           </p>
         )}
         <div className="flex justify-center gap-6 text-xs text-gray-500 mt-4 font-light">
@@ -46,13 +46,13 @@ export const MinimalistTemplate3 = ({ data }: Props) => {
       <div className="h-px bg-gray-200 my-8"></div>
       
       {/* Skills as badges */}
-      {skills.length > 0 && (
+      {data.skills.length > 0 && (
         <div className="mb-10">
           <h2 className="text-xs font-bold text-emerald-900 uppercase tracking-widest text-center mb-4">
             Competências
           </h2>
           <div className="flex flex-wrap justify-center gap-2">
-            {skills.map((skill, index) => (
+            {data.skills.map((skill, index) => (
               <span 
                 key={index} 
                 className="px-4 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-light rounded-full"
@@ -67,42 +67,50 @@ export const MinimalistTemplate3 = ({ data }: Props) => {
       <div className="h-px bg-gray-200 my-8"></div>
       
       {/* Experience - centered style */}
-      {data.jobTitle && data.company && (
+      {data.experience.length > 0 && (
         <div className="mb-10">
           <h2 className="text-xs font-bold text-emerald-900 uppercase tracking-widest text-center mb-6">
             Experiência Profissional
           </h2>
-          <div className="max-w-xl mx-auto text-center">
-            <h3 className="text-lg font-semibold text-emerald-700">{data.jobTitle}</h3>
-            <p className="text-emerald-600 mb-2 font-light">{data.company}</p>
-            {(data.expStartDate || data.expEndDate) && (
-              <p className="text-xs text-gray-500 font-light mb-3">
-                {data.expStartDate && new Date(data.expStartDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} - {data.expEndDate ? new Date(data.expEndDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : 'Presente'}
-              </p>
-            )}
-            {data.responsibilities && (
-              <p className="text-gray-700 leading-relaxed font-light text-sm">
-                {data.responsibilities}
-              </p>
-            )}
+          <div className="space-y-5">
+            {data.experience.map((exp) => (
+              <div key={exp.id} className="max-w-xl mx-auto text-center">
+                <h3 className="text-lg font-semibold text-emerald-700">{exp.jobTitle}</h3>
+                <p className="text-emerald-600 mb-2 font-light">{exp.company}</p>
+                {(exp.startDate || exp.endDate) && (
+                  <p className="text-xs text-gray-500 font-light mb-3">
+                    {exp.startDate && new Date(exp.startDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} - {exp.endDate ? new Date(exp.endDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : 'Presente'}
+                  </p>
+                )}
+                {exp.responsibilities && (
+                  <p className="text-gray-700 leading-relaxed font-light text-sm">
+                    {exp.responsibilities}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}
       
       {/* Education - centered style */}
-      {data.degree && data.institution && (
+      {data.education.length > 0 && (
         <div>
           <h2 className="text-xs font-bold text-emerald-900 uppercase tracking-widest text-center mb-6">
             Formação Acadêmica
           </h2>
-          <div className="max-w-xl mx-auto text-center">
-            <h3 className="text-lg font-semibold text-emerald-700">{data.degree}</h3>
-            <p className="text-emerald-600 font-light mb-2">{data.institution}</p>
-            {(data.startDate || data.endDate) && (
-              <p className="text-xs text-gray-500 font-light">
-                {data.startDate && new Date(data.startDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} - {data.endDate ? new Date(data.endDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : 'Cursando'}
-              </p>
-            )}
+          <div className="space-y-4">
+            {data.education.map((edu) => (
+              <div key={edu.id} className="max-w-xl mx-auto text-center">
+                <h3 className="text-lg font-semibold text-emerald-700">{edu.degree}</h3>
+                <p className="text-emerald-600 font-light mb-2">{edu.institution}</p>
+                {(edu.startDate || edu.endDate) && (
+                  <p className="text-xs text-gray-500 font-light">
+                    {edu.startDate && new Date(edu.startDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })} - {edu.endDate ? new Date(edu.endDate).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : 'Cursando'}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       )}
