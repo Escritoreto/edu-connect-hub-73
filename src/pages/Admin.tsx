@@ -31,7 +31,12 @@ const Admin = () => {
   const [area, setArea] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [universityLogo, setUniversityLogo] = useState("");
+  const [countryFlag, setCountryFlag] = useState("");
   const [externalLink, setExternalLink] = useState("");
+  
+  // File states for uploads
+  const [countryFlagFile, setCountryFlagFile] = useState<File | null>(null);
+  const [universityLogoFile, setUniversityLogoFile] = useState<File | null>(null);
   const [deadline, setDeadline] = useState("");
   const [value, setValue] = useState("");
   
@@ -95,9 +100,55 @@ const Admin = () => {
     }
   };
 
+  const uploadImage = async (file: File, bucket: string, folder: string): Promise<string | null> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${folder}/${Math.random()}.${fileExt}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from(bucket)
+      .upload(fileName, file);
+
+    if (uploadError) {
+      toast({
+        title: "Erro no upload",
+        description: uploadError.message,
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    const { data } = supabase.storage
+      .from(bucket)
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    // Upload images if files are selected
+    let countryFlagUrl = countryFlag;
+    let universityLogoUrl = universityLogo;
+
+    if (countryFlagFile) {
+      const uploadedUrl = await uploadImage(countryFlagFile, 'country-flags', 'flags');
+      if (uploadedUrl) countryFlagUrl = uploadedUrl;
+      else {
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
+    if (universityLogoFile) {
+      const uploadedUrl = await uploadImage(universityLogoFile, 'university-logos', 'logos');
+      if (uploadedUrl) universityLogoUrl = uploadedUrl;
+      else {
+        setIsSubmitting(false);
+        return;
+      }
+    }
 
     // Build country_info object
     const countryInfo = (countryAdvantages || countryGastronomy || countryCulture || countryTourism || countryEducation) 
@@ -118,7 +169,7 @@ const Admin = () => {
       country: country || null,
       area: area || null,
       image_url: imageUrl || null,
-      university_logo: universityLogo || null,
+      university_logo: universityLogoUrl || null,
       external_link: externalLink || null,
       deadline: deadline || null,
       value: value || null,
@@ -162,6 +213,14 @@ const Admin = () => {
       publicationData.country_info = countryInfo;
     }
 
+    // Add country flag URL if available
+    if (countryFlagUrl) {
+      publicationData.country_info = {
+        ...publicationData.country_info,
+        flag_url: countryFlagUrl
+      };
+    }
+
     const { error } = await supabase.from("publications").insert(publicationData);
 
     if (error) {
@@ -185,8 +244,11 @@ const Admin = () => {
       setArea("");
       setImageUrl("");
       setUniversityLogo("");
+      setCountryFlag("");
       setExternalLink("");
       setDeadline("");
+      setCountryFlagFile(null);
+      setUniversityLogoFile(null);
       setValue("");
       setScholarshipType("");
       setStudyLevel("");
@@ -356,7 +418,7 @@ const Admin = () => {
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-4">
+                    <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="deadline">Prazo Final</Label>
                         <Input
@@ -377,16 +439,33 @@ const Admin = () => {
                           onChange={(e) => setImageUrl(e.target.value)}
                         />
                       </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="countryFlag">Bandeira do País</Label>
+                        <Input
+                          id="countryFlag"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setCountryFlagFile(e.target.files?.[0] || null)}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Upload da bandeira do país (PNG, JPG)
+                        </p>
+                      </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="universityLogo">Logo da Universidade</Label>
+                        <Label htmlFor="universityLogoFile">Logo da Universidade</Label>
                         <Input
-                          id="universityLogo"
-                          type="url"
-                          placeholder="https://..."
-                          value={universityLogo}
-                          onChange={(e) => setUniversityLogo(e.target.value)}
+                          id="universityLogoFile"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setUniversityLogoFile(e.target.files?.[0] || null)}
                         />
+                        <p className="text-xs text-muted-foreground">
+                          Upload do logo da universidade (PNG, JPG)
+                        </p>
                       </div>
                     </div>
 

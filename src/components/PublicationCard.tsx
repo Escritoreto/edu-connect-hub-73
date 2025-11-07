@@ -14,6 +14,7 @@ interface Publication {
   country: string | null;
   area: string | null;
   image_url: string | null;
+  university_logo?: string | null;
   deadline: string | null;
   value: string | null;
   views_count: number;
@@ -22,6 +23,14 @@ interface Publication {
   scholarship_type?: string | null;
   study_level?: string | null;
   status?: string | null;
+  country_info?: {
+    flag_url?: string;
+    advantages?: string;
+    education?: string;
+    culture?: string;
+    gastronomy?: string;
+    tourism?: string;
+  } | null;
 }
 
 interface PublicationCardProps {
@@ -70,12 +79,21 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
       
       <div className="flex flex-col lg:flex-row">
         {publication.image_url && (
-          <div className="lg:w-48 h-48 lg:h-auto overflow-hidden">
+          <div className="lg:w-48 h-48 lg:h-auto overflow-hidden relative">
             <img
               src={publication.image_url}
               alt={publication.title}
               className="w-full h-full object-cover"
             />
+            {publication.university_logo && (
+              <div className="absolute bottom-2 right-2 bg-background/90 p-1 rounded">
+                <img
+                  src={publication.university_logo}
+                  alt="Logo universidade"
+                  className="h-8 w-8 object-contain"
+                />
+              </div>
+            )}
           </div>
         )}
         
@@ -125,7 +143,15 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
             {publication.country && (
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
+                {publication.country_info?.flag_url ? (
+                  <img 
+                    src={publication.country_info.flag_url} 
+                    alt={`Bandeira ${publication.country}`}
+                    className="h-4 w-6 object-cover rounded"
+                  />
+                ) : (
+                  <MapPin className="h-4 w-4" />
+                )}
                 {publication.country}
               </div>
             )}
