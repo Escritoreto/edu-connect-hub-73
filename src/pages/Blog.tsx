@@ -1,7 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const articles = [
   {
@@ -31,6 +32,60 @@ const articles = [
     readTime: "10 min",
     image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
   },
+  {
+    id: 4,
+    title: "Preparação para IELTS e TOEFL: Guia Completo",
+    excerpt: "Tudo o que você precisa saber para conquistar a pontuação necessária nos exames de proficiência.",
+    category: "Idiomas",
+    date: "8 de Janeiro, 2025",
+    readTime: "12 min",
+    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800",
+  },
+  {
+    id: 5,
+    title: "Os Melhores Destinos para Estudar no Exterior em 2025",
+    excerpt: "Conheça os países mais procurados por estudantes internacionais e suas vantagens.",
+    category: "Destinos",
+    date: "5 de Janeiro, 2025",
+    readTime: "7 min",
+    image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800",
+  },
+  {
+    id: 6,
+    title: "Como Criar um CV que Impressiona Universidades",
+    excerpt: "Dicas práticas para montar um currículo acadêmico de destaque.",
+    category: "Carreira",
+    date: "3 de Janeiro, 2025",
+    readTime: "9 min",
+    image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800",
+  },
+  {
+    id: 7,
+    title: "Vida de Estudante no Exterior: O Que Esperar",
+    excerpt: "Experiências reais e conselhos de quem já está vivendo o sonho internacional.",
+    category: "Experiências",
+    date: "1 de Janeiro, 2025",
+    readTime: "11 min",
+    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800",
+  },
+  {
+    id: 8,
+    title: "Entrevista para Bolsas: Como se Preparar",
+    excerpt: "Estratégias e respostas para as perguntas mais comuns em entrevistas de seleção.",
+    category: "Bolsas",
+    date: "28 de Dezembro, 2024",
+    readTime: "8 min",
+    image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800",
+  },
+  {
+    id: 9,
+    title: "Documentos Essenciais para Candidatura Internacional",
+    excerpt: "Checklist completo de documentos necessários para se candidatar a programas no exterior.",
+    category: "Orientação",
+    date: "25 de Dezembro, 2024",
+    readTime: "6 min",
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800",
+  },
 ];
 
 const Blog = () => {
@@ -56,45 +111,53 @@ const Blog = () => {
           <div className="container">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {articles.map((article, index) => (
-                <article
+                <Link
                   key={article.id}
-                  className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-elegant transition-all group animate-fade-in"
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  to={`/blog/${article.id}`}
+                  className="block"
                 >
-                  <div className="relative overflow-hidden h-48">
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-primary text-primary-foreground">
-                        {article.category}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="p-6 space-y-3">
-                    <h2 className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors">
-                      {article.title}
-                    </h2>
-                    
-                    <p className="text-muted-foreground text-sm line-clamp-2">
-                      {article.excerpt}
-                    </p>
-
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground pt-2">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {article.date}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        {article.readTime}
+                  <article
+                    className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-elegant transition-all group animate-fade-in cursor-pointer h-full"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="relative overflow-hidden h-48">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-primary text-primary-foreground">
+                          {article.category}
+                        </Badge>
                       </div>
                     </div>
-                  </div>
-                </article>
+
+                    <div className="p-6 space-y-3">
+                      <h2 className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+                        {article.title}
+                      </h2>
+                      
+                      <p className="text-muted-foreground text-sm line-clamp-2">
+                        {article.excerpt}
+                      </p>
+
+                      <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {article.date}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-4 w-4" />
+                            {article.readTime}
+                          </div>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                    </div>
+                  </article>
+                </Link>
               ))}
             </div>
           </div>
