@@ -3,29 +3,8 @@ import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Quote } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const testimonials = [
-  {
-    name: "Maria Silva",
-    role: "Estudante na Universidade de Cambridge",
-    image: "https://i.pravatar.cc/150?img=1",
-    quote: "O UpMentor mudou minha vida! Consegui minha bolsa para Cambridge e ainda aprendi inglês avançado aqui na plataforma.",
-  },
-  {
-    name: "João Santos",
-    role: "Bolsista na Universidade de Toronto",
-    image: "https://i.pravatar.cc/150?img=3",
-    quote: "Plataforma incrível! Encontrei várias bolsas e o suporte foi fundamental para minha aprovação no Canadá.",
-  },
-  {
-    name: "Ana Costa",
-    role: "Estudante de Mestrado na Alemanha",
-    image: "https://i.pravatar.cc/150?img=5",
-    quote: "O curso de educação financeira me ajudou muito a me preparar para viver no exterior. Recomendo demais!",
-  },
-];
 
 const Index = () => {
   return (
@@ -83,46 +62,6 @@ const Index = () => {
                     <Button variant="link" size="sm" asChild className="p-0">
                       <Link to="/scholarships">Ver mais →</Link>
                     </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials */}
-        <section className="py-20">
-          <div className="container">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                Histórias de Sucesso
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Milhares de estudantes já transformaram suas vidas com o UpMentor
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, index) => (
-                <div
-                  key={index}
-                  className="bg-card border border-border rounded-xl p-6 space-y-4 hover:shadow-card transition-all animate-fade-in"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <Quote className="h-8 w-8 text-primary opacity-50" />
-                  <p className="text-muted-foreground leading-relaxed">
-                    "{testimonial.quote}"
-                  </p>
-                  <div className="flex items-center gap-3 pt-4 border-t border-border">
-                    <img
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full"
-                    />
-                    <div>
-                      <div className="font-semibold">{testimonial.name}</div>
-                      <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                    </div>
                   </div>
                 </div>
               ))}
