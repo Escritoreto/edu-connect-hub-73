@@ -8,6 +8,7 @@ import Scholarships from "./pages/ScholarshipsNew";
 import Courses from "./pages/CoursesNew";
 import CVBuilder from "./pages/CVBuilder";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/courses" element={<Courses />} />
           <Route path="/cv-builder" element={<CVBuilder />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/about" element={<About />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<Admin />} />
