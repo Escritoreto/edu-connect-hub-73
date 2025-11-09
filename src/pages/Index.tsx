@@ -5,8 +5,33 @@ import Features from "@/components/Features";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
+  const [featuredScholarships, setFeaturedScholarships] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedScholarships = async () => {
+      const { data, error } = await supabase
+        .from("publications")
+        .select("*")
+        .eq("category", "scholarship")
+        .eq("is_featured", true)
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (!error && data) {
+        setFeaturedScholarships(data);
+      }
+      setLoading(false);
+    };
+
+    fetchFeaturedScholarships();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -36,35 +61,54 @@ const Index = () => {
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { title: "Fulbright - EUA", country: "Estados Unidos", value: "Cobertura Total", deadline: "Out 2025" },
-                { title: "Chevening - UK", country: "Reino Unido", value: "Cobertura Total", deadline: "Nov 2025" },
-                { title: "DAAD - Alemanha", country: "Alemanha", value: "€850/mês", deadline: "Set 2025" },
-              ].map((scholarship, index) => (
-                <div
-                  key={index}
-                  className="bg-card border border-border rounded-xl p-6 hover:shadow-card transition-all group animate-fade-in"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="mb-4">
-                    <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-3">
-                      {scholarship.value}
+              {loading ? (
+                Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="bg-card border border-border rounded-xl p-6">
+                    <Skeleton className="h-6 w-24 mb-3" />
+                    <Skeleton className="h-6 w-full mb-2" />
+                    <Skeleton className="h-4 w-3/4 mb-4" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                ))
+              ) : featuredScholarships.length > 0 ? (
+                featuredScholarships.map((scholarship, index) => (
+                  <div
+                    key={scholarship.id}
+                    className="bg-card border border-border rounded-xl p-6 hover:shadow-card transition-all group animate-fade-in"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="mb-4">
+                      {scholarship.value && (
+                        <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-3">
+                          {scholarship.value}
+                        </div>
+                      )}
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                        {scholarship.title}
+                      </h3>
+                      {scholarship.country && (
+                        <p className="text-muted-foreground text-sm mb-4">
+                          {scholarship.country}
+                        </p>
+                      )}
                     </div>
-                    <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                      {scholarship.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-4">
-                      {scholarship.country}
-                    </p>
+                    <div className="flex justify-between items-center text-sm">
+                      {scholarship.deadline && (
+                        <span className="text-muted-foreground">
+                          Prazo: {new Date(scholarship.deadline).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}
+                        </span>
+                      )}
+                      <Button variant="link" size="sm" asChild className="p-0">
+                        <Link to={`/publication/${scholarship.id}`}>Ver mais →</Link>
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">Prazo: {scholarship.deadline}</span>
-                    <Button variant="link" size="sm" asChild className="p-0">
-                      <Link to="/scholarships">Ver mais →</Link>
-                    </Button>
-                  </div>
+                ))
+              ) : (
+                <div className="col-span-3 text-center py-8 text-muted-foreground">
+                  Nenhuma bolsa em destaque no momento
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </section>
