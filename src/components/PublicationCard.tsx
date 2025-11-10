@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, Eye, GraduationCap, Briefcase, BookOpen, Star } from "lucide-react";
 import { format } from "date-fns";
+import FavoriteButton from "@/components/FavoriteButton";
 
 interface Publication {
   id: string;
@@ -168,9 +169,7 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
           </div>
 
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              Salvar
-            </Button>
+            <FavoriteButton publicationId={publication.id} />
             <Button variant="hero" size="sm" asChild>
               <Link to={`/publication/${publication.id}`}>
                 Ver Detalhes

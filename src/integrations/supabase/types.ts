@@ -154,6 +154,35 @@ export type Database = {
         }
         Relationships: []
       }
+      user_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          publication_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          publication_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          publication_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_favorites_publication_id_fkey"
+            columns: ["publication_id"]
+            isOneToOne: false
+            referencedRelation: "publications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string

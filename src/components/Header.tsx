@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Menu, X, LogOut, Settings } from "lucide-react";
+import { GraduationCap, Menu, X, LogOut, Settings, Heart } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -39,6 +39,11 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-4">
           {user ? (
             <>
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/favorites">
+                  <Heart className="h-5 w-5" />
+                </Link>
+              </Button>
               {isAdmin && (
                 <Button variant="outline" asChild>
                   <Link to="/admin">
@@ -91,6 +96,12 @@ const Header = () => {
             <div className="flex flex-col space-y-2 pt-2">
               {user ? (
                 <>
+                  <Button variant="ghost" asChild>
+                    <Link to="/favorites" onClick={() => setIsMenuOpen(false)}>
+                      <Heart className="h-4 w-4 mr-2" />
+                      Favoritos
+                    </Link>
+                  </Button>
                   {isAdmin && (
                     <Button variant="outline" asChild>
                       <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
