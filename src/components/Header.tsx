@@ -39,9 +39,10 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-4">
           {user ? (
             <>
-              <Button variant="ghost" size="icon" asChild>
+              <Button variant="ghost" asChild>
                 <Link to="/favorites">
-                  <Heart className="h-5 w-5" />
+                  <Heart className="h-4 w-4 mr-2" />
+                  Favoritos
                 </Link>
               </Button>
               {isAdmin && (
