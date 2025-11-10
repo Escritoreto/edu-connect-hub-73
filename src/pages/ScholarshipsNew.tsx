@@ -70,7 +70,7 @@ const ScholarshipsNew = () => {
 
   useEffect(() => {
     handleSearch();
-  }, [searchQuery, countryFilter, areaFilter, scholarshipTypeFilter, studyLevelFilter, statusFilter]);
+  }, [publications, searchQuery, countryFilter, areaFilter, scholarshipTypeFilter, studyLevelFilter, statusFilter]);
 
   return (
     <div className="min-h-screen flex flex-col">

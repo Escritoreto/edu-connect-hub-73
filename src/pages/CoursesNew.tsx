@@ -58,7 +58,7 @@ const CoursesNew = () => {
 
   useEffect(() => {
     handleSearch();
-  }, [searchQuery, countryFilter, areaFilter]);
+  }, [publications, searchQuery, countryFilter, areaFilter]);
 
   return (
     <div className="min-h-screen flex flex-col">
