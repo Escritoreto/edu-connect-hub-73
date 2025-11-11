@@ -13,9 +13,6 @@ const CoursesNew = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [countryFilter, setCountryFilter] = useState("all");
   const [areaFilter, setAreaFilter] = useState("all");
-  const [scholarshipTypeFilter, setScholarshipTypeFilter] = useState("all");
-  const [studyLevelFilter, setStudyLevelFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
     fetchPublications();
@@ -80,12 +77,12 @@ const CoursesNew = () => {
               setCountryFilter={setCountryFilter}
               areaFilter={areaFilter}
               setAreaFilter={setAreaFilter}
-              scholarshipTypeFilter={scholarshipTypeFilter}
-              setScholarshipTypeFilter={setScholarshipTypeFilter}
-              studyLevelFilter={studyLevelFilter}
-              setStudyLevelFilter={setStudyLevelFilter}
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
+              scholarshipTypeFilter=""
+              setScholarshipTypeFilter={() => {}}
+              studyLevelFilter=""
+              setStudyLevelFilter={() => {}}
+              statusFilter=""
+              setStatusFilter={() => {}}
               onSearch={handleSearch}
             />
           </div>
