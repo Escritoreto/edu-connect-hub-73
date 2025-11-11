@@ -1,12 +1,35 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Menu, X, LogOut, Settings, Heart } from "lucide-react";
-import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { GraduationCap, Menu, X, LogOut, Settings, Heart, User } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
   const { user, isAdmin, signOut } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user]);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", user.id)
+      .single();
+
+    if (data?.avatar_url) {
+      setAvatarUrl(data.avatar_url);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -53,6 +76,16 @@ const Header = () => {
                   </Link>
                 </Button>
               )}
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/profile">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={avatarUrl} />
+                    <AvatarFallback>
+                      <User className="h-4 w-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
+              </Button>
               <Button variant="ghost" onClick={signOut}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Sair
@@ -111,6 +144,17 @@ const Header = () => {
                       </Link>
                     </Button>
                   )}
+                  <Button variant="ghost" asChild>
+                    <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center">
+                      <Avatar className="h-6 w-6 mr-2">
+                        <AvatarImage src={avatarUrl} />
+                        <AvatarFallback>
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                      Perfil
+                    </Link>
+                  </Button>
                   <Button variant="ghost" onClick={() => {
                     signOut();
                     setIsMenuOpen(false);
