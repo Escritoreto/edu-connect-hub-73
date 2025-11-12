@@ -32,7 +32,7 @@ const PublicationFilters = ({
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
           placeholder="Pesquisar por título..."
-          className="pl-12 h-14 text-lg bg-background shadow-sm border-border/50"
+          className="pl-12 h-14 text-lg bg-card text-foreground placeholder:text-muted-foreground shadow-sm border border-border/60"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -40,10 +40,10 @@ const PublicationFilters = ({
       
       <div className="flex gap-3">
         <Select value={countryFilter} onValueChange={setCountryFilter}>
-          <SelectTrigger className="bg-background">
+          <SelectTrigger className="bg-card text-foreground border border-border">
             <SelectValue placeholder="Todos os países" />
           </SelectTrigger>
-          <SelectContent className="bg-background z-50">
+          <SelectContent className="bg-popover text-foreground border border-border z-50">
             <SelectItem value="all">Todos os países</SelectItem>
             <SelectItem value="Canadá">Canadá</SelectItem>
             <SelectItem value="Turquia">Turquia</SelectItem>
@@ -57,10 +57,10 @@ const PublicationFilters = ({
         </Select>
 
         <Select value={areaFilter} onValueChange={setAreaFilter}>
-          <SelectTrigger className="bg-background">
+          <SelectTrigger className="bg-card text-foreground border border-border">
             <SelectValue placeholder="Todas as áreas" />
           </SelectTrigger>
-          <SelectContent className="bg-background z-50">
+          <SelectContent className="bg-popover text-foreground border border-border z-50">
             <SelectItem value="all">Todas as áreas</SelectItem>
             <SelectItem value="Tecnologia">Tecnologia</SelectItem>
             <SelectItem value="Saúde">Saúde</SelectItem>
