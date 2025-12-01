@@ -23,11 +23,13 @@ import {
   Camera,
   GraduationCap,
   Star,
-  CheckCircle2
+  CheckCircle2,
+  BookOpen
 } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
+import CourseRegistrationForm from "@/components/CourseRegistrationForm";
 
 interface Publication {
   id: string;
@@ -158,7 +160,7 @@ const PublicationDetail = () => {
       <main className="flex-1 py-12">
         <div className="container max-w-6xl">
           <Button variant="ghost" asChild className="mb-6">
-            <Link to="/scholarships">
+            <Link to={publication.category === 'course' ? '/courses' : '/scholarships'}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar
             </Link>
@@ -181,7 +183,14 @@ const PublicationDetail = () => {
                 {publication.is_featured && (
                   <Badge className="bg-primary flex items-center gap-1 w-fit">
                     <Star className="h-3 w-3 fill-current" />
-                    Bolsa em Destaque
+                    {publication.category === 'course' ? 'Curso em Destaque' : 'Bolsa em Destaque'}
+                  </Badge>
+                )}
+                
+                {publication.category === 'course' && (
+                  <Badge variant="secondary" className="flex items-center gap-1 w-fit">
+                    <BookOpen className="h-3 w-3" />
+                    Curso
                   </Badge>
                 )}
 
@@ -488,8 +497,70 @@ const PublicationDetail = () => {
               </>
             )}
 
-            {/* CTA Footer */}
-            {publication.external_link && (
+            {/* Course Registration Form */}
+            {publication.category === 'course' && (
+              <div className="mt-8">
+                <Separator className="my-8" />
+                <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
+                  <BookOpen className="h-7 w-7 text-primary" />
+                  Inscreva-se Agora
+                </h2>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <Card className="bg-muted/50">
+                      <CardHeader>
+                        <CardTitle className="text-lg">Informações do Curso</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex justify-between items-center py-2 border-b border-border">
+                          <span className="text-muted-foreground">Preço</span>
+                          <span className="font-bold text-primary text-lg">
+                            {publication.value || 'Consultar'}
+                          </span>
+                        </div>
+                        {publication.title.includes('Inglesa') && (
+                          <>
+                            <div className="flex justify-between items-center py-2 border-b border-border">
+                              <span className="text-muted-foreground">Duração</span>
+                              <span className="font-semibold">6 meses</span>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b border-border">
+                              <span className="text-muted-foreground">Pagamento</span>
+                              <span className="font-semibold">Em parcelas</span>
+                            </div>
+                          </>
+                        )}
+                        {publication.title.includes('Financeira') && (
+                          <div className="flex justify-between items-center py-2 border-b border-border">
+                            <span className="text-muted-foreground">Horário</span>
+                            <span className="font-semibold">Flexível</span>
+                          </div>
+                        )}
+                        {publication.title.includes('Turca') && (
+                          <div className="bg-primary/10 p-3 rounded-lg text-sm">
+                            <p className="text-muted-foreground">
+                              O preço varia conforme a universidade e modalidade escolhida. 
+                              Preencha o formulário para receber informações detalhadas.
+                            </p>
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center py-2">
+                          <span className="text-muted-foreground">Modalidade</span>
+                          <span className="font-semibold">Online / Presencial</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <CourseRegistrationForm 
+                    courseTitle={publication.title} 
+                    courseId={publication.id} 
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* CTA Footer for Scholarships */}
+            {publication.category !== 'course' && publication.external_link && (
               <Card className="bg-gradient-primary text-primary-foreground">
                 <CardContent className="p-8 text-center">
                   <h3 className="text-2xl font-bold mb-4">
