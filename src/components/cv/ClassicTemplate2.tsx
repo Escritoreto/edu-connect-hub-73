@@ -8,7 +8,7 @@ export const ClassicTemplate2 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl p-12 overflow-hidden flex flex-col" id="cv-preview">
+    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none p-12 flex flex-col" id="cv-preview">
       {/* Header */}
       <div className="text-center border-b-4 border-blue-800 pb-6 mb-8">
         <h1 className="text-5xl font-serif font-bold text-blue-800 mb-2">

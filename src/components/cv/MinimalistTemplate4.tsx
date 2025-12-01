@@ -8,9 +8,9 @@ export const MinimalistTemplate4 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl overflow-hidden flex" id="cv-preview">
+    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none flex" id="cv-preview">
       {/* Left accent bar */}
-      <div className="flex h-full">
+      <div className="flex min-h-[297mm]">
         <div className="w-2 bg-gradient-to-b from-purple-600 to-purple-400"></div>
         
         <div className="flex-1 p-16">

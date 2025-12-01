@@ -128,3 +128,26 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* CV Print Styles */
+@media print {
+  #cv-preview {
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+  
+  /* Prevent page breaks inside sections */
+  #cv-preview h2,
+  #cv-preview h3 {
+    page-break-after: avoid;
+  }
+  
+  #cv-preview > div > div {
+    page-break-inside: avoid;
+  }
+}
+
+/* CV Template styles for multi-page support */
+#cv-preview {
+  page-break-inside: auto;
+}
