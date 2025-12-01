@@ -8,7 +8,7 @@ export const ClassicTemplate4 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-gradient-to-br from-purple-50 to-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl p-12 overflow-hidden flex flex-col" id="cv-preview">
+    <div className="bg-gradient-to-br from-purple-50 to-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none p-12 flex flex-col" id="cv-preview">
       {/* Header with photo on the side */}
       <div className="flex items-start gap-6 mb-8 pb-6 border-b-4 border-purple-600">
         <div className="flex-1">
