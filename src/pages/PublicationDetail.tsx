@@ -7,30 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
-import { 
-  MapPin, 
-  Calendar, 
-  Eye, 
-  ExternalLink, 
-  ArrowLeft, 
-  FileText, 
-  Gift, 
-  Clock,
-  Users,
-  Globe,
-  Utensils,
-  Landmark,
-  Camera,
-  GraduationCap,
-  Star,
-  CheckCircle2,
-  BookOpen
-} from "lucide-react";
+import { MapPin, Calendar, Eye, ExternalLink, ArrowLeft, FileText, Gift, Clock, Users, Globe, Utensils, Landmark, Camera, GraduationCap, Star, CheckCircle2, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import CourseRegistrationForm from "@/components/CourseRegistrationForm";
-
 interface Publication {
   id: string;
   title: string;
@@ -56,69 +37,55 @@ interface Publication {
   vacancies_by_country?: any;
   country_info?: any;
 }
-
 const PublicationDetail = () => {
-  const { id } = useParams();
-  const { user } = useAuth();
+  const {
+    id
+  } = useParams();
+  const {
+    user
+  } = useAuth();
   const [publication, setPublication] = useState<Publication | null>(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     if (id) {
       fetchPublication();
       trackView();
     }
   }, [id]);
-
   const fetchPublication = async () => {
-    const { data, error } = await supabase
-      .from("publications")
-      .select("*")
-      .eq("id", id)
-      .single();
-
+    const {
+      data,
+      error
+    } = await supabase.from("publications").select("*").eq("id", id).single();
     if (!error && data) {
       setPublication(data);
     }
     setLoading(false);
   };
-
   const trackView = async () => {
     if (!id) return;
-
-    const { data: currentPub } = await supabase
-      .from("publications")
-      .select("views_count")
-      .eq("id", id)
-      .single();
-
+    const {
+      data: currentPub
+    } = await supabase.from("publications").select("views_count").eq("id", id).single();
     if (currentPub) {
-      await supabase
-        .from("publications")
-        .update({ views_count: (currentPub.views_count || 0) + 1 })
-        .eq("id", id);
+      await supabase.from("publications").update({
+        views_count: (currentPub.views_count || 0) + 1
+      }).eq("id", id);
     }
-
     if (user) {
-      const { data: existingView } = await supabase
-        .from("publication_views")
-        .select("id")
-        .eq("publication_id", id)
-        .eq("user_id", user.id)
-        .maybeSingle();
-
+      const {
+        data: existingView
+      } = await supabase.from("publication_views").select("id").eq("publication_id", id).eq("user_id", user.id).maybeSingle();
       if (!existingView) {
         await supabase.from("publication_views").insert({
           publication_id: id,
-          user_id: user.id,
+          user_id: user.id
         });
       }
     }
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col">
+    return <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 py-12">
           <div className="container">
@@ -127,13 +94,10 @@ const PublicationDetail = () => {
           </div>
         </main>
         <Footer />
-      </div>
-    );
+      </div>;
   }
-
   if (!publication) {
-    return (
-      <div className="min-h-screen flex flex-col">
+    return <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 py-12">
           <div className="container text-center">
@@ -144,17 +108,13 @@ const PublicationDetail = () => {
           </div>
         </main>
         <Footer />
-      </div>
-    );
+      </div>;
   }
-
   const benefits = publication.benefits || [];
   const importantDates = publication.important_dates || {};
   const vacanciesByCountry = publication.vacancies_by_country || {};
   const countryInfo = publication.country_info || {};
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-1 py-12">
@@ -169,51 +129,31 @@ const PublicationDetail = () => {
           {/* Hero Section */}
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div className="md:col-span-2">
-              {publication.image_url && (
-                <div className="rounded-xl overflow-hidden mb-6">
-                  <img
-                    src={publication.image_url}
-                    alt={publication.title}
-                    className="w-full h-96 object-cover"
-                  />
-                </div>
-              )}
+              {publication.image_url && <div className="rounded-xl overflow-hidden mb-6">
+                  <img src={publication.image_url} alt={publication.title} className="w-full h-96 object-cover" />
+                </div>}
 
               <div className="space-y-4">
-                {publication.is_featured && (
-                  <Badge className="bg-primary flex items-center gap-1 w-fit">
+                {publication.is_featured && <Badge className="bg-primary flex items-center gap-1 w-fit">
                     <Star className="h-3 w-3 fill-current" />
                     {publication.category === 'course' ? 'Curso em Destaque' : 'Bolsa em Destaque'}
-                  </Badge>
-                )}
+                  </Badge>}
                 
-                {publication.category === 'course' && (
-                  <Badge variant="secondary" className="flex items-center gap-1 w-fit">
+                {publication.category === 'course' && <Badge variant="secondary" className="flex items-center gap-1 w-fit">
                     <BookOpen className="h-3 w-3" />
                     Curso
-                  </Badge>
-                )}
+                  </Badge>}
 
                 <h1 className="text-4xl font-bold">{publication.title}</h1>
                 
-                {publication.short_description && (
-                  <p className="text-xl text-muted-foreground">
+                {publication.short_description && <p className="text-xl text-muted-foreground">
                     {publication.short_description}
-                  </p>
-                )}
+                  </p>}
 
                 <div className="flex flex-wrap gap-2">
-                  {publication.scholarship_type && (
-                    <Badge variant="secondary">{publication.scholarship_type}</Badge>
-                  )}
-                  {publication.study_level && (
-                    <Badge variant="secondary">{publication.study_level}</Badge>
-                  )}
-                  {publication.status && (
-                    <Badge variant={publication.status === 'Aberta' ? 'default' : 'outline'}>
-                      {publication.status}
-                    </Badge>
-                  )}
+                  {publication.scholarship_type && <Badge variant="secondary">{publication.scholarship_type}</Badge>}
+                  {publication.study_level && <Badge variant="secondary">{publication.study_level}</Badge>}
+                  {publication.status}
                 </div>
               </div>
             </div>
@@ -225,17 +165,14 @@ const PublicationDetail = () => {
                   <CardTitle className="text-lg">Informações Rápidas</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {publication.country && (
-                    <div className="flex items-start gap-2">
+                  {publication.country && <div className="flex items-start gap-2">
                       <MapPin className="h-5 w-5 text-primary mt-0.5" />
                       <div>
                         <p className="font-semibold text-sm">País</p>
                         <p className="text-sm text-muted-foreground">{publication.country}</p>
                       </div>
-                    </div>
-                  )}
-                  {publication.deadline && (
-                    <div className="flex items-start gap-2">
+                    </div>}
+                  {publication.deadline && <div className="flex items-start gap-2">
                       <Calendar className="h-5 w-5 text-primary mt-0.5" />
                       <div>
                         <p className="font-semibold text-sm">Prazo Final</p>
@@ -243,50 +180,28 @@ const PublicationDetail = () => {
                           {format(new Date(publication.deadline), "dd/MM/yyyy")}
                         </p>
                       </div>
-                    </div>
-                  )}
-                  {publication.value && (
-                    <div className="flex items-start gap-2">
+                    </div>}
+                  {publication.value && <div className="flex items-start gap-2">
                       <Gift className="h-5 w-5 text-primary mt-0.5" />
                       <div>
                         <p className="font-semibold text-sm">Valor</p>
                         <p className="text-sm font-semibold text-primary">{publication.value}</p>
                       </div>
-                    </div>
-                  )}
-                  <div className="flex items-start gap-2">
-                    <Eye className="h-5 w-5 text-primary mt-0.5" />
-                    <div>
-                      <p className="font-semibold text-sm">Visualizações</p>
-                      <p className="text-sm text-muted-foreground">{publication.views_count}</p>
-                    </div>
-                  </div>
+                    </div>}
+                  
                 </CardContent>
               </Card>
 
-              {publication.external_link && (
-                <Button size="lg" className="w-full" asChild>
-                  <a
-                    href={publication.external_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
+              {publication.external_link && <Button size="lg" className="w-full" asChild>
+                  <a href={publication.external_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                     Candidatar-se Agora
                     <ExternalLink className="h-4 w-4" />
                   </a>
-                </Button>
-              )}
+                </Button>}
 
-              {publication.university_logo && (
-                <div className="bg-muted rounded-lg p-4">
-                  <img
-                    src={publication.university_logo}
-                    alt="Logo da Universidade"
-                    className="w-full h-auto"
-                  />
-                </div>
-              )}
+              {publication.university_logo && <div className="bg-muted rounded-lg p-4">
+                  <img src={publication.university_logo} alt="Logo da Universidade" className="w-full h-auto" />
+                </div>}
             </div>
           </div>
 
@@ -308,8 +223,7 @@ const PublicationDetail = () => {
             </Card>
 
             {/* Requirements */}
-            {publication.requirements && (
-              <Card>
+            {publication.requirements && <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5" />
@@ -321,12 +235,10 @@ const PublicationDetail = () => {
                     {publication.requirements}
                   </p>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
 
             {/* Benefits */}
-            {benefits.length > 0 && (
-              <Card>
+            {benefits.length > 0 && <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Gift className="h-5 w-5" />
@@ -335,25 +247,19 @@ const PublicationDetail = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
-                    {benefits.map((benefit: any, index: number) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                    {benefits.map((benefit: any, index: number) => <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                         <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-semibold">{benefit.type}</p>
-                          {benefit.description && (
-                            <p className="text-sm text-muted-foreground">{benefit.description}</p>
-                          )}
+                          {benefit.description && <p className="text-sm text-muted-foreground">{benefit.description}</p>}
                         </div>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
 
             {/* Important Dates */}
-            {Object.keys(importantDates).length > 0 && (
-              <Card>
+            {Object.keys(importantDates).length > 0 && <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Clock className="h-5 w-5" />
@@ -362,38 +268,30 @@ const PublicationDetail = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {importantDates.application_start && (
-                      <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                    {importantDates.application_start && <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                         <span className="font-semibold">Início das Candidaturas</span>
                         <span className="text-muted-foreground">
                           {format(new Date(importantDates.application_start), "dd/MM/yyyy")}
                         </span>
-                      </div>
-                    )}
-                    {importantDates.application_end && (
-                      <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                      </div>}
+                    {importantDates.application_end && <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                         <span className="font-semibold">Fim das Candidaturas</span>
                         <span className="text-muted-foreground">
                           {format(new Date(importantDates.application_end), "dd/MM/yyyy")}
                         </span>
-                      </div>
-                    )}
-                    {importantDates.result_date && (
-                      <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                      </div>}
+                    {importantDates.result_date && <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                         <span className="font-semibold">Data dos Resultados</span>
                         <span className="text-muted-foreground">
                           {format(new Date(importantDates.result_date), "dd/MM/yyyy")}
                         </span>
-                      </div>
-                    )}
+                      </div>}
                   </div>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
 
             {/* Vacancies by Country */}
-            {Object.keys(vacanciesByCountry).length > 0 && (
-              <Card>
+            {Object.keys(vacanciesByCountry).length > 0 && <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Users className="h-5 w-5" />
@@ -402,20 +300,16 @@ const PublicationDetail = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {Object.entries(vacanciesByCountry).map(([country, vacancies]) => (
-                      <div key={country} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                    {Object.entries(vacanciesByCountry).map(([country, vacancies]) => <div key={country} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                         <span className="font-semibold">{country}</span>
                         <Badge variant="secondary">{vacancies as string} vagas</Badge>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
 
             {/* Country Information */}
-            {publication.country && Object.keys(countryInfo).length > 0 && (
-              <>
+            {publication.country && Object.keys(countryInfo).length > 0 && <>
                 <Separator className="my-8" />
                 <div>
                   <h2 className="text-3xl font-bold mb-6">
@@ -423,8 +317,7 @@ const PublicationDetail = () => {
                   </h2>
                   
                   <div className="grid md:grid-cols-2 gap-6">
-                    {countryInfo.advantages && (
-                      <Card>
+                    {countryInfo.advantages && <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2 text-lg">
                             <Globe className="h-5 w-5 text-primary" />
@@ -434,11 +327,9 @@ const PublicationDetail = () => {
                         <CardContent>
                           <p className="leading-relaxed">{countryInfo.advantages}</p>
                         </CardContent>
-                      </Card>
-                    )}
+                      </Card>}
 
-                    {countryInfo.education && (
-                      <Card>
+                    {countryInfo.education && <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2 text-lg">
                             <GraduationCap className="h-5 w-5 text-primary" />
@@ -448,11 +339,9 @@ const PublicationDetail = () => {
                         <CardContent>
                           <p className="leading-relaxed">{countryInfo.education}</p>
                         </CardContent>
-                      </Card>
-                    )}
+                      </Card>}
 
-                    {countryInfo.culture && (
-                      <Card>
+                    {countryInfo.culture && <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2 text-lg">
                             <Landmark className="h-5 w-5 text-primary" />
@@ -462,11 +351,9 @@ const PublicationDetail = () => {
                         <CardContent>
                           <p className="leading-relaxed">{countryInfo.culture}</p>
                         </CardContent>
-                      </Card>
-                    )}
+                      </Card>}
 
-                    {countryInfo.gastronomy && (
-                      <Card>
+                    {countryInfo.gastronomy && <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2 text-lg">
                             <Utensils className="h-5 w-5 text-primary" />
@@ -476,11 +363,9 @@ const PublicationDetail = () => {
                         <CardContent>
                           <p className="leading-relaxed">{countryInfo.gastronomy}</p>
                         </CardContent>
-                      </Card>
-                    )}
+                      </Card>}
 
-                    {countryInfo.tourism && (
-                      <Card className="md:col-span-2">
+                    {countryInfo.tourism && <Card className="md:col-span-2">
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2 text-lg">
                             <Camera className="h-5 w-5 text-primary" />
@@ -490,16 +375,13 @@ const PublicationDetail = () => {
                         <CardContent>
                           <p className="leading-relaxed">{countryInfo.tourism}</p>
                         </CardContent>
-                      </Card>
-                    )}
+                      </Card>}
                   </div>
                 </div>
-              </>
-            )}
+              </>}
 
             {/* Course Registration Form */}
-            {publication.category === 'course' && (
-              <div className="mt-8">
+            {publication.category === 'course' && <div className="mt-8">
                 <Separator className="my-8" />
                 <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
                   <BookOpen className="h-7 w-7 text-primary" />
@@ -518,8 +400,7 @@ const PublicationDetail = () => {
                             {publication.value || 'Consultar'}
                           </span>
                         </div>
-                        {publication.title.includes('Inglesa') && (
-                          <>
+                        {publication.title.includes('Inglesa') && <>
                             <div className="flex justify-between items-center py-2 border-b border-border">
                               <span className="text-muted-foreground">Duração</span>
                               <span className="font-semibold">6 meses</span>
@@ -528,22 +409,17 @@ const PublicationDetail = () => {
                               <span className="text-muted-foreground">Pagamento</span>
                               <span className="font-semibold">Em parcelas</span>
                             </div>
-                          </>
-                        )}
-                        {publication.title.includes('Financeira') && (
-                          <div className="flex justify-between items-center py-2 border-b border-border">
+                          </>}
+                        {publication.title.includes('Financeira') && <div className="flex justify-between items-center py-2 border-b border-border">
                             <span className="text-muted-foreground">Horário</span>
                             <span className="font-semibold">Flexível</span>
-                          </div>
-                        )}
-                        {publication.title.includes('Turca') && (
-                          <div className="bg-primary/10 p-3 rounded-lg text-sm">
+                          </div>}
+                        {publication.title.includes('Turca') && <div className="bg-primary/10 p-3 rounded-lg text-sm">
                             <p className="text-muted-foreground">
                               O preço varia conforme a universidade e modalidade escolhida. 
                               Preencha o formulário para receber informações detalhadas.
                             </p>
-                          </div>
-                        )}
+                          </div>}
                         <div className="flex justify-between items-center py-2">
                           <span className="text-muted-foreground">Modalidade</span>
                           <span className="font-semibold">Online / Presencial</span>
@@ -551,17 +427,12 @@ const PublicationDetail = () => {
                       </CardContent>
                     </Card>
                   </div>
-                  <CourseRegistrationForm 
-                    courseTitle={publication.title} 
-                    courseId={publication.id} 
-                  />
+                  <CourseRegistrationForm courseTitle={publication.title} courseId={publication.id} />
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* CTA Footer for Scholarships */}
-            {publication.category !== 'course' && publication.external_link && (
-              <Card className="bg-gradient-primary text-primary-foreground">
+            {publication.category !== 'course' && publication.external_link && <Card className="bg-gradient-primary text-primary-foreground">
                 <CardContent className="p-8 text-center">
                   <h3 className="text-2xl font-bold mb-4">
                     Pronto para Candidatar-se?
@@ -570,26 +441,18 @@ const PublicationDetail = () => {
                     Não perca esta oportunidade! Candidate-se agora e dê o próximo passo na sua carreira acadêmica.
                   </p>
                   <Button size="lg" variant="secondary" asChild>
-                    <a
-                      href={publication.external_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 mx-auto w-fit"
-                    >
+                    <a href={publication.external_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mx-auto w-fit">
                       Candidatar-se Oficialmente
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
           </div>
         </div>
       </main>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default PublicationDetail;
