@@ -80,14 +80,15 @@ const PublicationCard = ({ publication }: PublicationCardProps) => {
       
       <div className="flex flex-col lg:flex-row">
         {publication.image_url && (
-          <div className="lg:w-48 h-48 lg:h-auto overflow-hidden relative">
+          <div className="lg:w-48 h-48 lg:h-auto overflow-hidden relative group cursor-pointer">
             <img
               src={publication.image_url}
               alt={publication.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             {publication.university_logo && (
-              <div className="absolute bottom-2 right-2 bg-background/90 p-1 rounded">
+              <div className="absolute bottom-2 right-2 bg-background/90 p-1 rounded transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
                 <img
                   src={publication.university_logo}
                   alt="Logo universidade"
