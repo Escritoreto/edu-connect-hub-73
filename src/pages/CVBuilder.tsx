@@ -360,21 +360,40 @@ const CVBuilder = () => {
       return;
     }
     
+    // Detect mobile device for optimized settings
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isLowEndDevice = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 4 : isMobile;
+    
     const opt = {
       margin: 0,
       filename: `CV_${cvData.firstName}_${cvData.lastName}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-      jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const },
+      image: { 
+        type: 'jpeg' as const, 
+        quality: isMobile ? 0.85 : 0.98 // Lower quality on mobile
+      },
+      html2canvas: { 
+        scale: isLowEndDevice ? 1.5 : 2, // Reduce scale on mobile/low-end devices
+        useCORS: true, 
+        scrollY: 0,
+        windowWidth: isMobile ? 794 : element.scrollWidth, // A4 width in pixels at 96 DPI
+        logging: false, // Disable logging for better performance
+        removeContainer: true
+      },
+      jsPDF: { 
+        unit: 'mm' as const, 
+        format: 'a4' as const, 
+        orientation: 'portrait' as const,
+        compress: true // Enable PDF compression
+      },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
     
     toast.promise(
       html2pdf().set(opt).from(element).save(),
       {
-        loading: 'Gerando PDF...',
+        loading: isMobile ? 'Gerando PDF (pode demorar)...' : 'Gerando PDF...',
         success: 'PDF baixado com sucesso!',
-        error: 'Erro ao gerar PDF'
+        error: 'Erro ao gerar PDF. Tente novamente.'
       }
     );
   };
