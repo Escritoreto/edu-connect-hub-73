@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Download, Eye, Upload, X, ArrowLeft, ArrowRight, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CVData, CVTemplate, Education, Experience } from "@/types/cv";
@@ -19,6 +19,8 @@ import { toast } from "sonner";
 
 const CVBuilder = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const templateGalleryRef = useRef<HTMLDivElement>(null);
+  const previewButtonRef = useRef<HTMLDivElement>(null);
   const [cvData, setCVData] = useState<CVData>({
     firstName: "",
     lastName: "",
@@ -350,7 +352,20 @@ const CVBuilder = () => {
   };
   
   const handlePreviousStep = () => {
+    const goingToStep2 = currentStep === 3;
     setCurrentStep(Math.max(1, currentStep - 1));
+    if (goingToStep2) {
+      setTimeout(() => {
+        templateGalleryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  };
+
+  const handleTemplateSelect = (id: string) => {
+    updateField('selectedTemplate', id);
+    setTimeout(() => {
+      previewButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
   };
   
   const handleDownloadPDF = () => {
@@ -808,7 +823,7 @@ const CVBuilder = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                 >
-                  <div className="mb-8 text-center">
+                  <div className="mb-8 text-center" ref={templateGalleryRef}>
                     <h2 className="text-3xl font-bold mb-3">Escolha o Modelo do seu CV</h2>
                     <p className="text-muted-foreground">Selecione o design que melhor representa você</p>
                   </div>
@@ -816,10 +831,10 @@ const CVBuilder = () => {
                   <TemplateGallery 
                     templates={availableTemplates}
                     selectedTemplate={cvData.selectedTemplate}
-                    onSelect={(id) => updateField('selectedTemplate', id)}
+                    onSelect={handleTemplateSelect}
                   />
 
-                  <div className="flex justify-between mt-12">
+                  <div className="flex justify-between mt-12" ref={previewButtonRef}>
                     <Button onClick={handlePreviousStep} variant="outline" size="lg">
                       <ArrowLeft className="mr-2 h-5 w-5" />
                       Voltar
