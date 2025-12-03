@@ -845,8 +845,10 @@ const CVBuilder = () => {
                     <p className="text-muted-foreground">Revise e baixe em PDF</p>
                   </div>
 
-                  <div className="bg-muted/30 p-8 rounded-xl mb-8">
-                    <CVPreview data={cvData} />
+                  <div className="bg-muted/30 p-2 sm:p-8 rounded-xl mb-8 overflow-x-auto">
+                    <div className="transform scale-[0.4] sm:scale-100 origin-top-left w-[250%] sm:w-full">
+                      <CVPreview data={cvData} />
+                    </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row justify-between gap-4">
