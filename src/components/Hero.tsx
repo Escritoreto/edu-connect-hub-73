@@ -21,9 +21,9 @@ const Hero = () => {
           <div className="space-y-8 animate-fade-in">
             
             
-            <h1 className="text-4xl lg:text-6xl font-bold text-primary-foreground leading-tight">Transforme Seu Futuro com UpMentor</h1>
+            <h1 className="text-2xl sm:text-4xl lg:text-6xl font-bold text-primary-foreground leading-tight">Transforme Seu Futuro com UpMentor</h1>
             
-            <div className="h-28 flex items-center">
+            <div className="h-24 sm:h-28 flex items-center">
               <AnimatePresence mode="wait">
                 <motion.p key={currentTextIndex} initial={{
                 opacity: 0,
@@ -36,7 +36,7 @@ const Hero = () => {
                 y: -20
               }} transition={{
                 duration: 0.5
-              }} className="text-lg text-primary-foreground/90 leading-relaxed">
+              }} className="text-sm sm:text-lg text-primary-foreground/90 leading-relaxed">
                   {rotatingTexts[currentTextIndex]}
                 </motion.p>
               </AnimatePresence>

@@ -45,7 +45,7 @@ const Index = () => {
           <div className="container">
             <div className="flex justify-between items-center mb-12">
               <div>
-                <h2 className="text-3xl lg:text-4xl font-bold mb-2">
+              <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold mb-2">
                   Bolsas em Destaque
                 </h2>
                 <p className="text-muted-foreground">
@@ -60,7 +60,7 @@ const Index = () => {
               </Button>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
               {loading ? (
                 Array.from({ length: 3 }).map((_, index) => (
                   <div key={index} className="bg-card border border-border rounded-xl p-6">
@@ -83,7 +83,7 @@ const Index = () => {
                           {scholarship.value}
                         </div>
                       )}
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="text-sm sm:text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
                         {scholarship.title}
                       </h3>
                       {scholarship.country && (

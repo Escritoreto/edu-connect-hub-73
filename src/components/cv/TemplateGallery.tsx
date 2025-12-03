@@ -17,7 +17,7 @@ interface Props {
 
 export const TemplateGallery = ({ templates, selectedTemplate, onSelect }: Props) => {
   return (
-    <div className="grid md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
       {templates.map((template, index) => (
         <motion.div
           key={template.id}
@@ -45,9 +45,9 @@ export const TemplateGallery = ({ templates, selectedTemplate, onSelect }: Props
                 </div>
               )}
             </div>
-            <div className="p-4">
-              <h3 className="font-semibold text-lg mb-1">{template.name}</h3>
-              <p className="text-sm text-muted-foreground">{template.description}</p>
+            <div className="p-2 sm:p-4">
+              <h3 className="font-semibold text-xs sm:text-lg mb-1">{template.name}</h3>
+              <p className="text-xs text-muted-foreground hidden sm:block">{template.description}</p>
             </div>
           </Card>
         </motion.div>
