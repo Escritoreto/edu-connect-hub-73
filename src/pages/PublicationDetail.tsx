@@ -247,13 +247,21 @@ const PublicationDetail = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
-                    {benefits.map((benefit: any, index: number) => <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                        <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">{benefit.type}</p>
-                          {benefit.description && <p className="text-sm text-muted-foreground">{benefit.description}</p>}
+                    {benefits.map((benefit: any, index: number) => {
+                      const isStringBenefit = typeof benefit === 'string';
+                      const benefitTitle = isStringBenefit ? benefit : benefit.type;
+                      const benefitDescription = isStringBenefit ? null : benefit.description;
+                      
+                      return (
+                        <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">{benefitTitle}</p>
+                            {benefitDescription && <p className="text-sm text-muted-foreground">{benefitDescription}</p>}
+                          </div>
                         </div>
-                      </div>)}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>}
