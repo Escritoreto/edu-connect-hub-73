@@ -97,16 +97,15 @@ const PublicationCard = ({
                 {displayDescription}
               </p>
               
-              {/* New badges */}
-              <div className="flex gap-2 flex-wrap mb-3">
-                {publication.scholarship_type && <Badge variant="outline" className="text-xs">
-                    {publication.scholarship_type}
-                  </Badge>}
-                {publication.study_level && <Badge variant="outline" className="text-xs">
-                    {publication.study_level}
-                  </Badge>}
-                {publication.status}
-              </div>
+                {/* New badges */}
+                <div className="flex gap-2 flex-wrap mb-3">
+                  {publication.scholarship_type && <Badge variant="outline" className="text-xs">
+                      {publication.scholarship_type}
+                    </Badge>}
+                  {publication.study_level && <Badge variant="outline" className="text-xs">
+                      {publication.study_level}
+                    </Badge>}
+                </div>
             </div>
           </div>
 
