@@ -44,13 +44,13 @@ const Hero = () => {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" variant="secondary" asChild className="text-base group">
-                <Link to="/scholarships">
+                <Link to="/scholarships" className="text-sm">
                   Buscar Bolsas
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20">
-                <Link to="/courses">
+                <Link to="/courses" className="text-sm">
                   Ver Cursos Gratuitos
                 </Link>
               </Button>
