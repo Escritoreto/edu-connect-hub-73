@@ -15,6 +15,26 @@ export interface Experience {
   responsibilities: string;
 }
 
+export interface Language {
+  id: string;
+  name: string;
+  level: string;
+}
+
+export interface Certification {
+  id: string;
+  name: string;
+  institution: string;
+  date: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  link?: string;
+}
+
 export interface CVData {
   // Personal Info
   firstName: string;
@@ -36,6 +56,15 @@ export interface CVData {
   
   // Skills - Array
   skills: string[];
+  
+  // Languages - Array
+  languages: Language[];
+  
+  // Certifications - Array
+  certifications: Certification[];
+  
+  // Projects - Array
+  projects: Project[];
   
   // Template
   selectedTemplate: string;
