@@ -9,7 +9,7 @@ import { FileText, Download, Eye, Upload, X, ArrowLeft, ArrowRight, Plus, Trash2
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { CVData, CVTemplate, Education, Experience } from "@/types/cv";
+import { CVData, CVTemplate, Education, Experience, Language, Certification, Project } from "@/types/cv";
 import { TemplateGallery } from "@/components/cv/TemplateGallery";
 import { CVPreview } from "@/components/cv/CVPreview";
 import { ProgressSteps } from "@/components/cv/ProgressSteps";
@@ -33,6 +33,9 @@ const CVBuilder = () => {
     education: [],
     experience: [],
     skills: [],
+    languages: [],
+    certifications: [],
+    projects: [],
     selectedTemplate: "",
     selectedPurpose: ""
   });
@@ -334,6 +337,86 @@ const CVBuilder = () => {
     setCVData({
       ...cvData,
       skills: cvData.skills.filter((_, i) => i !== index)
+    });
+  };
+
+  // Language management
+  const addLanguage = () => {
+    const newLanguage: Language = {
+      id: Date.now().toString(),
+      name: "",
+      level: ""
+    };
+    setCVData({ ...cvData, languages: [...cvData.languages, newLanguage] });
+  };
+
+  const updateLanguage = (id: string, field: keyof Language, value: string) => {
+    setCVData({
+      ...cvData,
+      languages: cvData.languages.map(lang =>
+        lang.id === id ? { ...lang, [field]: value } : lang
+      )
+    });
+  };
+
+  const removeLanguage = (id: string) => {
+    setCVData({
+      ...cvData,
+      languages: cvData.languages.filter(lang => lang.id !== id)
+    });
+  };
+
+  // Certification management
+  const addCertification = () => {
+    const newCertification: Certification = {
+      id: Date.now().toString(),
+      name: "",
+      institution: "",
+      date: ""
+    };
+    setCVData({ ...cvData, certifications: [...cvData.certifications, newCertification] });
+  };
+
+  const updateCertification = (id: string, field: keyof Certification, value: string) => {
+    setCVData({
+      ...cvData,
+      certifications: cvData.certifications.map(cert =>
+        cert.id === id ? { ...cert, [field]: value } : cert
+      )
+    });
+  };
+
+  const removeCertification = (id: string) => {
+    setCVData({
+      ...cvData,
+      certifications: cvData.certifications.filter(cert => cert.id !== id)
+    });
+  };
+
+  // Project management
+  const addProject = () => {
+    const newProject: Project = {
+      id: Date.now().toString(),
+      name: "",
+      description: "",
+      link: ""
+    };
+    setCVData({ ...cvData, projects: [...cvData.projects, newProject] });
+  };
+
+  const updateProject = (id: string, field: keyof Project, value: string) => {
+    setCVData({
+      ...cvData,
+      projects: cvData.projects.map(proj =>
+        proj.id === id ? { ...proj, [field]: value } : proj
+      )
+    });
+  };
+
+  const removeProject = (id: string) => {
+    setCVData({
+      ...cvData,
+      projects: cvData.projects.filter(proj => proj.id !== id)
     });
   };
   
@@ -800,6 +883,189 @@ const CVBuilder = () => {
                         {cvData.skills.length === 0 && (
                           <div className="text-center py-6 text-muted-foreground text-sm">
                             <p>Nenhuma habilidade adicionada. Selecione da lista acima.</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Languages */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold">Idiomas (opcional)</h3>
+                          <Button type="button" onClick={addLanguage} size="sm" variant="outline">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Adicionar
+                          </Button>
+                        </div>
+                        
+                        {cvData.languages.map((lang, index) => (
+                          <Card key={lang.id} className="p-4 border-2">
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="font-semibold text-sm">Idioma {index + 1}</h4>
+                              <Button 
+                                type="button" 
+                                onClick={() => removeLanguage(lang.id)} 
+                                size="sm" 
+                                variant="ghost"
+                                className="text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label>Idioma</Label>
+                                <Input 
+                                  placeholder="Ex: Inglês" 
+                                  value={lang.name}
+                                  onChange={(e) => updateLanguage(lang.id, 'name', e.target.value)}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Nível</Label>
+                                <Select 
+                                  value={lang.level} 
+                                  onValueChange={(val) => updateLanguage(lang.id, 'level', val)}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o nível" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="Básico">Básico</SelectItem>
+                                    <SelectItem value="Intermediário">Intermediário</SelectItem>
+                                    <SelectItem value="Avançado">Avançado</SelectItem>
+                                    <SelectItem value="Fluente">Fluente</SelectItem>
+                                    <SelectItem value="Nativo">Nativo</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                        
+                        {cvData.languages.length === 0 && (
+                          <div className="text-center py-6 text-muted-foreground text-sm">
+                            <p>Nenhum idioma adicionado.</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Certifications */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold">Certificações (opcional)</h3>
+                          <Button type="button" onClick={addCertification} size="sm" variant="outline">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Adicionar
+                          </Button>
+                        </div>
+                        
+                        {cvData.certifications.map((cert, index) => (
+                          <Card key={cert.id} className="p-4 border-2">
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="font-semibold text-sm">Certificação {index + 1}</h4>
+                              <Button 
+                                type="button" 
+                                onClick={() => removeCertification(cert.id)} 
+                                size="sm" 
+                                variant="ghost"
+                                className="text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label>Nome da Certificação</Label>
+                                <Input 
+                                  placeholder="Ex: AWS Solutions Architect" 
+                                  value={cert.name}
+                                  onChange={(e) => updateCertification(cert.id, 'name', e.target.value)}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Instituição</Label>
+                                <Input 
+                                  placeholder="Ex: Amazon Web Services" 
+                                  value={cert.institution}
+                                  onChange={(e) => updateCertification(cert.id, 'institution', e.target.value)}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Data de Conclusão</Label>
+                                <Input 
+                                  type="month" 
+                                  value={cert.date}
+                                  onChange={(e) => updateCertification(cert.id, 'date', e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                        
+                        {cvData.certifications.length === 0 && (
+                          <div className="text-center py-6 text-muted-foreground text-sm">
+                            <p>Nenhuma certificação adicionada.</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Projects */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold">Projetos (opcional)</h3>
+                          <Button type="button" onClick={addProject} size="sm" variant="outline">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Adicionar
+                          </Button>
+                        </div>
+                        
+                        {cvData.projects.map((proj, index) => (
+                          <Card key={proj.id} className="p-4 border-2">
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="font-semibold text-sm">Projeto {index + 1}</h4>
+                              <Button 
+                                type="button" 
+                                onClick={() => removeProject(proj.id)} 
+                                size="sm" 
+                                variant="ghost"
+                                className="text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label>Nome do Projeto</Label>
+                                <Input 
+                                  placeholder="Ex: App de Gestão Financeira" 
+                                  value={proj.name}
+                                  onChange={(e) => updateProject(proj.id, 'name', e.target.value)}
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Link (opcional)</Label>
+                                <Input 
+                                  placeholder="Ex: github.com/user/project" 
+                                  value={proj.link || ''}
+                                  onChange={(e) => updateProject(proj.id, 'link', e.target.value)}
+                                />
+                              </div>
+                              <div className="space-y-2 md:col-span-2">
+                                <Label>Descrição</Label>
+                                <Textarea 
+                                  placeholder="Descreva o projeto brevemente..."
+                                  rows={2}
+                                  value={proj.description}
+                                  onChange={(e) => updateProject(proj.id, 'description', e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </Card>
+                        ))}
+                        
+                        {cvData.projects.length === 0 && (
+                          <div className="text-center py-6 text-muted-foreground text-sm">
+                            <p>Nenhum projeto adicionado.</p>
                           </div>
                         )}
                       </div>
