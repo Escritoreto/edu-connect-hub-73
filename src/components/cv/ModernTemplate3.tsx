@@ -8,9 +8,9 @@ export const ModernTemplate3 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none flex" id="cv-preview">
+    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl print:shadow-none flex" id="cv-preview">
       {/* Main Content */}
-      <div className="flex-1 p-8 space-y-5">
+      <div className="flex-1 p-8 flex flex-col">
         {/* Header */}
         <div className="pb-5 border-b-2 border-green-200">
           <h1 className="text-5xl font-bold text-green-800 mb-2">
@@ -23,7 +23,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
         
         {/* Summary */}
         {data.summary && (
-          <div>
+          <div className="mt-5">
             <h2 className="text-2xl font-bold text-green-800 mb-2 border-b-2 border-green-200 pb-1">
               Sobre Mim
             </h2>
@@ -33,7 +33,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
         
         {/* Experience */}
         {data.experience.length > 0 && (
-          <div>
+          <div className="mt-5">
             <h2 className="text-2xl font-bold text-green-800 mb-3 border-b-2 border-green-200 pb-1">
               Experiência
             </h2>
@@ -58,7 +58,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
         
         {/* Education */}
         {data.education.length > 0 && (
-          <div>
+          <div className="mt-5">
             <h2 className="text-2xl font-bold text-green-800 mb-3 border-b-2 border-green-200 pb-1">
               Formação
             </h2>
@@ -77,10 +77,13 @@ export const ModernTemplate3 = ({ data }: Props) => {
             </div>
           </div>
         )}
+        
+        {/* Spacer */}
+        <div className="flex-grow" />
       </div>
       
       {/* Right Sidebar - Green Theme */}
-      <div className="w-2/5 bg-gradient-to-b from-green-600 to-green-800 text-white p-8">
+      <div className="w-2/5 bg-gradient-to-b from-green-600 to-green-800 text-white p-8 flex flex-col">
         {/* Photo */}
         {data.photoPreview && (
           <div className="mb-6">
