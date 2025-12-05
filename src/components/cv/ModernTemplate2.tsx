@@ -8,8 +8,8 @@ export const ModernTemplate2 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none" id="cv-preview">
-      <div className="flex flex-col min-h-[297mm]">
+    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl print:shadow-none" id="cv-preview">
+      <div className="flex flex-col h-[297mm]">
         {/* Top Banner */}
         <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-8 flex items-center gap-6">
           {data.photoPreview && (
@@ -32,9 +32,9 @@ export const ModernTemplate2 = ({ data }: Props) => {
         {/* Two Column Content */}
         <div className="flex flex-1">
           {/* Left Column */}
-          <div className="w-1/3 bg-purple-50 p-8 space-y-6">
+          <div className="w-1/3 bg-purple-50 p-8 flex flex-col">
             {/* Contact */}
-            <div>
+            <div className="mb-6">
               <h3 className="text-xl font-bold text-purple-800 mb-3 border-b-2 border-purple-200 pb-2">Contato</h3>
               <div className="space-y-2 text-base text-gray-700">
                 {data.email && <p className="break-words">{data.email}</p>}
@@ -59,10 +59,10 @@ export const ModernTemplate2 = ({ data }: Props) => {
           </div>
           
           {/* Right Column */}
-          <div className="w-2/3 p-8 space-y-6">
+          <div className="w-2/3 p-8 flex flex-col">
             {/* Summary */}
             {data.summary && (
-              <div>
+              <div className="mb-6">
                 <h2 className="text-2xl font-bold text-purple-800 mb-2 border-b-2 border-purple-200 pb-1">
                   Sobre Mim
                 </h2>
@@ -116,6 +116,9 @@ export const ModernTemplate2 = ({ data }: Props) => {
                 </div>
               </div>
             )}
+            
+            {/* Spacer */}
+            <div className="flex-grow" />
           </div>
         </div>
       </div>
