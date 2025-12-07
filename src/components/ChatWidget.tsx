@@ -121,7 +121,7 @@ export const ChatWidget = () => {
           <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="font-medium">Assistente Up</span>
+              <span className="font-medium">Assistente UpMentor</span>
             </div>
             <button onClick={() => setIsOpen(false)} className="hover:bg-primary-foreground/20 rounded-full p-1 transition-colors" aria-label="Fechar chat">
               <X className="w-5 h-5" />
