@@ -193,10 +193,7 @@ const PublicationDetail = () => {
               </Card>
 
               {publication.external_link && <Button size="lg" className="w-full" asChild>
-                  <a href={publication.external_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                    Candidatar-se Agora
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
+                  
                 </Button>}
 
               {publication.university_logo && <div className="bg-muted rounded-lg p-4">
@@ -248,20 +245,17 @@ const PublicationDetail = () => {
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
                     {benefits.map((benefit: any, index: number) => {
-                      const isStringBenefit = typeof benefit === 'string';
-                      const benefitTitle = isStringBenefit ? benefit : benefit.type;
-                      const benefitDescription = isStringBenefit ? null : benefit.description;
-                      
-                      return (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                  const isStringBenefit = typeof benefit === 'string';
+                  const benefitTitle = isStringBenefit ? benefit : benefit.type;
+                  const benefitDescription = isStringBenefit ? null : benefit.description;
+                  return <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                           <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                           <div>
                             <p className="font-semibold">{benefitTitle}</p>
                             {benefitDescription && <p className="text-sm text-muted-foreground">{benefitDescription}</p>}
                           </div>
-                        </div>
-                      );
-                    })}
+                        </div>;
+                })}
                   </div>
                 </CardContent>
               </Card>}
