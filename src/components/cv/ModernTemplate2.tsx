@@ -8,8 +8,8 @@ export const ModernTemplate2 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl print:shadow-none" id="cv-preview">
-      <div className="flex flex-col h-[297mm]">
+    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none" id="cv-preview">
+      <div className="flex flex-col min-h-[297mm]">
         {/* Top Banner */}
         <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 flex items-center gap-6">
           {data.photoPreview && (
@@ -167,9 +167,6 @@ export const ModernTemplate2 = ({ data }: Props) => {
                 </div>
               </div>
             )}
-            
-            {/* Spacer */}
-            <div className="flex-grow" />
           </div>
         </div>
       </div>

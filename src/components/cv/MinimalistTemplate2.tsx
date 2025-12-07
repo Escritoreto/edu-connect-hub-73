@@ -8,7 +8,7 @@ export const MinimalistTemplate2 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl print:shadow-none p-12 flex flex-col" id="cv-preview">
+    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none p-12 flex flex-col" id="cv-preview">
       {/* Compact Header with photo on the right */}
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-blue-200">
         <div>
@@ -120,9 +120,6 @@ export const MinimalistTemplate2 = ({ data }: Props) => {
               </div>
             </div>
           )}
-          
-          {/* Spacer */}
-          <div className="flex-grow" />
         </div>
         
         {/* Sidebar */}
