@@ -8,7 +8,7 @@ export const ModernTemplate3 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl print:shadow-none flex" id="cv-preview">
+    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none flex" id="cv-preview">
       {/* Main Content */}
       <div className="flex-1 p-6 flex flex-col">
         {/* Header */}
@@ -99,9 +99,6 @@ export const ModernTemplate3 = ({ data }: Props) => {
             </div>
           </div>
         )}
-        
-        {/* Spacer */}
-        <div className="flex-grow" />
       </div>
       
       {/* Right Sidebar - Green Theme */}

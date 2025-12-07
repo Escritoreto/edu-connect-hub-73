@@ -134,6 +134,8 @@ All colors MUST be HSL.
   #cv-preview {
     box-shadow: none !important;
     margin: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
   }
   
   /* Prevent page breaks inside sections */
@@ -142,6 +144,7 @@ All colors MUST be HSL.
     page-break-after: avoid;
   }
   
+  #cv-preview section,
   #cv-preview > div > div {
     page-break-inside: avoid;
   }
@@ -150,4 +153,21 @@ All colors MUST be HSL.
 /* CV Template styles for multi-page support */
 #cv-preview {
   page-break-inside: auto;
+}
+
+/* A4 page dimensions for screen preview */
+.cv-page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 10mm;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+@media print {
+  .cv-page {
+    box-shadow: none;
+    margin: 0;
+    padding: 10mm;
+  }
 }

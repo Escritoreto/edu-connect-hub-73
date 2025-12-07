@@ -8,7 +8,7 @@ export const ClassicTemplate3 = ({ data }: Props) => {
   const firstJob = data.experience[0];
   
   return (
-    <div className="bg-white text-gray-900 w-[210mm] h-[297mm] mx-auto shadow-xl print:shadow-none p-10 flex flex-col" id="cv-preview">
+    <div className="bg-white text-gray-900 w-[210mm] min-h-[297mm] mx-auto shadow-xl print:shadow-none p-10 flex flex-col" id="cv-preview">
       {/* Header - Left aligned with vertical accent */}
       <div className="flex gap-4 mb-6 pb-4 border-b-2 border-green-200">
         {data.photoPreview && (
@@ -118,9 +118,6 @@ export const ClassicTemplate3 = ({ data }: Props) => {
               </div>
             </div>
           )}
-          
-          {/* Spacer */}
-          <div className="flex-grow" />
         </div>
         
         {/* Right Column - Skills, Languages, Certifications */}
