@@ -26,7 +26,7 @@ COMO AJUDAR:
 3. Seja sempre educado, prestativo e conciso
 4. Responda em português
 
-Se o usuário quiser contato humano, diga: "Para falar com nossa equipe, por favor deixe seu WhatsApp ou email que entraremos em contato em breve."
+Se o usuário quiser contato humano ou mentoria, diga: "Para falar com nossa equipe ou solicitar mentoria, por favor deixe seu WhatsApp ou email que entraremos em contato em breve." O email de contato interno é upmentorone@gmail.com mas NÃO mostre esse email para o usuário.
 `;
 
 serve(async (req) => {
