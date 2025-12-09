@@ -13,7 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Users, Eye } from "lucide-react";
+import { Loader2, Users, Eye, BookOpen } from "lucide-react";
+import EnrollmentsManager from "@/components/admin/EnrollmentsManager";
 
 const Admin = () => {
   const { user, loading: authLoading, isAdmin } = useAuth();
@@ -290,7 +291,7 @@ const Admin = () => {
         <div className="container max-w-5xl">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Painel Administrativo</h1>
-            <p className="text-muted-foreground">Gerencie as publicações do site com informações detalhadas</p>
+            <p className="text-muted-foreground">Gerencie as publicações e inscrições do site</p>
           </div>
 
           {/* Stats Cards */}
@@ -316,15 +317,26 @@ const Admin = () => {
             </Card>
           </div>
 
-          {/* Publication Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Nova Publicação</CardTitle>
-              <CardDescription>
-                Adicione uma nova bolsa, emprego ou curso com informações completas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          {/* Main Tabs */}
+          <Tabs defaultValue="publications" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="publications">Nova Publicação</TabsTrigger>
+              <TabsTrigger value="enrollments" className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                Inscrições
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="publications">
+              {/* Publication Form */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Nova Publicação</CardTitle>
+                  <CardDescription>
+                    Adicione uma nova bolsa, emprego ou curso com informações completas
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <Tabs defaultValue="basic" className="w-full">
                   <TabsList className="grid w-full grid-cols-4">
@@ -674,6 +686,12 @@ const Admin = () => {
               </form>
             </CardContent>
           </Card>
+            </TabsContent>
+
+            <TabsContent value="enrollments">
+              <EnrollmentsManager />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
