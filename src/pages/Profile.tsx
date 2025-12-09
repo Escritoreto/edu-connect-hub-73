@@ -12,8 +12,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen } from "lucide-react";
 import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
 
 const Profile = () => {
@@ -28,6 +29,8 @@ const Profile = () => {
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -38,8 +41,34 @@ const Profile = () => {
   useEffect(() => {
     if (user) {
       fetchProfile();
+      fetchEnrolledCourses();
     }
   }, [user]);
+
+  const fetchEnrolledCourses = async () => {
+    if (!user) return;
+    
+    setIsLoadingCourses(true);
+    const { data, error } = await supabase
+      .from("course_enrollments")
+      .select(`
+        *,
+        publications:publication_id (
+          id,
+          title,
+          image_url,
+          value,
+          category
+        )
+      `)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setEnrolledCourses(data);
+    }
+    setIsLoadingCourses(false);
+  };
 
   const fetchProfile = async () => {
     if (!user) return;
@@ -248,6 +277,13 @@ const Profile = () => {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm">
+                      <BookOpen className="h-4 w-4 text-primary" />
+                      <span>Cursos Inscritos</span>
+                    </div>
+                    <span className="font-semibold">{enrolledCourses.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm">
                       <Heart className="h-4 w-4 text-destructive" />
                       <span>Favoritos</span>
                     </div>
@@ -258,6 +294,78 @@ const Profile = () => {
             </div>
           </div>
 
+          {/* Enrolled Courses Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-primary" />
+                Cursos Inscritos
+              </CardTitle>
+              <CardDescription>
+                Cursos em que você se inscreveu
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoadingCourses ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              ) : enrolledCourses.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                  <p>Você ainda não se inscreveu em nenhum curso</p>
+                  <Button
+                    variant="outline"
+                    className="mt-4"
+                    onClick={() => navigate("/courses")}
+                  >
+                    Explorar Cursos
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {enrolledCourses.map((enrollment: any) => (
+                    <div
+                      key={enrollment.id}
+                      className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/publication/${enrollment.publication_id}`)}
+                    >
+                      {enrollment.publications?.image_url && (
+                        <img
+                          src={enrollment.publications.image_url}
+                          alt={enrollment.publications.title}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground line-clamp-1">
+                          {enrollment.publications?.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                          {enrollment.publications?.value && (
+                            <span className="font-medium text-primary">
+                              {enrollment.publications.value}
+                            </span>
+                          )}
+                          <Badge 
+                            variant={enrollment.status === "approved" ? "default" : enrollment.status === "pending" ? "secondary" : "destructive"}
+                            className="text-xs"
+                          >
+                            {enrollment.status === "pending" ? "Pendente" : enrollment.status === "approved" ? "Aprovado" : enrollment.status}
+                          </Badge>
+                          <span className="text-xs">
+                            Inscrito em {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Favorites Section */}
           <Card>
             <CardHeader>
               <CardTitle>Histórico de Candidaturas</CardTitle>
