@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -59,6 +61,7 @@ const mozambiqueCities = [
 const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOtherCity, setIsOtherCity] = useState(false);
+  const { user } = useAuth();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -73,24 +76,43 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     
-    // Simulate submission - in production, you'd send this to an API
-    console.log("Course registration:", {
-      ...data,
-      courseId,
-      courseTitle,
-      submittedAt: new Date().toISOString(),
-    });
-    
-    // Simulate a delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    toast({
-      title: "Inscrição enviada!",
-      description: `Obrigado pelo interesse no curso "${courseTitle}". Entraremos em contacto em breve.`,
-    });
-    
-    form.reset();
-    setIsSubmitting(false);
+    try {
+      // Save to database if user is logged in
+      if (user) {
+        const { error } = await supabase
+          .from("course_enrollments")
+          .upsert({
+            user_id: user.id,
+            publication_id: courseId,
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            city: data.city,
+            status: "pending",
+          }, {
+            onConflict: "user_id,publication_id"
+          });
+
+        if (error) {
+          throw error;
+        }
+      }
+      
+      toast({
+        title: "Inscrição enviada!",
+        description: `Obrigado pelo interesse no curso "${courseTitle}". Entraremos em contacto em breve.`,
+      });
+      
+      form.reset();
+    } catch (error: any) {
+      toast({
+        title: "Erro ao enviar inscrição",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCityChange = (value: string) => {
