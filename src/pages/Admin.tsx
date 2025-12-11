@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,11 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Users, Eye, BookOpen } from "lucide-react";
+import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home } from "lucide-react";
 import EnrollmentsManager from "@/components/admin/EnrollmentsManager";
+import PublicationsManager from "@/components/admin/PublicationsManager";
 
 const Admin = () => {
-  const { user, loading: authLoading, isAdmin } = useAuth();
+  const { user, loading: authLoading, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,7 +61,7 @@ const Admin = () => {
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
-      navigate("/auth");
+      navigate("/admin-login");
     }
   }, [user, isAdmin, authLoading, navigate]);
 
@@ -284,55 +283,90 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* Admin Header */}
+      <header className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-slate-700">
+        <div className="container flex items-center justify-between h-16">
+          <div className="flex items-center gap-3">
+            <Shield className="h-6 w-6 text-amber-400" />
+            <span className="text-lg font-bold text-white">Painel Admin</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-700">
+                <Home className="h-4 w-4 mr-2" />
+                Ver Site
+              </Button>
+            </Link>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={signOut}
+              className="text-slate-300 hover:text-white hover:bg-slate-700"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sair
+            </Button>
+          </div>
+        </div>
+      </header>
       
-      <main className="flex-1 py-12">
-        <div className="container max-w-5xl">
+      <main className="flex-1 py-8">
+        <div className="container max-w-6xl">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Painel Administrativo</h1>
-            <p className="text-muted-foreground">Gerencie as publicações e inscrições do site</p>
+            <h1 className="text-3xl font-bold mb-2 text-white">Painel Administrativo</h1>
+            <p className="text-slate-400">Gerencie todas as publicações, inscrições e conteúdos do site</p>
           </div>
 
           {/* Stats Cards */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <Card>
+            <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Usuários Registrados</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-slate-300">Usuários Registrados</CardTitle>
+                <Users className="h-4 w-4 text-amber-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.users}</div>
+                <div className="text-2xl font-bold text-white">{stats.users}</div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total de Visualizações</CardTitle>
-                <Eye className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-slate-300">Total de Visualizações</CardTitle>
+                <Eye className="h-4 w-4 text-amber-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalViews}</div>
+                <div className="text-2xl font-bold text-white">{stats.totalViews}</div>
               </CardContent>
             </Card>
           </div>
 
           {/* Main Tabs */}
-          <Tabs defaultValue="publications" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="publications">Nova Publicação</TabsTrigger>
-              <TabsTrigger value="enrollments" className="flex items-center gap-2">
+          <Tabs defaultValue="manage" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
+              <TabsTrigger value="manage" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <FileText className="h-4 w-4" />
+                Gerenciar
+              </TabsTrigger>
+              <TabsTrigger value="new" className="data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                Nova Publicação
+              </TabsTrigger>
+              <TabsTrigger value="enrollments" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                 <BookOpen className="h-4 w-4" />
                 Inscrições
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="publications">
+            <TabsContent value="manage">
+              <PublicationsManager />
+            </TabsContent>
+
+            <TabsContent value="new">
               {/* Publication Form */}
-              <Card>
+              <Card className="bg-slate-800/50 border-slate-700">
                 <CardHeader>
-                  <CardTitle>Nova Publicação</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-white">Nova Publicação</CardTitle>
+                  <CardDescription className="text-slate-400">
                     Adicione uma nova bolsa, emprego ou curso com informações completas
                   </CardDescription>
                 </CardHeader>
@@ -694,8 +728,6 @@ const Admin = () => {
           </Tabs>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };
