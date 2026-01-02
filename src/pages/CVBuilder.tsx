@@ -14,7 +14,8 @@ import { TemplateGallery } from "@/components/cv/TemplateGallery";
 import { CVPreview } from "@/components/cv/CVPreview";
 import { ProgressSteps } from "@/components/cv/ProgressSteps";
 import { motion, AnimatePresence } from "framer-motion";
-import html2pdf from "html2pdf.js";
+import { pdf } from "@react-pdf/renderer";
+import { PDFDocument } from "@/components/cv/PDFDocument";
 import { toast } from "sonner";
 
 const CVBuilder = () => {
@@ -451,49 +452,25 @@ const CVBuilder = () => {
     }, 100);
   };
   
-  const handleDownloadPDF = () => {
-    const element = document.getElementById('cv-preview');
-    if (!element) {
-      toast.error("Erro ao gerar PDF");
-      return;
+  const handleDownloadPDF = async () => {
+    toast.loading("Gerando PDF...", { id: "pdf-loading" });
+    
+    try {
+      const blob = await pdf(<PDFDocument data={cvData} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `CV_${cvData.firstName}_${cvData.lastName}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success("PDF baixado com sucesso!", { id: "pdf-loading" });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error("Erro ao gerar PDF. Tente novamente.", { id: "pdf-loading" });
     }
-    
-    // Detect mobile device for optimized settings
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isLowEndDevice = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 4 : isMobile;
-    
-    const opt = {
-      margin: 0,
-      filename: `CV_${cvData.firstName}_${cvData.lastName}.pdf`,
-      image: { 
-        type: 'jpeg' as const, 
-        quality: isMobile ? 0.85 : 0.98 // Lower quality on mobile
-      },
-      html2canvas: { 
-        scale: isLowEndDevice ? 1.5 : 2, // Reduce scale on mobile/low-end devices
-        useCORS: true, 
-        scrollY: 0,
-        windowWidth: isMobile ? 794 : element.scrollWidth, // A4 width in pixels at 96 DPI
-        logging: false, // Disable logging for better performance
-        removeContainer: true
-      },
-      jsPDF: { 
-        unit: 'mm' as const, 
-        format: 'a4' as const, 
-        orientation: 'portrait' as const,
-        compress: true // Enable PDF compression
-      },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-    };
-    
-    toast.promise(
-      html2pdf().set(opt).from(element).save(),
-      {
-        loading: isMobile ? 'Gerando PDF (pode demorar)...' : 'Gerando PDF...',
-        success: 'PDF baixado com sucesso!',
-        error: 'Erro ao gerar PDF. Tente novamente.'
-      }
-    );
   };
 
   return (
