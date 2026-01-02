@@ -15,36 +15,28 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [checkingAdmin, setCheckingAdmin] = useState(false);
-
   useEffect(() => {
-    if (user && !loading) {
+    if (!loading && user) {
       if (isAdmin) {
         navigate("/admin");
-      } else if (checkingAdmin) {
-        // User logged in but is not admin
-        setCheckingAdmin(false);
-        setIsLoading(false);
       }
     }
-  }, [user, loading, isAdmin, navigate, checkingAdmin]);
+  }, [user, loading, isAdmin, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setCheckingAdmin(true);
     
     const { error } = await signIn(email, password);
     
     if (error) {
       setIsLoading(false);
-      setCheckingAdmin(false);
     }
-    // If no error, wait for useEffect to handle navigation or show error
+    // Navigation will be handled by useEffect when isAdmin updates
   };
 
   // Show message if user is logged in but not admin
-  if (user && !loading && !isAdmin && !checkingAdmin) {
+  if (user && !loading && !isAdmin && !isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
         <Card className="w-full max-w-md border-slate-700 bg-slate-800/50 backdrop-blur">
