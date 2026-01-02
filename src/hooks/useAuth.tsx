@@ -9,6 +9,7 @@ export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminChecked, setAdminChecked] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -21,11 +22,13 @@ export function useAuth() {
         
         if (session?.user) {
           // Check if user is admin
+          setAdminChecked(false);
           setTimeout(() => {
             checkAdminStatus(session.user.id);
           }, 0);
         } else {
           setIsAdmin(false);
+          setAdminChecked(true);
         }
         
         setLoading(false);
@@ -41,6 +44,8 @@ export function useAuth() {
         setTimeout(() => {
           checkAdminStatus(session.user.id);
         }, 0);
+      } else {
+        setAdminChecked(true);
       }
       
       setLoading(false);
@@ -50,15 +55,24 @@ export function useAuth() {
   }, []);
 
   const checkAdminStatus = async (userId: string) => {
-    const { data, error } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
 
-    if (!error && data) {
-      setIsAdmin(true);
+      if (!error && data) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (err) {
+      console.error("Error checking admin status:", err);
+      setIsAdmin(false);
+    } finally {
+      setAdminChecked(true);
     }
   };
 
@@ -132,7 +146,7 @@ export function useAuth() {
   return {
     user,
     session,
-    loading,
+    loading: loading || !adminChecked,
     isAdmin,
     signUp,
     signIn,
