@@ -15,24 +15,56 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [checkingAdmin, setCheckingAdmin] = useState(false);
+
   useEffect(() => {
-    if (user && !loading && isAdmin) {
-      navigate("/admin");
+    if (user && !loading) {
+      if (isAdmin) {
+        navigate("/admin");
+      } else if (checkingAdmin) {
+        // User logged in but is not admin
+        setCheckingAdmin(false);
+        setIsLoading(false);
+      }
     }
-  }, [user, loading, isAdmin, navigate]);
+  }, [user, loading, isAdmin, navigate, checkingAdmin]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setCheckingAdmin(true);
     
     const { error } = await signIn(email, password);
     
-    if (!error) {
-      // The useEffect will handle navigation if the user is admin
+    if (error) {
+      setIsLoading(false);
+      setCheckingAdmin(false);
     }
-    
-    setIsLoading(false);
+    // If no error, wait for useEffect to handle navigation or show error
   };
+
+  // Show message if user is logged in but not admin
+  if (user && !loading && !isAdmin && !checkingAdmin) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+        <Card className="w-full max-w-md border-slate-700 bg-slate-800/50 backdrop-blur">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center text-white">Acesso Negado</CardTitle>
+            <CardDescription className="text-center text-slate-400">
+              Você não tem permissão de administrador.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Link to="/">
+              <Button className="bg-amber-500 hover:bg-amber-600 text-slate-900">
+                Voltar ao site
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
