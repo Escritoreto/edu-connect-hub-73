@@ -8,6 +8,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
+import { cvTranslations } from "@/lib/cvTranslations";
 
 Font.register({
   family: "Roboto",
@@ -19,10 +20,10 @@ Font.register({
 
 const getAccentColor = (templateId: string) => {
   switch (templateId) {
-    case "classic2": return "#2563eb"; // blue
-    case "classic3": return "#16a34a"; // green
-    case "classic4": return "#7c3aed"; // purple
-    default: return "#1f2937"; // dark gray/black
+    case "classic2": return "#2563eb";
+    case "classic3": return "#16a34a";
+    case "classic4": return "#7c3aed";
+    default: return "#1f2937";
   }
 };
 
@@ -33,6 +34,8 @@ interface Props {
 
 export const PDFClassicTemplate = ({ data, templateId }: Props) => {
   const accentColor = getAccentColor(templateId);
+  const t = cvTranslations[data.cvLanguage || "pt"];
+  const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
 
   const styles = StyleSheet.create({
     page: {
@@ -167,10 +170,10 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
-    if (dateStr.toLowerCase() === "presente" || dateStr.toLowerCase() === "atual") return dateStr;
+    if (dateStr.toLowerCase() === "presente" || dateStr.toLowerCase() === "atual") return t.present;
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return dateStr;
-    return date.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+    return date.toLocaleDateString(locale, { month: "long", year: "numeric" });
   };
 
   const fullName = `${data.firstName} ${data.lastName}`;
@@ -180,7 +183,6 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.name}>{fullName}</Text>
           {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
@@ -191,32 +193,29 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
           </View>
         </View>
 
-        {/* Photo */}
         {data.photoPreview && (
           <View style={{ alignItems: "center", marginBottom: 12 }}>
             <Image src={data.photoPreview} style={styles.photo} />
           </View>
         )}
 
-        {/* Summary */}
         {data.summary && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Resumo Profissional</Text>
+            <Text style={styles.sectionTitle}>{t.professionalSummary}</Text>
             <Text style={styles.summaryText}>{data.summary}</Text>
           </View>
         )}
 
-        {/* Experience */}
         {data.experience.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Experiência Profissional</Text>
+            <Text style={styles.sectionTitle}>{t.experience}</Text>
             <View style={styles.experienceContainer}>
               {data.experience.map((exp) => (
                 <View key={exp.id} style={styles.itemContainer}>
                   <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
                   <Text style={styles.itemSubtitle}>{exp.company}</Text>
                   <Text style={styles.itemDate}>
-                    {formatDate(exp.startDate)} - {formatDate(exp.endDate) || "Presente"}
+                    {formatDate(exp.startDate)} - {formatDate(exp.endDate) || t.present}
                   </Text>
                   {exp.responsibilities && (
                     <Text style={styles.itemDescription}>{exp.responsibilities}</Text>
@@ -227,17 +226,16 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
           </View>
         )}
 
-        {/* Education */}
         {data.education.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Formação Acadêmica</Text>
+            <Text style={styles.sectionTitle}>{t.education}</Text>
             <View style={styles.experienceContainer}>
               {data.education.map((edu) => (
                 <View key={edu.id} style={styles.itemContainer}>
                   <Text style={styles.itemTitle}>{edu.degree}</Text>
                   <Text style={styles.itemSubtitle}>{edu.institution}</Text>
                   <Text style={styles.itemDate}>
-                    {formatDate(edu.startDate)} - {formatDate(edu.endDate) || "Cursando"}
+                    {formatDate(edu.startDate)} - {formatDate(edu.endDate) || t.studying}
                   </Text>
                 </View>
               ))}
@@ -245,11 +243,10 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
           </View>
         )}
 
-        {/* Skills and Languages */}
         <View style={styles.twoColumnRow}>
           {data.skills.length > 0 && (
             <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Habilidades</Text>
+              <Text style={styles.sectionTitle}>{t.skills}</Text>
               {data.skills.map((skill, index) => (
                 <View key={index} style={styles.skillRow}>
                   <View style={styles.bullet} />
@@ -260,7 +257,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
           )}
           {data.languages.length > 0 && (
             <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Idiomas</Text>
+              <Text style={styles.sectionTitle}>{t.languages}</Text>
               {data.languages.map((lang) => (
                 <View key={lang.id} style={styles.skillRow}>
                   <View style={styles.bullet} />
@@ -271,10 +268,9 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
           )}
         </View>
 
-        {/* Certifications */}
         {data.certifications.length > 0 && (
           <View style={[styles.section, { marginTop: 12 }]}>
-            <Text style={styles.sectionTitle}>Certificações</Text>
+            <Text style={styles.sectionTitle}>{t.certifications}</Text>
             <View style={styles.certGrid}>
               {data.certifications.map((cert) => (
                 <View key={cert.id} style={styles.certItem}>
@@ -286,10 +282,9 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
           </View>
         )}
 
-        {/* Projects */}
         {data.projects.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Projetos</Text>
+            <Text style={styles.sectionTitle}>{t.projects}</Text>
             {data.projects.map((proj) => (
               <View key={proj.id} style={styles.itemContainer}>
                 <Text style={styles.certName}>{proj.name}</Text>

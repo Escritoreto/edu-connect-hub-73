@@ -8,6 +8,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
+import { cvTranslations } from "@/lib/cvTranslations";
 
 Font.register({
   family: "Roboto",
@@ -20,10 +21,10 @@ Font.register({
 
 const getAccentColor = (templateId: string) => {
   switch (templateId) {
-    case "minimalist2": return "#2563eb"; // blue
-    case "minimalist3": return "#16a34a"; // green
-    case "minimalist4": return "#7c3aed"; // purple
-    default: return "#6b7280"; // gray
+    case "minimalist2": return "#2563eb";
+    case "minimalist3": return "#16a34a";
+    case "minimalist4": return "#7c3aed";
+    default: return "#6b7280";
   }
 };
 
@@ -34,6 +35,8 @@ interface Props {
 
 export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
   const accentColor = getAccentColor(templateId);
+  const t = cvTranslations[data.cvLanguage || "pt"];
+  const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
 
   const styles = StyleSheet.create({
     page: {
@@ -43,6 +46,14 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
     },
     header: {
       marginBottom: 20,
+    },
+    headerRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+    },
+    nameContainer: {
+      flex: 1,
     },
     firstName: {
       fontSize: 32,
@@ -173,10 +184,10 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
-    if (dateStr.toLowerCase() === "presente" || dateStr.toLowerCase() === "atual") return dateStr;
+    if (dateStr.toLowerCase() === "presente" || dateStr.toLowerCase() === "atual") return t.present;
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return dateStr;
-    return date.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
+    return date.toLocaleDateString(locale, { month: "short", year: "numeric" });
   };
 
   const phone = data.phone ? `${data.countryCode} ${data.phone}` : "";
@@ -185,10 +196,9 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Header */}
         <View style={styles.header}>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <View style={{ flex: 1 }}>
+          <View style={styles.headerRow}>
+            <View style={styles.nameContainer}>
               <Text style={styles.firstName}>{data.firstName}</Text>
               <Text style={styles.lastName}>{data.lastName}</Text>
               {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
@@ -207,23 +217,21 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
           </View>
         </View>
 
-        {/* Summary */}
         {data.summary && (
           <View style={styles.section}>
             <Text style={styles.summaryText}>{data.summary}</Text>
           </View>
         )}
 
-        {/* Experience */}
         {data.experience.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Experiência</Text>
+            <Text style={styles.sectionTitle}>{t.experience}</Text>
             {data.experience.map((exp) => (
               <View key={exp.id} style={styles.itemContainer}>
                 <View style={styles.itemRow}>
                   <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
                   <Text style={styles.itemDate}>
-                    {formatDate(exp.startDate)} - {formatDate(exp.endDate) || "Presente"}
+                    {formatDate(exp.startDate)} - {formatDate(exp.endDate) || t.present}
                   </Text>
                 </View>
                 <Text style={styles.itemSubtitle}>{exp.company}</Text>
@@ -235,16 +243,15 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
           </View>
         )}
 
-        {/* Education */}
         {data.education.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Formação</Text>
+            <Text style={styles.sectionTitle}>{t.education}</Text>
             {data.education.map((edu) => (
               <View key={edu.id} style={styles.itemContainer}>
                 <View style={styles.itemRow}>
                   <Text style={styles.itemTitle}>{edu.degree}</Text>
                   <Text style={styles.itemDate}>
-                    {formatDate(edu.startDate)} - {formatDate(edu.endDate) || "Cursando"}
+                    {formatDate(edu.startDate)} - {formatDate(edu.endDate) || t.studying}
                   </Text>
                 </View>
                 <Text style={styles.itemSubtitle}>{edu.institution}</Text>
@@ -253,11 +260,10 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
           </View>
         )}
 
-        {/* Three Column Section */}
         <View style={styles.threeColumnRow}>
           {data.skills.length > 0 && (
             <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Habilidades</Text>
+              <Text style={styles.sectionTitle}>{t.skills}</Text>
               <View style={styles.skillsWrap}>
                 {data.skills.map((skill, index) => (
                   <View key={index} style={styles.skillBadge}>
@@ -270,7 +276,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
 
           {data.languages.length > 0 && (
             <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Idiomas</Text>
+              <Text style={styles.sectionTitle}>{t.languages}</Text>
               {data.languages.map((lang) => (
                 <Text key={lang.id} style={styles.langText}>
                   {lang.name} - {lang.level}
@@ -281,7 +287,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
 
           {data.certifications.length > 0 && (
             <View style={styles.column}>
-              <Text style={styles.sectionTitle}>Certificações</Text>
+              <Text style={styles.sectionTitle}>{t.certifications}</Text>
               {data.certifications.map((cert) => (
                 <View key={cert.id} style={{ marginBottom: 5 }}>
                   <Text style={styles.certName}>{cert.name}</Text>
@@ -292,10 +298,9 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
           )}
         </View>
 
-        {/* Projects */}
         {data.projects.length > 0 && (
           <View style={[styles.section, { marginTop: 10 }]}>
-            <Text style={styles.sectionTitle}>Projetos</Text>
+            <Text style={styles.sectionTitle}>{t.projects}</Text>
             {data.projects.map((proj) => (
               <View key={proj.id} style={styles.itemContainer}>
                 <Text style={styles.itemTitle}>{proj.name}</Text>

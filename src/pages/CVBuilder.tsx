@@ -10,6 +10,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CVData, CVTemplate, Education, Experience, Language, Certification, Project } from "@/types/cv";
+import { languageOptions } from "@/lib/cvTranslations";
 import { TemplateGallery } from "@/components/cv/TemplateGallery";
 import { CVPreview } from "@/components/cv/CVPreview";
 import { ProgressSteps } from "@/components/cv/ProgressSteps";
@@ -40,7 +41,8 @@ const CVBuilder = () => {
     certifications: [],
     projects: [],
     selectedTemplate: "",
-    selectedPurpose: ""
+    selectedPurpose: "",
+    cvLanguage: "pt"
   });
   
   const steps = [
@@ -614,7 +616,7 @@ const CVBuilder = () => {
                             />
                           </div>
                         </div>
-                        <div className="space-y-2 md:col-span-2">
+                        <div className="space-y-2">
                           <Label htmlFor="location">Localização</Label>
                           <Input 
                             id="location" 
@@ -622,6 +624,21 @@ const CVBuilder = () => {
                             value={cvData.location}
                             onChange={(e) => updateField('location', e.target.value)}
                           />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="cvLanguage">Idioma do CV</Label>
+                          <Select value={cvData.cvLanguage} onValueChange={(val: "pt" | "en" | "fr" | "zh") => updateField('cvLanguage', val)}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {languageOptions.map((lang) => (
+                                <SelectItem key={lang.value} value={lang.value}>
+                                  {lang.flag} {lang.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
 
