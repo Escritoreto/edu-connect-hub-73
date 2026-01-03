@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   Font,
+  Image,
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 
@@ -142,6 +143,14 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       color: "#475569",
       lineHeight: 1.4,
     },
+    photo: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      marginBottom: 15,
+      alignSelf: "center",
+      objectFit: "cover",
+    },
   });
 
   const formatDate = (dateStr: string) => {
@@ -161,8 +170,14 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       <Page size="A4" style={styles.page}>
         {/* Sidebar */}
         <View style={styles.sidebar}>
+          {/* Photo */}
+          {data.photoPreview && (
+            <Image src={data.photoPreview} style={styles.photo} />
+          )}
+          
           {/* Contact */}
           <View style={styles.sidebarSection}>
+            <Text style={styles.sidebarTitle}>Contato</Text>
             <Text style={styles.sidebarTitle}>Contato</Text>
             {data.email && (
               <View style={{ marginBottom: 6 }}>

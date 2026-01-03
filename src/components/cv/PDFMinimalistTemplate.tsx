@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   Font,
+  Image,
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 
@@ -163,6 +164,11 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       color: "#6b7280",
       fontWeight: 300,
     },
+    photo: {
+      width: 70,
+      height: 70,
+      objectFit: "cover",
+    },
   });
 
   const formatDate = (dateStr: string) => {
@@ -181,9 +187,16 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.firstName}>{data.firstName}</Text>
-          <Text style={styles.lastName}>{data.lastName}</Text>
-          {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.firstName}>{data.firstName}</Text>
+              <Text style={styles.lastName}>{data.lastName}</Text>
+              {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
+            </View>
+            {data.photoPreview && (
+              <Image src={data.photoPreview} style={styles.photo} />
+            )}
+          </View>
           
           <View style={styles.divider} />
           
