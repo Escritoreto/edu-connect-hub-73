@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   Font,
+  Image,
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 
@@ -154,6 +155,14 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       fontSize: 8,
       color: "#64748b",
     },
+    photo: {
+      width: 90,
+      height: 90,
+      borderRadius: 45,
+      marginBottom: 12,
+      alignSelf: "center",
+      objectFit: "cover",
+    },
   });
 
   const formatDate = (dateStr: string) => {
@@ -181,6 +190,13 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
             {data.location && <Text style={styles.contactItem}>{data.location}</Text>}
           </View>
         </View>
+
+        {/* Photo */}
+        {data.photoPreview && (
+          <View style={{ alignItems: "center", marginBottom: 12 }}>
+            <Image src={data.photoPreview} style={styles.photo} />
+          </View>
+        )}
 
         {/* Summary */}
         {data.summary && (
