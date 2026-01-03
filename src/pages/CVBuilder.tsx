@@ -15,7 +15,9 @@ import { CVPreview } from "@/components/cv/CVPreview";
 import { ProgressSteps } from "@/components/cv/ProgressSteps";
 import { motion, AnimatePresence } from "framer-motion";
 import { pdf } from "@react-pdf/renderer";
-import { PDFDocument } from "@/components/cv/PDFDocument";
+import { PDFModernTemplate } from "@/components/cv/PDFModernTemplate";
+import { PDFClassicTemplate } from "@/components/cv/PDFClassicTemplate";
+import { PDFMinimalistTemplate } from "@/components/cv/PDFMinimalistTemplate";
 import { toast } from "sonner";
 
 const CVBuilder = () => {
@@ -456,7 +458,18 @@ const CVBuilder = () => {
     toast.loading("Gerando PDF...", { id: "pdf-loading" });
     
     try {
-      const blob = await pdf(<PDFDocument data={cvData} />).toBlob();
+      const templateId = cvData.selectedTemplate;
+      let pdfComponent;
+      
+      if (templateId.startsWith("modern")) {
+        pdfComponent = <PDFModernTemplate data={cvData} templateId={templateId} />;
+      } else if (templateId.startsWith("classic")) {
+        pdfComponent = <PDFClassicTemplate data={cvData} templateId={templateId} />;
+      } else {
+        pdfComponent = <PDFMinimalistTemplate data={cvData} templateId={templateId} />;
+      }
+      
+      const blob = await pdf(pdfComponent).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
