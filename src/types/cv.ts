@@ -69,6 +69,9 @@ export interface CVData {
   // Template
   selectedTemplate: string;
   selectedPurpose: string;
+  
+  // Language for CV sections
+  cvLanguage: "pt" | "en" | "fr" | "zh";
 }
 
 export interface CVTemplate {
