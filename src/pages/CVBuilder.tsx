@@ -17,8 +17,17 @@ import { ProgressSteps } from "@/components/cv/ProgressSteps";
 import { motion, AnimatePresence } from "framer-motion";
 import { pdf } from "@react-pdf/renderer";
 import { PDFModernTemplate } from "@/components/cv/PDFModernTemplate";
+import { PDFModernTemplate2 } from "@/components/cv/PDFModernTemplate2";
+import { PDFModernTemplate3 } from "@/components/cv/PDFModernTemplate3";
+import { PDFModernTemplate4 } from "@/components/cv/PDFModernTemplate4";
 import { PDFClassicTemplate } from "@/components/cv/PDFClassicTemplate";
+import { PDFClassicTemplate2 } from "@/components/cv/PDFClassicTemplate2";
+import { PDFClassicTemplate3 } from "@/components/cv/PDFClassicTemplate3";
+import { PDFClassicTemplate4 } from "@/components/cv/PDFClassicTemplate4";
 import { PDFMinimalistTemplate } from "@/components/cv/PDFMinimalistTemplate";
+import { PDFMinimalistTemplate2 } from "@/components/cv/PDFMinimalistTemplate2";
+import { PDFMinimalistTemplate3 } from "@/components/cv/PDFMinimalistTemplate3";
+import { PDFMinimalistTemplate4 } from "@/components/cv/PDFMinimalistTemplate4";
 import { toast } from "sonner";
 
 const CVBuilder = () => {
@@ -463,12 +472,37 @@ const CVBuilder = () => {
       const templateId = cvData.selectedTemplate;
       let pdfComponent;
       
-      if (templateId.startsWith("modern")) {
+      // Modern templates
+      if (templateId === "modern") {
         pdfComponent = <PDFModernTemplate data={cvData} templateId={templateId} />;
-      } else if (templateId.startsWith("classic")) {
+      } else if (templateId === "modern2") {
+        pdfComponent = <PDFModernTemplate2 data={cvData} />;
+      } else if (templateId === "modern3") {
+        pdfComponent = <PDFModernTemplate3 data={cvData} />;
+      } else if (templateId === "modern4") {
+        pdfComponent = <PDFModernTemplate4 data={cvData} />;
+      }
+      // Classic templates
+      else if (templateId === "classic") {
         pdfComponent = <PDFClassicTemplate data={cvData} templateId={templateId} />;
-      } else {
+      } else if (templateId === "classic2") {
+        pdfComponent = <PDFClassicTemplate2 data={cvData} />;
+      } else if (templateId === "classic3") {
+        pdfComponent = <PDFClassicTemplate3 data={cvData} />;
+      } else if (templateId === "classic4") {
+        pdfComponent = <PDFClassicTemplate4 data={cvData} />;
+      }
+      // Minimalist templates
+      else if (templateId === "minimalist") {
         pdfComponent = <PDFMinimalistTemplate data={cvData} templateId={templateId} />;
+      } else if (templateId === "minimalist2") {
+        pdfComponent = <PDFMinimalistTemplate2 data={cvData} />;
+      } else if (templateId === "minimalist3") {
+        pdfComponent = <PDFMinimalistTemplate3 data={cvData} />;
+      } else if (templateId === "minimalist4") {
+        pdfComponent = <PDFMinimalistTemplate4 data={cvData} />;
+      } else {
+        pdfComponent = <PDFModernTemplate data={cvData} templateId={templateId} />;
       }
       
       const blob = await pdf(pdfComponent).toBlob();

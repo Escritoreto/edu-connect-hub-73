@@ -15,6 +15,7 @@ export interface CVTranslations {
   professionalSummary: string;
   present: string;
   studying: string;
+  profile: string;
 }
 
 export const cvTranslations: Record<CVLanguage, CVTranslations> = {
@@ -33,6 +34,7 @@ export const cvTranslations: Record<CVLanguage, CVTranslations> = {
     professionalSummary: "Resumo Profissional",
     present: "Presente",
     studying: "Cursando",
+    profile: "Perfil",
   },
   en: {
     contact: "Contact",
@@ -49,6 +51,7 @@ export const cvTranslations: Record<CVLanguage, CVTranslations> = {
     professionalSummary: "Professional Summary",
     present: "Present",
     studying: "In Progress",
+    profile: "Profile",
   },
   fr: {
     contact: "Contact",
@@ -65,6 +68,7 @@ export const cvTranslations: Record<CVLanguage, CVTranslations> = {
     professionalSummary: "Résumé Professionnel",
     present: "Présent",
     studying: "En cours",
+    profile: "Profil",
   },
   zh: {
     contact: "联系方式",
@@ -81,6 +85,7 @@ export const cvTranslations: Record<CVLanguage, CVTranslations> = {
     professionalSummary: "专业简介",
     present: "至今",
     studying: "在读",
+    profile: "简介",
   },
 };
 
