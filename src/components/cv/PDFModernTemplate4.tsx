@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -29,11 +30,12 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
   const bgLight = "#fff7ed";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
+      fontSize: fs.body,
       padding: 0,
     },
     header: {
@@ -47,13 +49,13 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       flex: 1,
     },
     name: {
-      fontSize: 28,
+      fontSize: fs.name + 2,
       fontWeight: 700,
       color: "#ffffff",
       marginBottom: 3,
     },
     jobTitle: {
-      fontSize: 13,
+      fontSize: fs.sectionTitle,
       color: bgLight,
       marginBottom: 8,
     },
@@ -63,7 +65,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       flexWrap: "wrap",
     },
     contactItem: {
-      fontSize: 9,
+      fontSize: fs.contact,
       color: "#ffffff",
       opacity: 0.9,
     },
@@ -86,17 +88,8 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       alignItems: "center",
       marginBottom: 10,
     },
-    sectionIcon: {
-      width: 24,
-      height: 24,
-      backgroundColor: accentColor,
-      borderRadius: 4,
-      marginRight: 8,
-      justifyContent: "center",
-      alignItems: "center",
-    },
     sectionTitle: {
-      fontSize: 13,
+      fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
       textTransform: "uppercase",
@@ -110,7 +103,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       borderLeftColor: accentColor,
     },
     summaryText: {
-      fontSize: 10,
+      fontSize: fs.body,
       color: "#475569",
       lineHeight: 1.6,
     },
@@ -130,24 +123,24 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       borderTopColor: accentColor,
     },
     itemTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       fontWeight: 700,
       color: "#1e293b",
       marginBottom: 2,
     },
     itemSubtitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: accentColor,
       fontWeight: 700,
       marginBottom: 2,
     },
     itemDate: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#94a3b8",
       marginBottom: 4,
     },
     itemDescription: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       lineHeight: 1.4,
     },
@@ -161,7 +154,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     skillTag: {
       backgroundColor: accentColor,
       color: "#ffffff",
-      fontSize: 8,
+      fontSize: fs.small - 1,
       paddingHorizontal: 8,
       paddingVertical: 4,
       borderRadius: 3,
@@ -185,7 +178,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       marginRight: 6,
     },
     langText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#374151",
     },
     certItem: {
@@ -195,12 +188,12 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       borderBottomColor: "#e2e8f0",
     },
     certName: {
-      fontSize: 9,
+      fontSize: fs.small,
       fontWeight: 700,
       color: "#1e293b",
     },
     certInst: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#64748b",
     },
   });
@@ -225,9 +218,9 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
             <Text style={styles.name}>{fullName}</Text>
             {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
             <View style={styles.contactRow}>
-              {data.email && <Text style={styles.contactItem}>✉ {data.email}</Text>}
-              {phone && <Text style={styles.contactItem}>☎ {phone}</Text>}
-              {data.location && <Text style={styles.contactItem}>📍 {data.location}</Text>}
+              {data.email && <Text style={styles.contactItem}>{data.email}</Text>}
+              {phone && <Text style={styles.contactItem}>{phone}</Text>}
+              {data.location && <Text style={styles.contactItem}>{data.location}</Text>}
             </View>
           </View>
           {data.photoPreview && (

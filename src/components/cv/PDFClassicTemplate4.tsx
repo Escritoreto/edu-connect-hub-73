@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -29,11 +30,12 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
   const bgLight = "#faf5ff";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
+      fontSize: fs.body,
       padding: 0,
       backgroundColor: bgLight,
     },
@@ -57,13 +59,13 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       borderColor: accentColor,
     },
     name: {
-      fontSize: 26,
+      fontSize: fs.name,
       fontWeight: 700,
       color: accentColor,
       marginBottom: 2,
     },
     jobTitle: {
-      fontSize: 13,
+      fontSize: fs.sectionTitle,
       color: "#64748b",
       fontStyle: "italic",
       marginBottom: 6,
@@ -78,7 +80,7 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       flexWrap: "wrap",
     },
     contactItem: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#1e293b",
     },
     body: {
@@ -98,7 +100,7 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       marginBottom: 15,
     },
     sectionTitle: {
-      fontSize: 13,
+      fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
       marginBottom: 10,
@@ -111,7 +113,7 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       borderLeftColor: accentColor,
     },
     summaryText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       lineHeight: 1.5,
       fontStyle: "italic",
@@ -125,23 +127,23 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       borderTopColor: accentColor,
     },
     itemTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       fontWeight: 700,
       color: "#1e293b",
     },
     itemSubtitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: accentColor,
       fontWeight: 700,
       marginBottom: 2,
     },
     itemDate: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#94a3b8",
       marginBottom: 4,
     },
     itemDescription: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       lineHeight: 1.4,
     },
@@ -159,7 +161,7 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       marginBottom: 4,
     },
     skillText: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#ffffff",
       textAlign: "center",
       fontWeight: 700,
@@ -168,12 +170,12 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       marginBottom: 5,
     },
     langName: {
-      fontSize: 9,
+      fontSize: fs.small,
       fontWeight: 700,
       color: "#1e293b",
     },
     langLevel: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: accentColor,
     },
     certItem: {
@@ -183,12 +185,12 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       borderBottomColor: "#e2e8f0",
     },
     certName: {
-      fontSize: 9,
+      fontSize: fs.small,
       fontWeight: 700,
       color: "#1e293b",
     },
     certInst: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#64748b",
     },
   });
@@ -219,9 +221,9 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
         </View>
 
         <View style={styles.contactBar}>
-          {data.email && <Text style={styles.contactItem}>✉ {data.email}</Text>}
-          {phone && <Text style={styles.contactItem}>☎ {phone}</Text>}
-          {data.location && <Text style={styles.contactItem}>📍 {data.location}</Text>}
+          {data.email && <Text style={styles.contactItem}>{data.email}</Text>}
+          {phone && <Text style={styles.contactItem}>{phone}</Text>}
+          {data.location && <Text style={styles.contactItem}>{data.location}</Text>}
         </View>
 
         <View style={styles.body}>

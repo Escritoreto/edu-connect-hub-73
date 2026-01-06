@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -36,11 +37,12 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
   const accentColor = getAccentColor(templateId);
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
+      fontSize: fs.body,
       padding: 35,
     },
     header: {
@@ -51,13 +53,13 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       marginBottom: 15,
     },
     name: {
-      fontSize: 26,
+      fontSize: fs.name,
       fontWeight: 700,
       color: accentColor,
       marginBottom: 3,
     },
     jobTitle: {
-      fontSize: 12,
+      fontSize: fs.jobTitle,
       color: "#64748b",
       fontStyle: "italic",
       marginBottom: 8,
@@ -68,14 +70,14 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       gap: 15,
     },
     contactItem: {
-      fontSize: 9,
+      fontSize: fs.contact,
       color: "#64748b",
     },
     section: {
       marginBottom: 12,
     },
     sectionTitle: {
-      fontSize: 13,
+      fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
       textTransform: "uppercase",
@@ -83,7 +85,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       marginBottom: 8,
     },
     summaryText: {
-      fontSize: 10,
+      fontSize: fs.body,
       color: "#475569",
       lineHeight: 1.5,
       textAlign: "justify",
@@ -97,23 +99,23 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       marginBottom: 10,
     },
     itemTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       fontWeight: 700,
       color: accentColor,
     },
     itemSubtitle: {
-      fontSize: 10,
+      fontSize: fs.body,
       color: "#64748b",
       fontStyle: "italic",
       marginBottom: 2,
     },
     itemDate: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#94a3b8",
       marginBottom: 3,
     },
     itemDescription: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       lineHeight: 1.4,
       textAlign: "justify",
@@ -138,7 +140,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       marginRight: 6,
     },
     skillText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
     },
     certGrid: {
@@ -150,12 +152,12 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       width: "48%",
     },
     certName: {
-      fontSize: 10,
+      fontSize: fs.body,
       fontWeight: 700,
       color: "#1e293b",
     },
     certInstitution: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#64748b",
     },
     photo: {
@@ -289,7 +291,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
               <View key={proj.id} style={styles.itemContainer}>
                 <Text style={styles.certName}>{proj.name}</Text>
                 {proj.description && (
-                  <Text style={{ fontSize: 9, color: "#475569" }}>{proj.description}</Text>
+                  <Text style={{ fontSize: fs.small, color: "#475569" }}>{proj.description}</Text>
                 )}
               </View>
             ))}

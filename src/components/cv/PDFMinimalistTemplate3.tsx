@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -28,11 +29,12 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
   const accentColor = "#16a34a";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
+      fontSize: fs.body,
       padding: 35,
     },
     header: {
@@ -47,14 +49,14 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       objectFit: "cover",
     },
     name: {
-      fontSize: 28,
+      fontSize: fs.name + 2,
       fontWeight: 700,
       color: "#111827",
       marginBottom: 3,
       textAlign: "center",
     },
     jobTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       color: accentColor,
       fontWeight: 300,
       textTransform: "uppercase",
@@ -71,7 +73,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       borderTopColor: "#e5e7eb",
     },
     contactItem: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#6b7280",
       fontWeight: 300,
     },
@@ -89,7 +91,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       backgroundColor: "#e5e7eb",
     },
     sectionTitle: {
-      fontSize: 10,
+      fontSize: fs.body,
       fontWeight: 700,
       color: accentColor,
       textTransform: "uppercase",
@@ -97,7 +99,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       paddingHorizontal: 10,
     },
     summaryText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#4b5563",
       fontWeight: 300,
       lineHeight: 1.6,
@@ -116,23 +118,23 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       marginBottom: 2,
     },
     itemTitle: {
-      fontSize: 10,
+      fontSize: fs.body,
       fontWeight: 400,
       color: "#111827",
     },
     itemDate: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: accentColor,
       fontWeight: 300,
     },
     itemSubtitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#6b7280",
       fontWeight: 300,
       marginBottom: 3,
     },
     itemDescription: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#4b5563",
       fontWeight: 300,
       lineHeight: 1.5,
@@ -145,7 +147,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       flex: 1,
     },
     columnTitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       fontWeight: 700,
       color: accentColor,
       textTransform: "uppercase",
@@ -154,7 +156,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       textAlign: "center",
     },
     skillItem: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#4b5563",
       fontWeight: 300,
       textAlign: "center",

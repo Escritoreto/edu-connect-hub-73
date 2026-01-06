@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -22,140 +23,116 @@ interface Props {
   data: CVData;
 }
 
-// Classic2: Same centered structure as Classic1 but with blue accent
+// Classic2: Two-column layout with sidebar on left
 export const PDFClassicTemplate2 = ({ data }: Props) => {
   const accentColor = "#2563eb";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
-      padding: 35,
-    },
-    header: {
-      textAlign: "center",
-      borderBottomWidth: 3,
-      borderBottomColor: accentColor,
-      paddingBottom: 12,
-      marginBottom: 15,
-    },
-    name: {
-      fontSize: 26,
-      fontWeight: 700,
-      color: accentColor,
-      marginBottom: 3,
-    },
-    jobTitle: {
-      fontSize: 12,
-      color: "#64748b",
-      fontStyle: "italic",
-      marginBottom: 8,
-    },
-    contactRow: {
+      fontSize: fs.body,
       flexDirection: "row",
-      justifyContent: "center",
-      gap: 15,
     },
-    contactItem: {
-      fontSize: 9,
-      color: "#64748b",
+    sidebar: {
+      width: "35%",
+      backgroundColor: "#1e3a5f",
+      padding: 20,
+      color: "#ffffff",
+    },
+    main: {
+      width: "65%",
+      padding: 25,
     },
     photo: {
-      width: 90,
-      height: 90,
-      borderRadius: 45,
-      marginBottom: 12,
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      marginBottom: 15,
       alignSelf: "center",
       objectFit: "cover",
+      borderWidth: 3,
+      borderColor: "#ffffff",
     },
-    section: {
-      marginBottom: 12,
+    sidebarName: {
+      fontSize: fs.name - 6,
+      fontWeight: 700,
+      color: "#ffffff",
+      textAlign: "center",
+      marginBottom: 5,
     },
-    sectionTitle: {
-      fontSize: 13,
+    sidebarTitle: {
+      fontSize: fs.small,
+      color: "#93c5fd",
+      textAlign: "center",
+      marginBottom: 15,
+    },
+    sidebarSection: {
+      marginBottom: 15,
+    },
+    sidebarSectionTitle: {
+      fontSize: fs.body,
+      fontWeight: 700,
+      color: "#93c5fd",
+      textTransform: "uppercase",
+      letterSpacing: 1,
+      marginBottom: 8,
+      borderBottomWidth: 1,
+      borderBottomColor: "#3b82f6",
+      paddingBottom: 4,
+    },
+    sidebarItem: {
+      fontSize: fs.small,
+      color: "#e2e8f0",
+      marginBottom: 4,
+    },
+    mainSection: {
+      marginBottom: 18,
+    },
+    mainSectionTitle: {
+      fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
       textTransform: "uppercase",
       letterSpacing: 1,
-      marginBottom: 8,
+      marginBottom: 10,
+      borderBottomWidth: 2,
+      borderBottomColor: accentColor,
+      paddingBottom: 4,
     },
     summaryText: {
-      fontSize: 10,
+      fontSize: fs.body,
       color: "#475569",
       lineHeight: 1.5,
-      textAlign: "justify",
-    },
-    experienceContainer: {
-      borderLeftWidth: 3,
-      borderLeftColor: "#bfdbfe",
-      paddingLeft: 12,
     },
     itemContainer: {
-      marginBottom: 10,
+      marginBottom: 12,
     },
-    itemTitle: {
-      fontSize: 11,
-      fontWeight: 700,
-      color: accentColor,
-    },
-    itemSubtitle: {
-      fontSize: 10,
-      color: "#64748b",
-      fontStyle: "italic",
+    itemHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
       marginBottom: 2,
     },
-    itemDate: {
-      fontSize: 8,
-      color: "#94a3b8",
-      marginBottom: 3,
-    },
-    itemDescription: {
-      fontSize: 9,
-      color: "#475569",
-      lineHeight: 1.4,
-      textAlign: "justify",
-    },
-    twoColumnRow: {
-      flexDirection: "row",
-      gap: 20,
-    },
-    column: {
-      flex: 1,
-    },
-    skillRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 3,
-    },
-    bullet: {
-      width: 4,
-      height: 4,
-      backgroundColor: accentColor,
-      borderRadius: 2,
-      marginRight: 6,
-    },
-    skillText: {
-      fontSize: 9,
-      color: "#475569",
-    },
-    certGrid: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: 10,
-    },
-    certItem: {
-      width: "48%",
-    },
-    certName: {
-      fontSize: 10,
+    itemTitle: {
+      fontSize: fs.jobTitle,
       fontWeight: 700,
       color: "#1e293b",
     },
-    certInstitution: {
-      fontSize: 8,
+    itemDate: {
+      fontSize: fs.small,
+      color: accentColor,
+    },
+    itemSubtitle: {
+      fontSize: fs.small,
       color: "#64748b",
+      marginBottom: 3,
+    },
+    itemDescription: {
+      fontSize: fs.small,
+      color: "#475569",
+      lineHeight: 1.4,
     },
   });
 
@@ -164,7 +141,7 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
     if (dateStr.toLowerCase() === "presente" || dateStr.toLowerCase() === "atual") return t.present;
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return dateStr;
-    return date.toLocaleDateString(locale, { month: "long", year: "numeric" });
+    return date.toLocaleDateString(locale, { month: "short", year: "numeric" });
   };
 
   const fullName = `${data.firstName} ${data.lastName}`;
@@ -174,118 +151,110 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.name}>{fullName}</Text>
-          {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
-          <View style={styles.contactRow}>
-            {data.email && <Text style={styles.contactItem}>{data.email}</Text>}
-            {phone && <Text style={styles.contactItem}>{phone}</Text>}
-            {data.location && <Text style={styles.contactItem}>{data.location}</Text>}
+        <View style={styles.sidebar}>
+          {data.photoPreview && (
+            <Image src={data.photoPreview} style={styles.photo} />
+          )}
+          <Text style={styles.sidebarName}>{fullName}</Text>
+          {jobTitle && <Text style={styles.sidebarTitle}>{jobTitle}</Text>}
+
+          <View style={styles.sidebarSection}>
+            <Text style={styles.sidebarSectionTitle}>{t.contact}</Text>
+            {data.email && <Text style={styles.sidebarItem}>{data.email}</Text>}
+            {phone && <Text style={styles.sidebarItem}>{phone}</Text>}
+            {data.location && <Text style={styles.sidebarItem}>{data.location}</Text>}
           </View>
+
+          {data.skills.length > 0 && (
+            <View style={styles.sidebarSection}>
+              <Text style={styles.sidebarSectionTitle}>{t.skills}</Text>
+              {data.skills.map((skill, index) => (
+                <Text key={index} style={styles.sidebarItem}>• {skill}</Text>
+              ))}
+            </View>
+          )}
+
+          {data.languages.length > 0 && (
+            <View style={styles.sidebarSection}>
+              <Text style={styles.sidebarSectionTitle}>{t.languages}</Text>
+              {data.languages.map((lang) => (
+                <Text key={lang.id} style={styles.sidebarItem}>{lang.name} - {lang.level}</Text>
+              ))}
+            </View>
+          )}
+
+          {data.certifications.length > 0 && (
+            <View style={styles.sidebarSection}>
+              <Text style={styles.sidebarSectionTitle}>{t.certifications}</Text>
+              {data.certifications.map((cert) => (
+                <View key={cert.id} style={{ marginBottom: 5 }}>
+                  <Text style={{ fontSize: fs.small, fontWeight: 700, color: "#ffffff" }}>{cert.name}</Text>
+                  <Text style={{ fontSize: fs.small - 1, color: "#94a3b8" }}>{cert.institution}</Text>
+                </View>
+              ))}
+            </View>
+          )}
         </View>
 
-        {data.photoPreview && (
-          <View style={{ alignItems: "center", marginBottom: 12 }}>
-            <Image src={data.photoPreview} style={styles.photo} />
-          </View>
-        )}
+        <View style={styles.main}>
+          {data.summary && (
+            <View style={styles.mainSection}>
+              <Text style={styles.mainSectionTitle}>{t.profile}</Text>
+              <Text style={styles.summaryText}>{data.summary}</Text>
+            </View>
+          )}
 
-        {data.summary && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t.professionalSummary}</Text>
-            <Text style={styles.summaryText}>{data.summary}</Text>
-          </View>
-        )}
-
-        {data.experience.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t.experience}</Text>
-            <View style={styles.experienceContainer}>
+          {data.experience.length > 0 && (
+            <View style={styles.mainSection}>
+              <Text style={styles.mainSectionTitle}>{t.experience}</Text>
               {data.experience.map((exp) => (
                 <View key={exp.id} style={styles.itemContainer}>
-                  <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
+                  <View style={styles.itemHeader}>
+                    <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
+                    <Text style={styles.itemDate}>
+                      {formatDate(exp.startDate)} - {formatDate(exp.endDate) || t.present}
+                    </Text>
+                  </View>
                   <Text style={styles.itemSubtitle}>{exp.company}</Text>
-                  <Text style={styles.itemDate}>
-                    {formatDate(exp.startDate)} - {formatDate(exp.endDate) || t.present}
-                  </Text>
                   {exp.responsibilities && (
                     <Text style={styles.itemDescription}>{exp.responsibilities}</Text>
                   )}
                 </View>
               ))}
             </View>
-          </View>
-        )}
+          )}
 
-        {data.education.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t.education}</Text>
-            <View style={styles.experienceContainer}>
+          {data.education.length > 0 && (
+            <View style={styles.mainSection}>
+              <Text style={styles.mainSectionTitle}>{t.education}</Text>
               {data.education.map((edu) => (
                 <View key={edu.id} style={styles.itemContainer}>
-                  <Text style={styles.itemTitle}>{edu.degree}</Text>
+                  <View style={styles.itemHeader}>
+                    <Text style={styles.itemTitle}>{edu.degree}</Text>
+                    <Text style={styles.itemDate}>
+                      {formatDate(edu.startDate)} - {formatDate(edu.endDate) || t.studying}
+                    </Text>
+                  </View>
                   <Text style={styles.itemSubtitle}>{edu.institution}</Text>
-                  <Text style={styles.itemDate}>
-                    {formatDate(edu.startDate)} - {formatDate(edu.endDate) || t.studying}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        <View style={styles.twoColumnRow}>
-          {data.skills.length > 0 && (
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>{t.skills}</Text>
-              {data.skills.map((skill, index) => (
-                <View key={index} style={styles.skillRow}>
-                  <View style={styles.bullet} />
-                  <Text style={styles.skillText}>{skill}</Text>
                 </View>
               ))}
             </View>
           )}
-          {data.languages.length > 0 && (
-            <View style={styles.column}>
-              <Text style={styles.sectionTitle}>{t.languages}</Text>
-              {data.languages.map((lang) => (
-                <View key={lang.id} style={styles.skillRow}>
-                  <View style={styles.bullet} />
-                  <Text style={styles.skillText}>{lang.name} - {lang.level}</Text>
+
+          {data.projects.length > 0 && (
+            <View style={styles.mainSection}>
+              <Text style={styles.mainSectionTitle}>{t.projects}</Text>
+              {data.projects.map((proj) => (
+                <View key={proj.id} style={styles.itemContainer}>
+                  <Text style={styles.itemTitle}>{proj.name}</Text>
+                  {proj.description && (
+                    <Text style={styles.itemDescription}>{proj.description}</Text>
+                  )}
                 </View>
               ))}
             </View>
           )}
         </View>
-
-        {data.certifications.length > 0 && (
-          <View style={[styles.section, { marginTop: 12 }]}>
-            <Text style={styles.sectionTitle}>{t.certifications}</Text>
-            <View style={styles.certGrid}>
-              {data.certifications.map((cert) => (
-                <View key={cert.id} style={styles.certItem}>
-                  <Text style={styles.certName}>{cert.name}</Text>
-                  <Text style={styles.certInstitution}>{cert.institution}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {data.projects.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t.projects}</Text>
-            {data.projects.map((proj) => (
-              <View key={proj.id} style={styles.itemContainer}>
-                <Text style={styles.certName}>{proj.name}</Text>
-                {proj.description && (
-                  <Text style={{ fontSize: 9, color: "#475569" }}>{proj.description}</Text>
-                )}
-              </View>
-            ))}
-          </View>
-        )}
       </Page>
     </Document>
   );

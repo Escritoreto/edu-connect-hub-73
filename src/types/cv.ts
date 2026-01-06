@@ -72,6 +72,9 @@ export interface CVData {
   
   // Language for CV sections
   cvLanguage: "pt" | "en" | "fr" | "zh";
+  
+  // Font size control
+  fontSize: "small" | "medium" | "large";
 }
 
 export interface CVTemplate {
