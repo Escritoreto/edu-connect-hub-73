@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -28,11 +29,12 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
   const accentLight = "#a78bfa";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
+      fontSize: fs.body,
     },
     header: {
       backgroundColor: accentColor,
@@ -53,13 +55,13 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       flex: 1,
     },
     name: {
-      fontSize: 24,
+      fontSize: fs.name,
       fontWeight: 700,
       color: "#ffffff",
       marginBottom: 3,
     },
     jobTitle: {
-      fontSize: 12,
+      fontSize: fs.jobTitle,
       color: accentLight,
       marginBottom: 8,
     },
@@ -68,7 +70,7 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       gap: 15,
     },
     contactItem: {
-      fontSize: 9,
+      fontSize: fs.contact,
       color: "#ffffff",
       opacity: 0.9,
     },
@@ -87,7 +89,7 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       marginBottom: 15,
     },
     sectionTitle: {
-      fontSize: 12,
+      fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
       marginBottom: 8,
@@ -96,7 +98,7 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       borderBottomColor: accentLight,
     },
     summaryText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       lineHeight: 1.5,
     },
@@ -107,22 +109,22 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       borderLeftColor: accentLight,
     },
     itemTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       fontWeight: 700,
       color: "#1e293b",
     },
     itemSubtitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: accentColor,
       marginBottom: 2,
     },
     itemDate: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#94a3b8",
       marginBottom: 3,
     },
     itemDescription: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       lineHeight: 1.4,
     },
@@ -134,7 +136,7 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       marginBottom: 4,
     },
     skillText: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#ffffff",
     },
     langItem: {
@@ -146,11 +148,11 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       borderBottomColor: "#e2e8f0",
     },
     langName: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#374151",
     },
     langLevel: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: accentColor,
     },
   });
@@ -178,9 +180,9 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
             <Text style={styles.name}>{fullName}</Text>
             {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
             <View style={styles.contactRow}>
-              {data.email && <Text style={styles.contactItem}>✉ {data.email}</Text>}
-              {phone && <Text style={styles.contactItem}>☎ {phone}</Text>}
-              {data.location && <Text style={styles.contactItem}>📍 {data.location}</Text>}
+              {data.email && <Text style={styles.contactItem}>{data.email}</Text>}
+              {phone && <Text style={styles.contactItem}>{phone}</Text>}
+              {data.location && <Text style={styles.contactItem}>{data.location}</Text>}
             </View>
           </View>
         </View>
@@ -257,8 +259,8 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
                 <Text style={styles.sectionTitle}>{t.certifications}</Text>
                 {data.certifications.map((cert) => (
                   <View key={cert.id} style={{ marginBottom: 6 }}>
-                    <Text style={{ fontSize: 9, fontWeight: 700, color: "#1e293b" }}>{cert.name}</Text>
-                    <Text style={{ fontSize: 8, color: "#64748b" }}>{cert.institution}</Text>
+                    <Text style={{ fontSize: fs.small, fontWeight: 700, color: "#1e293b" }}>{cert.name}</Text>
+                    <Text style={{ fontSize: fs.small - 1, color: "#64748b" }}>{cert.institution}</Text>
                   </View>
                 ))}
               </View>
@@ -269,9 +271,9 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
                 <Text style={styles.sectionTitle}>{t.projects}</Text>
                 {data.projects.map((proj) => (
                   <View key={proj.id} style={{ marginBottom: 6 }}>
-                    <Text style={{ fontSize: 9, fontWeight: 700, color: "#1e293b" }}>{proj.name}</Text>
+                    <Text style={{ fontSize: fs.small, fontWeight: 700, color: "#1e293b" }}>{proj.name}</Text>
                     {proj.description && (
-                      <Text style={{ fontSize: 8, color: "#475569" }}>{proj.description}</Text>
+                      <Text style={{ fontSize: fs.small - 1, color: "#475569" }}>{proj.description}</Text>
                     )}
                   </View>
                 ))}

@@ -8,7 +8,8 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
-import { cvTranslations, CVLanguage } from "@/lib/cvTranslations";
+import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -46,11 +47,12 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
   const accentLight = getAccentColorLight(templateId);
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
   
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
+      fontSize: fs.body,
       flexDirection: "row",
     },
     sidebar: {
@@ -64,13 +66,13 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       padding: 25,
     },
     name: {
-      fontSize: 22,
+      fontSize: fs.name - 4,
       fontWeight: 700,
       color: accentColor,
       marginBottom: 3,
     },
     jobTitle: {
-      fontSize: 12,
+      fontSize: fs.jobTitle,
       color: "#64748b",
       marginBottom: 15,
     },
@@ -78,7 +80,7 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       marginBottom: 15,
     },
     sidebarTitle: {
-      fontSize: 12,
+      fontSize: fs.sectionTitle,
       fontWeight: 700,
       marginBottom: 8,
       paddingBottom: 4,
@@ -86,12 +88,12 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       borderBottomColor: "rgba(255,255,255,0.3)",
     },
     sidebarText: {
-      fontSize: 9,
+      fontSize: fs.small,
       marginBottom: 3,
       opacity: 0.9,
     },
     sidebarLabel: {
-      fontSize: 9,
+      fontSize: fs.small,
       fontWeight: 700,
       marginBottom: 2,
     },
@@ -103,14 +105,14 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       marginBottom: 4,
     },
     skillText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#ffffff",
     },
     mainSection: {
       marginBottom: 12,
     },
     mainSectionTitle: {
-      fontSize: 13,
+      fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
       marginBottom: 6,
@@ -119,7 +121,7 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       borderBottomColor: accentLight,
     },
     summaryText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       lineHeight: 1.5,
     },
@@ -127,22 +129,22 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       marginBottom: 8,
     },
     itemTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       fontWeight: 700,
       color: "#1e293b",
     },
     itemSubtitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#64748b",
       marginBottom: 2,
     },
     itemDate: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#94a3b8",
       marginBottom: 3,
     },
     itemDescription: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       lineHeight: 1.4,
     },
@@ -290,7 +292,7 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
                     <Text style={styles.itemDescription}>{proj.description}</Text>
                   )}
                   {proj.link && (
-                    <Text style={{ fontSize: 8, color: accentColor }}>{proj.link}</Text>
+                    <Text style={{ fontSize: fs.small - 1, color: accentColor }}>{proj.link}</Text>
                   )}
                 </View>
               ))}

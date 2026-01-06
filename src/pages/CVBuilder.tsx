@@ -51,7 +51,8 @@ const CVBuilder = () => {
     projects: [],
     selectedTemplate: "",
     selectedPurpose: "",
-    cvLanguage: "pt"
+    cvLanguage: "pt",
+    fontSize: "medium"
   });
   
   const steps = [
@@ -671,6 +672,19 @@ const CVBuilder = () => {
                                   {lang.flag} {lang.label}
                                 </SelectItem>
                               ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="fontSize">Tamanho da Fonte</Label>
+                          <Select value={cvData.fontSize} onValueChange={(val: "small" | "medium" | "large") => updateField('fontSize', val)}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="small">Pequeno</SelectItem>
+                              <SelectItem value="medium">Médio</SelectItem>
+                              <SelectItem value="large">Grande</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>

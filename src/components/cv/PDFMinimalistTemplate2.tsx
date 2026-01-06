@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -28,11 +29,12 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
   const accentColor = "#2563eb";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
+      fontSize: fs.body,
       flexDirection: "row",
     },
     sidebar: {
@@ -57,7 +59,7 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
       marginBottom: 18,
     },
     sidebarTitle: {
-      fontSize: 10,
+      fontSize: fs.body,
       fontWeight: 700,
       color: accentColor,
       textTransform: "uppercase",
@@ -68,13 +70,13 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
       borderBottomColor: accentColor,
     },
     contactItem: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#475569",
       marginBottom: 5,
       fontWeight: 300,
     },
     skillItem: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#475569",
       fontWeight: 300,
       marginBottom: 4,
@@ -83,25 +85,25 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
       borderLeftColor: accentColor,
     },
     langItem: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#475569",
       fontWeight: 300,
       marginBottom: 3,
     },
     name: {
-      fontSize: 28,
+      fontSize: fs.name + 2,
       fontWeight: 300,
       color: "#1e293b",
       marginBottom: 2,
     },
     lastName: {
-      fontSize: 28,
+      fontSize: fs.name + 2,
       fontWeight: 700,
       color: accentColor,
       marginBottom: 5,
     },
     jobTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       color: "#64748b",
       fontWeight: 300,
       textTransform: "uppercase",
@@ -112,7 +114,7 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
       marginBottom: 18,
     },
     sectionTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       fontWeight: 700,
       color: "#1e293b",
       textTransform: "uppercase",
@@ -125,7 +127,7 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
       marginBottom: 10,
     },
     summaryText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#475569",
       fontWeight: 300,
       lineHeight: 1.6,
@@ -139,23 +141,23 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
       marginBottom: 2,
     },
     itemTitle: {
-      fontSize: 10,
+      fontSize: fs.body,
       fontWeight: 400,
       color: "#1e293b",
     },
     itemDate: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: accentColor,
       fontWeight: 300,
     },
     itemSubtitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#64748b",
       fontWeight: 300,
       marginBottom: 3,
     },
     itemDescription: {
-      fontSize: 8,
+      fontSize: fs.small,
       color: "#475569",
       fontWeight: 300,
       lineHeight: 1.5,
@@ -213,8 +215,8 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
               <Text style={styles.sidebarTitle}>{t.certifications}</Text>
               {data.certifications.map((cert) => (
                 <View key={cert.id} style={{ marginBottom: 5 }}>
-                  <Text style={{ fontSize: 8, fontWeight: 400, color: "#1e293b" }}>{cert.name}</Text>
-                  <Text style={{ fontSize: 7, color: "#64748b", fontWeight: 300 }}>{cert.institution}</Text>
+                  <Text style={{ fontSize: fs.small, fontWeight: 400, color: "#1e293b" }}>{cert.name}</Text>
+                  <Text style={{ fontSize: fs.small - 1, color: "#64748b", fontWeight: 300 }}>{cert.institution}</Text>
                 </View>
               ))}
             </View>

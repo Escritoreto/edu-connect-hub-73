@@ -9,6 +9,7 @@ import {
 } from "@react-pdf/renderer";
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
+import { getFontSizes } from "@/lib/pdfFontSizes";
 
 Font.register({
   family: "Roboto",
@@ -28,11 +29,12 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
   const accentColor = "#7c3aed";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
+  const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
-      fontSize: 10,
+      fontSize: fs.body,
       flexDirection: "row",
     },
     main: {
@@ -47,19 +49,19 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       borderLeftColor: accentColor,
     },
     headerName: {
-      fontSize: 32,
+      fontSize: fs.name + 6,
       fontWeight: 300,
       color: "#111827",
       marginBottom: 0,
     },
     headerLastName: {
-      fontSize: 32,
+      fontSize: fs.name + 6,
       fontWeight: 700,
       color: accentColor,
       marginBottom: 8,
     },
     jobTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       color: "#6b7280",
       fontWeight: 300,
       textTransform: "uppercase",
@@ -70,7 +72,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       marginBottom: 20,
     },
     sectionTitle: {
-      fontSize: 11,
+      fontSize: fs.jobTitle,
       fontWeight: 700,
       color: "#111827",
       textTransform: "uppercase",
@@ -81,7 +83,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       borderBottomColor: accentColor,
     },
     summaryText: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#4b5563",
       fontWeight: 300,
       lineHeight: 1.7,
@@ -96,24 +98,24 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       marginBottom: 2,
     },
     itemTitle: {
-      fontSize: 10,
+      fontSize: fs.body,
       fontWeight: 400,
       color: "#111827",
     },
     itemDate: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: accentColor,
       fontWeight: 300,
     },
     itemSubtitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       color: "#6b7280",
       fontWeight: 300,
       fontStyle: "italic",
       marginBottom: 3,
     },
     itemDescription: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#4b5563",
       fontWeight: 300,
       lineHeight: 1.5,
@@ -129,7 +131,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       marginBottom: 18,
     },
     sidebarTitle: {
-      fontSize: 9,
+      fontSize: fs.small,
       fontWeight: 700,
       color: accentColor,
       textTransform: "uppercase",
@@ -137,7 +139,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       marginBottom: 8,
     },
     contactItem: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#4b5563",
       fontWeight: 300,
       marginBottom: 6,
@@ -150,7 +152,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       marginBottom: 4,
     },
     skillText: {
-      fontSize: 7,
+      fontSize: fs.small - 2,
       color: accentColor,
       textAlign: "center",
     },
@@ -160,24 +162,24 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       marginBottom: 4,
     },
     langName: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       color: "#4b5563",
       fontWeight: 300,
     },
     langLevel: {
-      fontSize: 7,
+      fontSize: fs.small - 2,
       color: accentColor,
     },
     certItem: {
       marginBottom: 6,
     },
     certName: {
-      fontSize: 8,
+      fontSize: fs.small - 1,
       fontWeight: 400,
       color: "#111827",
     },
     certInst: {
-      fontSize: 7,
+      fontSize: fs.small - 2,
       color: "#6b7280",
       fontWeight: 300,
     },
@@ -269,9 +271,9 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
 
           <View style={styles.sidebarSection}>
             <Text style={styles.sidebarTitle}>{t.contact}</Text>
-            {data.email && <Text style={styles.contactItem}>✉ {data.email}</Text>}
-            {phone && <Text style={styles.contactItem}>☎ {phone}</Text>}
-            {data.location && <Text style={styles.contactItem}>📍 {data.location}</Text>}
+            {data.email && <Text style={styles.contactItem}>{data.email}</Text>}
+            {phone && <Text style={styles.contactItem}>{phone}</Text>}
+            {data.location && <Text style={styles.contactItem}>{data.location}</Text>}
           </View>
 
           {data.skills.length > 0 && (
