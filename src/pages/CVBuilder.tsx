@@ -520,7 +520,8 @@ const CVBuilder = () => {
       toast.success("PDF baixado com sucesso!", { id: "pdf-loading" });
     } catch (error) {
       console.error("Error generating PDF:", error);
-      toast.error("Erro ao gerar PDF. Tente novamente.", { id: "pdf-loading" });
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(`Erro ao gerar PDF: ${message}`, { id: "pdf-loading" });
     }
   };
 
