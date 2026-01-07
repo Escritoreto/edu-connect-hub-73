@@ -13,6 +13,7 @@ import { CVData, CVTemplate, Education, Experience, Language, Certification, Pro
 import { languageOptions } from "@/lib/cvTranslations";
 import { TemplateGallery } from "@/components/cv/TemplateGallery";
 import { CVPreview } from "@/components/cv/CVPreview";
+import { PDFPreview } from "@/components/cv/PDFPreview";
 import { ProgressSteps } from "@/components/cv/ProgressSteps";
 import { motion, AnimatePresence } from "framer-motion";
 import { pdf } from "@react-pdf/renderer";
@@ -1181,10 +1182,8 @@ const CVBuilder = () => {
                     <p className="text-muted-foreground">Revise e baixe em PDF</p>
                   </div>
 
-                  <div className="bg-muted/30 p-2 sm:p-8 rounded-xl mb-8 overflow-x-auto">
-                    <div className="transform scale-[0.4] sm:scale-100 origin-top-left w-[250%] sm:w-full">
-                      <CVPreview data={cvData} />
-                    </div>
+                  <div className="mb-8">
+                    <PDFPreview data={cvData} />
                   </div>
 
                   <div className="flex flex-col sm:flex-row justify-between gap-4">
