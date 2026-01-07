@@ -80,7 +80,10 @@ export const PDFPreview = ({ data }: PDFPreviewProps) => {
       setPdfUrl(url);
     } catch (err) {
       console.error("Error generating PDF preview:", err);
-      setError("Erro ao gerar preview do PDF. Tente novamente.");
+      const message = err instanceof Error ? err.message : String(err);
+      setError(
+        `Erro ao gerar preview do PDF (${data.selectedTemplate || "modelo"}).\n${message}`
+      );
     } finally {
       setIsLoading(false);
     }
@@ -118,7 +121,7 @@ export const PDFPreview = ({ data }: PDFPreviewProps) => {
     return (
       <div className="flex flex-col items-center justify-center p-8 bg-muted/30 rounded-xl min-h-[600px]">
         <FileText className="h-16 w-16 text-muted-foreground mb-4" />
-        <p className="text-destructive mb-4">{error}</p>
+        <pre className="text-destructive mb-4 whitespace-pre-wrap text-sm max-w-[900px]">{error}</pre>
         <Button onClick={generatePdf} variant="outline">
           <RefreshCw className="h-4 w-4 mr-2" />
           Tentar Novamente
