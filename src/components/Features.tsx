@@ -34,7 +34,7 @@ const Features = () => {
             Tudo que você precisa em um só lugar
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base">
-            ​Desenvolva suas competências profissionais,  gere CV em poucos cliques e econtre bolsas de estudo em único lugar                                            
+            ​Desenvolva suas competências profissionais,  gere CV em poucos cliques e encontre bolsas de estudo em único lugar                                            
           </p>
         </div>
 
