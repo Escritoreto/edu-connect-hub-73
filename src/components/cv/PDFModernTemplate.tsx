@@ -54,79 +54,83 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       fontFamily: "Roboto",
       fontSize: fs.body,
       flexDirection: "row",
+      minHeight: "100%",
     },
     sidebar: {
       width: "35%",
       backgroundColor: accentColor,
-      padding: 20,
+      padding: 15,
+      paddingTop: 20,
       color: "#ffffff",
+      minHeight: "100%",
     },
     main: {
       width: "65%",
-      padding: 25,
+      padding: 18,
+      paddingTop: 20,
     },
     name: {
       fontSize: fs.name - 4,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 3,
+      marginBottom: 2,
     },
     jobTitle: {
       fontSize: fs.jobTitle,
       color: "#64748b",
-      marginBottom: 15,
+      marginBottom: 10,
     },
     sidebarSection: {
-      marginBottom: 15,
+      marginBottom: 12,
     },
     sidebarTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
-      marginBottom: 8,
-      paddingBottom: 4,
+      marginBottom: 6,
+      paddingBottom: 3,
       borderBottomWidth: 1,
       borderBottomColor: "rgba(255,255,255,0.3)",
     },
     sidebarText: {
       fontSize: fs.small,
-      marginBottom: 3,
+      marginBottom: 2,
       opacity: 0.9,
     },
     sidebarLabel: {
       fontSize: fs.small,
       fontWeight: 700,
-      marginBottom: 2,
+      marginBottom: 1,
     },
     skillBadge: {
       backgroundColor: "rgba(255,255,255,0.2)",
-      paddingHorizontal: 6,
-      paddingVertical: 4,
+      paddingHorizontal: 5,
+      paddingVertical: 3,
       borderRadius: 3,
-      marginBottom: 4,
+      marginBottom: 3,
     },
     skillText: {
       fontSize: fs.small,
       color: "#ffffff",
     },
     mainSection: {
-      marginBottom: 12,
+      marginBottom: 10,
     },
     mainSectionTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 6,
-      paddingBottom: 3,
+      marginBottom: 5,
+      paddingBottom: 2,
       borderBottomWidth: 2,
       borderBottomColor: accentLight,
     },
     summaryText: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.5,
+      lineHeight: 1.4,
     },
     itemContainer: {
-      marginBottom: 8,
+      marginBottom: 6,
     },
     itemTitle: {
       fontSize: fs.jobTitle,
@@ -136,23 +140,23 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
     itemSubtitle: {
       fontSize: fs.small,
       color: "#64748b",
-      marginBottom: 2,
+      marginBottom: 1,
     },
     itemDate: {
       fontSize: fs.small - 1,
       color: "#94a3b8",
-      marginBottom: 3,
+      marginBottom: 2,
     },
     itemDescription: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.4,
+      lineHeight: 1.3,
     },
     photo: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
-      marginBottom: 15,
+      width: 75,
+      height: 75,
+      borderRadius: 38,
+      marginBottom: 12,
       alignSelf: "center",
       objectFit: "cover",
     },
@@ -181,19 +185,19 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
           <View style={styles.sidebarSection}>
             <Text style={styles.sidebarTitle}>{t.contact}</Text>
             {data.email && (
-              <View style={{ marginBottom: 6 }}>
+              <View style={{ marginBottom: 4 }}>
                 <Text style={styles.sidebarLabel}>{t.email}</Text>
                 <Text style={styles.sidebarText}>{data.email}</Text>
               </View>
             )}
             {phone && (
-              <View style={{ marginBottom: 6 }}>
+              <View style={{ marginBottom: 4 }}>
                 <Text style={styles.sidebarLabel}>{t.phone}</Text>
                 <Text style={styles.sidebarText}>{phone}</Text>
               </View>
             )}
             {data.location && (
-              <View style={{ marginBottom: 6 }}>
+              <View style={{ marginBottom: 4 }}>
                 <Text style={styles.sidebarLabel}>{t.location}</Text>
                 <Text style={styles.sidebarText}>{data.location}</Text>
               </View>
@@ -221,10 +225,22 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
               ))}
             </View>
           )}
+
+          {data.certifications.length > 0 && (
+            <View style={styles.sidebarSection}>
+              <Text style={styles.sidebarTitle}>{t.certifications}</Text>
+              {data.certifications.map((cert) => (
+                <View key={cert.id} style={{ marginBottom: 4 }}>
+                  <Text style={{ fontSize: fs.small, fontWeight: 700, color: "#ffffff" }}>{cert.name}</Text>
+                  <Text style={{ fontSize: fs.small - 1, color: "#ffffff", opacity: 0.8 }}>{cert.institution}</Text>
+                </View>
+              ))}
+            </View>
+          )}
         </View>
 
         <View style={styles.main}>
-          <View style={{ marginBottom: 15 }}>
+          <View style={{ marginBottom: 10 }}>
             <Text style={styles.name}>{fullName}</Text>
             {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
           </View>
@@ -264,19 +280,6 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
                   <Text style={styles.itemDate}>
                     {formatDate(edu.startDate)} - {formatDate(edu.endDate) || t.studying}
                   </Text>
-                </View>
-              ))}
-            </View>
-          )}
-
-          {data.certifications.length > 0 && (
-            <View style={styles.mainSection}>
-              <Text style={styles.mainSectionTitle}>{t.certifications}</Text>
-              {data.certifications.map((cert) => (
-                <View key={cert.id} style={styles.itemContainer}>
-                  <Text style={styles.itemTitle}>{cert.name}</Text>
-                  <Text style={styles.itemSubtitle}>{cert.institution}</Text>
-                  {cert.date && <Text style={styles.itemDate}>{formatDate(cert.date)}</Text>}
                 </View>
               ))}
             </View>

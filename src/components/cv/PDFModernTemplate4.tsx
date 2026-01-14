@@ -40,7 +40,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     },
     header: {
       backgroundColor: accentColor,
-      padding: 25,
+      padding: 18,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
@@ -52,16 +52,16 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       fontSize: fs.name + 2,
       fontWeight: 700,
       color: "#ffffff",
-      marginBottom: 3,
+      marginBottom: 2,
     },
     jobTitle: {
       fontSize: fs.sectionTitle,
       color: bgLight,
-      marginBottom: 8,
+      marginBottom: 6,
     },
     contactRow: {
       flexDirection: "row",
-      gap: 12,
+      gap: 10,
       flexWrap: "wrap",
     },
     contactItem: {
@@ -70,23 +70,23 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       opacity: 0.9,
     },
     photo: {
-      width: 80,
-      height: 80,
-      borderRadius: 8,
+      width: 70,
+      height: 70,
+      borderRadius: 6,
       objectFit: "cover",
-      borderWidth: 3,
+      borderWidth: 2,
       borderColor: "#ffffff",
     },
     body: {
-      padding: 25,
+      padding: 18,
     },
     section: {
-      marginBottom: 18,
+      marginBottom: 12,
     },
     sectionHeader: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 10,
+      marginBottom: 6,
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
@@ -97,56 +97,56 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     },
     summaryBox: {
       backgroundColor: bgLight,
-      padding: 12,
-      borderRadius: 6,
-      borderLeftWidth: 4,
+      padding: 10,
+      borderRadius: 5,
+      borderLeftWidth: 3,
       borderLeftColor: accentColor,
     },
     summaryText: {
       fontSize: fs.body,
       color: "#475569",
-      lineHeight: 1.6,
+      lineHeight: 1.5,
     },
     cardsRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: 10,
+      gap: 8,
     },
     expCard: {
       backgroundColor: "#ffffff",
       borderWidth: 1,
       borderColor: "#e2e8f0",
-      borderRadius: 6,
-      padding: 12,
-      marginBottom: 8,
-      borderTopWidth: 3,
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 6,
+      borderTopWidth: 2,
       borderTopColor: accentColor,
     },
     itemTitle: {
       fontSize: fs.jobTitle,
       fontWeight: 700,
       color: "#1e293b",
-      marginBottom: 2,
+      marginBottom: 1,
     },
     itemSubtitle: {
       fontSize: fs.small,
       color: accentColor,
       fontWeight: 700,
-      marginBottom: 2,
+      marginBottom: 1,
     },
     itemDate: {
       fontSize: fs.small - 1,
       color: "#94a3b8",
-      marginBottom: 4,
+      marginBottom: 3,
     },
     itemDescription: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.4,
+      lineHeight: 1.3,
     },
     threeColumns: {
       flexDirection: "row",
-      gap: 15,
+      gap: 12,
     },
     column: {
       flex: 1,
@@ -155,11 +155,11 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       backgroundColor: accentColor,
       color: "#ffffff",
       fontSize: fs.small - 1,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 3,
       borderRadius: 3,
-      marginBottom: 4,
-      marginRight: 4,
+      marginBottom: 3,
+      marginRight: 3,
     },
     skillsWrap: {
       flexDirection: "row",
@@ -168,22 +168,22 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     langItem: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 4,
+      marginBottom: 3,
     },
     langDot: {
-      width: 6,
-      height: 6,
+      width: 5,
+      height: 5,
       borderRadius: 3,
       backgroundColor: accentColor,
-      marginRight: 6,
+      marginRight: 5,
     },
     langText: {
       fontSize: fs.small,
       color: "#374151",
     },
     certItem: {
-      marginBottom: 6,
-      paddingBottom: 6,
+      marginBottom: 4,
+      paddingBottom: 4,
       borderBottomWidth: 1,
       borderBottomColor: "#e2e8f0",
     },
@@ -280,7 +280,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
           <View style={styles.threeColumns}>
             {data.skills.length > 0 && (
               <View style={styles.column}>
-                <Text style={[styles.sectionTitle, { marginBottom: 8 }]}>{t.skills}</Text>
+                <Text style={[styles.sectionTitle, { marginBottom: 6 }]}>{t.skills}</Text>
                 <View style={styles.skillsWrap}>
                   {data.skills.map((skill, index) => (
                     <Text key={index} style={styles.skillTag}>{skill}</Text>
@@ -291,7 +291,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
 
             {data.languages.length > 0 && (
               <View style={styles.column}>
-                <Text style={[styles.sectionTitle, { marginBottom: 8 }]}>{t.languages}</Text>
+                <Text style={[styles.sectionTitle, { marginBottom: 6 }]}>{t.languages}</Text>
                 {data.languages.map((lang) => (
                   <View key={lang.id} style={styles.langItem}>
                     <View style={styles.langDot} />
@@ -303,7 +303,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
 
             {data.certifications.length > 0 && (
               <View style={styles.column}>
-                <Text style={[styles.sectionTitle, { marginBottom: 8 }]}>{t.certifications}</Text>
+                <Text style={[styles.sectionTitle, { marginBottom: 6 }]}>{t.certifications}</Text>
                 {data.certifications.map((cert) => (
                   <View key={cert.id} style={styles.certItem}>
                     <Text style={styles.certName}>{cert.name}</Text>
@@ -315,7 +315,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
           </View>
 
           {data.projects.length > 0 && (
-            <View style={[styles.section, { marginTop: 15 }]}>
+            <View style={[styles.section, { marginTop: 10 }]}>
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>{t.projects}</Text>
               </View>

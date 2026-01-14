@@ -36,16 +36,18 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
       fontFamily: "Roboto",
       fontSize: fs.body,
       flexDirection: "row",
+      minHeight: "100%",
     },
     main: {
       width: "65%",
-      padding: 25,
+      padding: 18,
     },
     sidebar: {
       width: "35%",
       backgroundColor: accentColor,
-      padding: 20,
+      padding: 15,
       color: "#ffffff",
+      minHeight: "100%",
     },
     name: {
       fontSize: fs.name,
@@ -56,41 +58,41 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
     jobTitle: {
       fontSize: fs.jobTitle,
       color: accentColor,
-      marginBottom: 5,
+      marginBottom: 4,
     },
     divider: {
       height: 3,
       backgroundColor: accentColor,
-      width: 50,
-      marginBottom: 15,
+      width: 45,
+      marginBottom: 12,
     },
     section: {
-      marginBottom: 15,
+      marginBottom: 10,
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 8,
+      marginBottom: 6,
       textTransform: "uppercase",
       letterSpacing: 1,
     },
     summaryText: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.6,
+      lineHeight: 1.5,
       textAlign: "justify",
     },
     timelineItem: {
       flexDirection: "row",
-      marginBottom: 12,
+      marginBottom: 8,
     },
     timelineDot: {
-      width: 8,
-      height: 8,
-      borderRadius: 4,
+      width: 6,
+      height: 6,
+      borderRadius: 3,
       backgroundColor: accentColor,
-      marginRight: 10,
+      marginRight: 8,
       marginTop: 3,
     },
     timelineContent: {
@@ -104,54 +106,54 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
     itemSubtitle: {
       fontSize: fs.small,
       color: "#64748b",
-      marginBottom: 2,
+      marginBottom: 1,
     },
     itemDate: {
       fontSize: fs.small - 1,
       color: accentColor,
       fontWeight: 700,
-      marginBottom: 3,
+      marginBottom: 2,
     },
     itemDescription: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.4,
+      lineHeight: 1.3,
     },
     sidebarSection: {
-      marginBottom: 18,
+      marginBottom: 14,
     },
     sidebarTitle: {
       fontSize: fs.jobTitle,
       fontWeight: 700,
-      marginBottom: 10,
-      paddingBottom: 5,
+      marginBottom: 8,
+      paddingBottom: 4,
       borderBottomWidth: 1,
       borderBottomColor: "rgba(255,255,255,0.3)",
       textTransform: "uppercase",
       letterSpacing: 1,
     },
     photo: {
-      width: 90,
-      height: 90,
-      borderRadius: 45,
-      marginBottom: 15,
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      marginBottom: 12,
       alignSelf: "center",
       objectFit: "cover",
-      borderWidth: 3,
+      borderWidth: 2,
       borderColor: "#ffffff",
     },
     contactItem: {
       fontSize: fs.small,
-      marginBottom: 6,
+      marginBottom: 5,
       opacity: 0.9,
     },
     skillPill: {
       backgroundColor: "rgba(255,255,255,0.2)",
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 12,
-      marginBottom: 4,
-      marginRight: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 3,
+      borderRadius: 10,
+      marginBottom: 3,
+      marginRight: 3,
     },
     skillsWrap: {
       flexDirection: "row",
@@ -162,7 +164,7 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
       color: "#ffffff",
     },
     langBar: {
-      marginBottom: 6,
+      marginBottom: 5,
     },
     langName: {
       fontSize: fs.small,
@@ -207,7 +209,7 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.main}>
-          <View style={{ marginBottom: 20 }}>
+          <View style={{ marginBottom: 15 }}>
             <Text style={styles.name}>{fullName}</Text>
             {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
             <View style={styles.divider} />
@@ -263,7 +265,7 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>{t.projects}</Text>
               {data.projects.map((proj) => (
-                <View key={proj.id} style={{ marginBottom: 6 }}>
+                <View key={proj.id} style={{ marginBottom: 5 }}>
                   <Text style={styles.itemTitle}>{proj.name}</Text>
                   {proj.description && (
                     <Text style={styles.itemDescription}>{proj.description}</Text>
@@ -317,7 +319,7 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
             <View style={styles.sidebarSection}>
               <Text style={styles.sidebarTitle}>{t.certifications}</Text>
               {data.certifications.map((cert) => (
-                <View key={cert.id} style={{ marginBottom: 5 }}>
+                <View key={cert.id} style={{ marginBottom: 4 }}>
                   <Text style={{ fontSize: fs.small, fontWeight: 700 }}>{cert.name}</Text>
                   <Text style={{ fontSize: fs.small - 1, opacity: 0.8 }}>{cert.institution}</Text>
                 </View>
