@@ -114,10 +114,7 @@ const PublicationCard = ({
                 {publication.country_info?.flag_url ? <img src={publication.country_info.flag_url} alt={`Bandeira ${publication.country}`} className="h-4 w-6 object-cover rounded" /> : <MapPin className="h-4 w-4" />}
                 {publication.country}
               </div>}
-            {publication.deadline && <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                Prazo: {format(new Date(publication.deadline), "dd/MM/yyyy")}
-              </div>}
+            {publication.deadline}
             
           </div>
 
