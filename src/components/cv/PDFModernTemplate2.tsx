@@ -38,17 +38,17 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
     },
     header: {
       backgroundColor: accentColor,
-      padding: 25,
+      padding: 18,
       flexDirection: "row",
       alignItems: "center",
-      gap: 20,
+      gap: 15,
     },
     photo: {
-      width: 70,
-      height: 70,
-      borderRadius: 35,
+      width: 60,
+      height: 60,
+      borderRadius: 30,
       objectFit: "cover",
-      borderWidth: 3,
+      borderWidth: 2,
       borderColor: "#ffffff",
     },
     headerContent: {
@@ -58,16 +58,17 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       fontSize: fs.name,
       fontWeight: 700,
       color: "#ffffff",
-      marginBottom: 3,
+      marginBottom: 2,
     },
     jobTitle: {
       fontSize: fs.jobTitle,
       color: accentLight,
-      marginBottom: 8,
+      marginBottom: 5,
     },
     contactRow: {
       flexDirection: "row",
-      gap: 15,
+      gap: 12,
+      flexWrap: "wrap",
     },
     contactItem: {
       fontSize: fs.contact,
@@ -76,8 +77,9 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
     },
     body: {
       flexDirection: "row",
-      padding: 25,
-      gap: 20,
+      padding: 15,
+      gap: 15,
+      flex: 1,
     },
     mainColumn: {
       width: "60%",
@@ -86,25 +88,25 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       width: "40%",
     },
     section: {
-      marginBottom: 15,
+      marginBottom: 10,
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 8,
-      paddingBottom: 3,
+      marginBottom: 5,
+      paddingBottom: 2,
       borderBottomWidth: 2,
       borderBottomColor: accentLight,
     },
     summaryText: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.5,
+      lineHeight: 1.4,
     },
     itemContainer: {
-      marginBottom: 10,
-      paddingLeft: 10,
+      marginBottom: 8,
+      paddingLeft: 8,
       borderLeftWidth: 2,
       borderLeftColor: accentLight,
     },
@@ -116,24 +118,24 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
     itemSubtitle: {
       fontSize: fs.small,
       color: accentColor,
-      marginBottom: 2,
+      marginBottom: 1,
     },
     itemDate: {
       fontSize: fs.small - 1,
       color: "#94a3b8",
-      marginBottom: 3,
+      marginBottom: 2,
     },
     itemDescription: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.4,
+      lineHeight: 1.3,
     },
     skillBadge: {
       backgroundColor: accentColor,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 10,
-      marginBottom: 4,
+      paddingHorizontal: 6,
+      paddingVertical: 3,
+      borderRadius: 8,
+      marginBottom: 3,
     },
     skillText: {
       fontSize: fs.small - 1,
@@ -142,8 +144,8 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
     langItem: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginBottom: 4,
-      paddingVertical: 3,
+      marginBottom: 3,
+      paddingVertical: 2,
       borderBottomWidth: 1,
       borderBottomColor: "#e2e8f0",
     },
@@ -258,7 +260,7 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>{t.certifications}</Text>
                 {data.certifications.map((cert) => (
-                  <View key={cert.id} style={{ marginBottom: 6 }}>
+                  <View key={cert.id} style={{ marginBottom: 5 }}>
                     <Text style={{ fontSize: fs.small, fontWeight: 700, color: "#1e293b" }}>{cert.name}</Text>
                     <Text style={{ fontSize: fs.small - 1, color: "#64748b" }}>{cert.institution}</Text>
                   </View>
@@ -270,7 +272,7 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>{t.projects}</Text>
                 {data.projects.map((proj) => (
-                  <View key={proj.id} style={{ marginBottom: 6 }}>
+                  <View key={proj.id} style={{ marginBottom: 5 }}>
                     <Text style={{ fontSize: fs.small, fontWeight: 700, color: "#1e293b" }}>{proj.name}</Text>
                     {proj.description && (
                       <Text style={{ fontSize: fs.small - 1, color: "#475569" }}>{proj.description}</Text>

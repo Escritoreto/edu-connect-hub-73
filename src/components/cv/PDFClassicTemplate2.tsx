@@ -23,7 +23,6 @@ interface Props {
   data: CVData;
 }
 
-// Classic2: Two-column layout with sidebar on left
 export const PDFClassicTemplate2 = ({ data }: Props) => {
   const accentColor = "#2563eb";
   const t = cvTranslations[data.cvLanguage || "pt"];
@@ -31,109 +30,24 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
   const fs = getFontSizes(data.fontSize || "medium");
 
   const styles = StyleSheet.create({
-    page: {
-      fontFamily: "Roboto",
-      fontSize: fs.body,
-      flexDirection: "row",
-    },
-    sidebar: {
-      width: "35%",
-      backgroundColor: "#1e3a5f",
-      padding: 20,
-      color: "#ffffff",
-    },
-    main: {
-      width: "65%",
-      padding: 25,
-    },
-    photo: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
-      marginBottom: 15,
-      alignSelf: "center",
-      objectFit: "cover",
-      borderWidth: 3,
-      borderColor: "#ffffff",
-    },
-    sidebarName: {
-      fontSize: fs.name - 6,
-      fontWeight: 700,
-      color: "#ffffff",
-      textAlign: "center",
-      marginBottom: 5,
-    },
-    sidebarTitle: {
-      fontSize: fs.small,
-      color: "#93c5fd",
-      textAlign: "center",
-      marginBottom: 15,
-    },
-    sidebarSection: {
-      marginBottom: 15,
-    },
-    sidebarSectionTitle: {
-      fontSize: fs.body,
-      fontWeight: 700,
-      color: "#93c5fd",
-      textTransform: "uppercase",
-      letterSpacing: 1,
-      marginBottom: 8,
-      borderBottomWidth: 1,
-      borderBottomColor: "#3b82f6",
-      paddingBottom: 4,
-    },
-    sidebarItem: {
-      fontSize: fs.small,
-      color: "#e2e8f0",
-      marginBottom: 4,
-    },
-    mainSection: {
-      marginBottom: 18,
-    },
-    mainSectionTitle: {
-      fontSize: fs.sectionTitle,
-      fontWeight: 700,
-      color: accentColor,
-      textTransform: "uppercase",
-      letterSpacing: 1,
-      marginBottom: 10,
-      borderBottomWidth: 2,
-      borderBottomColor: accentColor,
-      paddingBottom: 4,
-    },
-    summaryText: {
-      fontSize: fs.body,
-      color: "#475569",
-      lineHeight: 1.5,
-    },
-    itemContainer: {
-      marginBottom: 12,
-    },
-    itemHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginBottom: 2,
-    },
-    itemTitle: {
-      fontSize: fs.jobTitle,
-      fontWeight: 700,
-      color: "#1e293b",
-    },
-    itemDate: {
-      fontSize: fs.small,
-      color: accentColor,
-    },
-    itemSubtitle: {
-      fontSize: fs.small,
-      color: "#64748b",
-      marginBottom: 3,
-    },
-    itemDescription: {
-      fontSize: fs.small,
-      color: "#475569",
-      lineHeight: 1.4,
-    },
+    page: { fontFamily: "Roboto", fontSize: fs.body, flexDirection: "row", minHeight: "100%" },
+    sidebar: { width: "35%", backgroundColor: "#1e3a5f", padding: 15, color: "#ffffff", minHeight: "100%" },
+    main: { width: "65%", padding: 18 },
+    photo: { width: 70, height: 70, borderRadius: 35, marginBottom: 10, alignSelf: "center", objectFit: "cover", borderWidth: 2, borderColor: "#ffffff" },
+    sidebarName: { fontSize: fs.name - 6, fontWeight: 700, color: "#ffffff", textAlign: "center", marginBottom: 3 },
+    sidebarTitle: { fontSize: fs.small, color: "#93c5fd", textAlign: "center", marginBottom: 12 },
+    sidebarSection: { marginBottom: 12 },
+    sidebarSectionTitle: { fontSize: fs.body, fontWeight: 700, color: "#93c5fd", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, borderBottomWidth: 1, borderBottomColor: "#3b82f6", paddingBottom: 3 },
+    sidebarItem: { fontSize: fs.small, color: "#e2e8f0", marginBottom: 3 },
+    mainSection: { marginBottom: 12 },
+    mainSectionTitle: { fontSize: fs.sectionTitle, fontWeight: 700, color: accentColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, borderBottomWidth: 2, borderBottomColor: accentColor, paddingBottom: 3 },
+    summaryText: { fontSize: fs.body, color: "#475569", lineHeight: 1.4 },
+    itemContainer: { marginBottom: 8 },
+    itemHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 1 },
+    itemTitle: { fontSize: fs.jobTitle, fontWeight: 700, color: "#1e293b" },
+    itemDate: { fontSize: fs.small, color: accentColor },
+    itemSubtitle: { fontSize: fs.small, color: "#64748b", marginBottom: 2 },
+    itemDescription: { fontSize: fs.small, color: "#475569", lineHeight: 1.3 },
   });
 
   const formatDate = (dateStr: string) => {
@@ -152,42 +66,32 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.sidebar}>
-          {data.photoPreview && (
-            <Image src={data.photoPreview} style={styles.photo} />
-          )}
+          {data.photoPreview && <Image src={data.photoPreview} style={styles.photo} />}
           <Text style={styles.sidebarName}>{fullName}</Text>
           {jobTitle && <Text style={styles.sidebarTitle}>{jobTitle}</Text>}
-
           <View style={styles.sidebarSection}>
             <Text style={styles.sidebarSectionTitle}>{t.contact}</Text>
             {data.email && <Text style={styles.sidebarItem}>{data.email}</Text>}
             {phone && <Text style={styles.sidebarItem}>{phone}</Text>}
             {data.location && <Text style={styles.sidebarItem}>{data.location}</Text>}
           </View>
-
           {data.skills.length > 0 && (
             <View style={styles.sidebarSection}>
               <Text style={styles.sidebarSectionTitle}>{t.skills}</Text>
-              {data.skills.map((skill, index) => (
-                <Text key={index} style={styles.sidebarItem}>• {skill}</Text>
-              ))}
+              {data.skills.map((skill, index) => <Text key={index} style={styles.sidebarItem}>• {skill}</Text>)}
             </View>
           )}
-
           {data.languages.length > 0 && (
             <View style={styles.sidebarSection}>
               <Text style={styles.sidebarSectionTitle}>{t.languages}</Text>
-              {data.languages.map((lang) => (
-                <Text key={lang.id} style={styles.sidebarItem}>{lang.name} - {lang.level}</Text>
-              ))}
+              {data.languages.map((lang) => <Text key={lang.id} style={styles.sidebarItem}>{lang.name} - {lang.level}</Text>)}
             </View>
           )}
-
           {data.certifications.length > 0 && (
             <View style={styles.sidebarSection}>
               <Text style={styles.sidebarSectionTitle}>{t.certifications}</Text>
               {data.certifications.map((cert) => (
-                <View key={cert.id} style={{ marginBottom: 5 }}>
+                <View key={cert.id} style={{ marginBottom: 4 }}>
                   <Text style={{ fontSize: fs.small, fontWeight: 700, color: "#ffffff" }}>{cert.name}</Text>
                   <Text style={{ fontSize: fs.small - 1, color: "#94a3b8" }}>{cert.institution}</Text>
                 </View>
@@ -195,7 +99,6 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
             </View>
           )}
         </View>
-
         <View style={styles.main}>
           {data.summary && (
             <View style={styles.mainSection}>
@@ -203,7 +106,6 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
               <Text style={styles.summaryText}>{data.summary}</Text>
             </View>
           )}
-
           {data.experience.length > 0 && (
             <View style={styles.mainSection}>
               <Text style={styles.mainSectionTitle}>{t.experience}</Text>
@@ -211,19 +113,14 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
                 <View key={exp.id} style={styles.itemContainer}>
                   <View style={styles.itemHeader}>
                     <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
-                    <Text style={styles.itemDate}>
-                      {formatDate(exp.startDate)} - {formatDate(exp.endDate) || t.present}
-                    </Text>
+                    <Text style={styles.itemDate}>{formatDate(exp.startDate)} - {formatDate(exp.endDate) || t.present}</Text>
                   </View>
                   <Text style={styles.itemSubtitle}>{exp.company}</Text>
-                  {exp.responsibilities && (
-                    <Text style={styles.itemDescription}>{exp.responsibilities}</Text>
-                  )}
+                  {exp.responsibilities && <Text style={styles.itemDescription}>{exp.responsibilities}</Text>}
                 </View>
               ))}
             </View>
           )}
-
           {data.education.length > 0 && (
             <View style={styles.mainSection}>
               <Text style={styles.mainSectionTitle}>{t.education}</Text>
@@ -231,25 +128,20 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
                 <View key={edu.id} style={styles.itemContainer}>
                   <View style={styles.itemHeader}>
                     <Text style={styles.itemTitle}>{edu.degree}</Text>
-                    <Text style={styles.itemDate}>
-                      {formatDate(edu.startDate)} - {formatDate(edu.endDate) || t.studying}
-                    </Text>
+                    <Text style={styles.itemDate}>{formatDate(edu.startDate)} - {formatDate(edu.endDate) || t.studying}</Text>
                   </View>
                   <Text style={styles.itemSubtitle}>{edu.institution}</Text>
                 </View>
               ))}
             </View>
           )}
-
           {data.projects.length > 0 && (
             <View style={styles.mainSection}>
               <Text style={styles.mainSectionTitle}>{t.projects}</Text>
               {data.projects.map((proj) => (
                 <View key={proj.id} style={styles.itemContainer}>
                   <Text style={styles.itemTitle}>{proj.name}</Text>
-                  {proj.description && (
-                    <Text style={styles.itemDescription}>{proj.description}</Text>
-                  )}
+                  {proj.description && <Text style={styles.itemDescription}>{proj.description}</Text>}
                 </View>
               ))}
             </View>
