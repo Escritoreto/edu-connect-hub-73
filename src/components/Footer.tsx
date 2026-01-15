@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
-import { GraduationCap, Facebook, Twitter, Instagram, Linkedin, Mail } from "lucide-react";
-
+import { GraduationCap, Facebook, Instagram, Mail } from "lucide-react";
 const Footer = () => {
-  return (
-    <footer className="bg-muted/30 border-t border-border">
+  return <footer className="bg-muted/30 border-t border-border">
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -22,13 +20,13 @@ const Footer = () => {
                 <Facebook className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter className="h-5 w-5" />
+                
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Linkedin className="h-5 w-5" />
+                
               </a>
             </div>
           </div>
@@ -94,11 +92,7 @@ const Footer = () => {
               Receba dicas e novidades sobre bolsas e educação.
             </p>
             <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Seu e-mail"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              />
+              <input type="email" placeholder="Seu e-mail" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
               <button className="inline-flex items-center justify-center h-10 px-4 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
                 <Mail className="h-4 w-4" />
               </button>
@@ -118,8 +112,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
