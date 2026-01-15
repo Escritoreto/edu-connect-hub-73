@@ -11,9 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home } from "lucide-react";
+import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home, GraduationCap } from "lucide-react";
 import EnrollmentsManager from "@/components/admin/EnrollmentsManager";
 import PublicationsManager from "@/components/admin/PublicationsManager";
+import ScholarshipRequestsManager from "@/components/admin/ScholarshipRequestsManager";
 
 const Admin = () => {
   const { user, loading: authLoading, isAdmin, signOut } = useAuth();
@@ -343,7 +344,7 @@ const Admin = () => {
 
           {/* Main Tabs */}
           <Tabs defaultValue="manage" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
+            <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
               <TabsTrigger value="manage" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                 <FileText className="h-4 w-4" />
                 Gerenciar
@@ -353,7 +354,11 @@ const Admin = () => {
               </TabsTrigger>
               <TabsTrigger value="enrollments" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                 <BookOpen className="h-4 w-4" />
-                Inscrições
+                Cursos
+              </TabsTrigger>
+              <TabsTrigger value="scholarships" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <GraduationCap className="h-4 w-4" />
+                Bolsas
               </TabsTrigger>
             </TabsList>
 
@@ -724,6 +729,10 @@ const Admin = () => {
 
             <TabsContent value="enrollments">
               <EnrollmentsManager />
+            </TabsContent>
+
+            <TabsContent value="scholarships">
+              <ScholarshipRequestsManager />
             </TabsContent>
           </Tabs>
         </div>

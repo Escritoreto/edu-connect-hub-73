@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import CourseRegistrationForm from "@/components/CourseRegistrationForm";
+import ScholarshipRequestForm from "@/components/ScholarshipRequestForm";
 interface Publication {
   id: string;
   title: string;
@@ -433,14 +434,63 @@ const PublicationDetail = () => {
                 </div>
               </div>}
 
-            {/* CTA Footer for Scholarships */}
-            {publication.category !== 'course' && publication.external_link && <Card className="bg-gradient-primary text-primary-foreground">
+            {/* Scholarship Orientation Request Form */}
+            {publication.category === 'scholarship' && <div className="mt-8">
+                <Separator className="my-8" />
+                <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
+                  <GraduationCap className="h-7 w-7 text-primary" />
+                  Solicitar Orientação
+                </h2>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <Card className="bg-muted/50">
+                      <CardHeader>
+                        <CardTitle className="text-lg">Por que solicitar orientação?</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex items-start gap-3 py-2">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Análise do seu perfil</p>
+                            <p className="text-sm text-muted-foreground">Avaliamos suas qualificações e chances</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 py-2">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Orientação personalizada</p>
+                            <p className="text-sm text-muted-foreground">Receba dicas específicas para sua candidatura</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 py-2">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Suporte na documentação</p>
+                            <p className="text-sm text-muted-foreground">Ajudamos com os documentos necessários</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 py-2">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Acompanhamento contínuo</p>
+                            <p className="text-sm text-muted-foreground">Suporte até a aprovação final</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <ScholarshipRequestForm scholarshipTitle={publication.title} scholarshipId={publication.id} />
+                </div>
+              </div>}
+
+            {/* CTA Footer for Scholarships with external link */}
+            {publication.category === 'scholarship' && publication.external_link && <Card className="bg-gradient-primary text-primary-foreground mt-8">
                 <CardContent className="p-8 text-center">
                   <h3 className="text-2xl font-bold mb-4">
-                    Pronto para Candidatar-se?
+                    Pronto para Candidatar-se Diretamente?
                   </h3>
                   <p className="text-lg mb-6 opacity-90">
-                    Não perca esta oportunidade! Candidate-se agora e dê o próximo passo na sua carreira acadêmica.
+                    Se preferir, você também pode se candidatar diretamente no site oficial da bolsa.
                   </p>
                   <Button size="lg" variant="secondary" asChild>
                     <a href={publication.external_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mx-auto w-fit">
