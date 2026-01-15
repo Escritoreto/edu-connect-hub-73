@@ -39,14 +39,16 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
     },
     main: {
       width: "68%",
-      padding: 30,
+      padding: 20,
+      paddingBottom: 15,
     },
     sidebar: {
       width: "32%",
       backgroundColor: "#faf5ff",
-      padding: 20,
+      padding: 15,
       borderLeftWidth: 2,
       borderLeftColor: accentColor,
+      minHeight: "100%",
     },
     headerName: {
       fontSize: fs.name + 6,
@@ -66,10 +68,10 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       fontWeight: 300,
       textTransform: "uppercase",
       letterSpacing: 3,
-      marginBottom: 20,
+      marginBottom: 12,
     },
     section: {
-      marginBottom: 20,
+      marginBottom: 12,
     },
     sectionTitle: {
       fontSize: fs.jobTitle,
@@ -77,8 +79,8 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       color: "#111827",
       textTransform: "uppercase",
       letterSpacing: 2,
-      marginBottom: 10,
-      paddingBottom: 5,
+      marginBottom: 6,
+      paddingBottom: 3,
       borderBottomWidth: 1,
       borderBottomColor: accentColor,
     },
@@ -89,7 +91,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       lineHeight: 1.7,
     },
     itemContainer: {
-      marginBottom: 12,
+      marginBottom: 8,
     },
     itemRow: {
       flexDirection: "row",
@@ -121,14 +123,14 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       lineHeight: 1.5,
     },
     photo: {
-      width: 100,
-      height: 100,
+      width: 80,
+      height: 80,
       alignSelf: "center",
-      marginBottom: 20,
+      marginBottom: 12,
       objectFit: "cover",
     },
     sidebarSection: {
-      marginBottom: 18,
+      marginBottom: 12,
     },
     sidebarTitle: {
       fontSize: fs.small,
@@ -136,7 +138,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       color: accentColor,
       textTransform: "uppercase",
       letterSpacing: 1,
-      marginBottom: 8,
+      marginBottom: 5,
     },
     contactItem: {
       fontSize: fs.small - 1,
@@ -200,7 +202,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.main}>
-          <View style={{ marginBottom: 25 }}>
+          <View style={{ marginBottom: 15 }}>
             <Text style={styles.headerName}>{data.firstName}</Text>
             <Text style={styles.headerLastName}>{data.lastName}</Text>
             {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}

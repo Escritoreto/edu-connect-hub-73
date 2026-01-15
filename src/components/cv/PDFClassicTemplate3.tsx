@@ -35,19 +35,20 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
     page: {
       fontFamily: "Roboto",
       fontSize: fs.body,
-      padding: 30,
+      padding: 20,
+      paddingBottom: 15,
     },
     header: {
       flexDirection: "row",
-      gap: 15,
-      paddingBottom: 15,
+      gap: 10,
+      paddingBottom: 10,
       borderBottomWidth: 2,
       borderBottomColor: accentLight,
-      marginBottom: 15,
+      marginBottom: 10,
     },
     photo: {
-      width: 70,
-      height: 70,
+      width: 60,
+      height: 60,
       borderRadius: 6,
       objectFit: "cover",
       borderWidth: 2,
@@ -78,7 +79,7 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
     },
     twoColumn: {
       flexDirection: "row",
-      gap: 20,
+      gap: 15,
     },
     mainColumn: {
       width: "65%",
@@ -87,7 +88,7 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
       width: "35%",
     },
     section: {
-      marginBottom: 14,
+      marginBottom: 10,
     },
     sectionBar: {
       width: 20,
@@ -102,10 +103,10 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
       textAlign: "justify",
     },
     timelineItem: {
-      paddingLeft: 12,
+      paddingLeft: 10,
       borderLeftWidth: 2,
       borderLeftColor: accentLight,
-      marginBottom: 10,
+      marginBottom: 6,
       position: "relative",
     },
     timelineDot: {

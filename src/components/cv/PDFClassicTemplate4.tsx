@@ -42,8 +42,9 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
     header: {
       flexDirection: "row",
       alignItems: "center",
-      padding: 25,
-      borderBottomWidth: 4,
+      padding: 15,
+      paddingHorizontal: 20,
+      borderBottomWidth: 3,
       borderBottomColor: accentColor,
       backgroundColor: "#ffffff",
     },
@@ -51,11 +52,11 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       flex: 1,
     },
     photo: {
-      width: 85,
-      height: 85,
+      width: 65,
+      height: 65,
       borderRadius: 6,
       objectFit: "cover",
-      borderWidth: 3,
+      borderWidth: 2,
       borderColor: accentColor,
     },
     name: {
@@ -72,11 +73,11 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
     },
     contactBar: {
       backgroundColor: accentLight,
-      paddingVertical: 8,
-      paddingHorizontal: 25,
+      paddingVertical: 6,
+      paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "center",
-      gap: 20,
+      gap: 15,
       flexWrap: "wrap",
     },
     contactItem: {
@@ -84,11 +85,12 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       color: "#1e293b",
     },
     body: {
-      padding: 25,
+      padding: 15,
+      paddingHorizontal: 20,
     },
     threeColumn: {
       flexDirection: "row",
-      gap: 15,
+      gap: 12,
     },
     mainColumn: {
       width: "66%",
@@ -97,19 +99,19 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       width: "34%",
     },
     section: {
-      marginBottom: 15,
+      marginBottom: 10,
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 10,
+      marginBottom: 6,
     },
     summaryBox: {
       backgroundColor: "#ffffff",
-      padding: 12,
-      borderRadius: 6,
-      borderLeftWidth: 4,
+      padding: 8,
+      borderRadius: 4,
+      borderLeftWidth: 3,
       borderLeftColor: accentColor,
     },
     summaryText: {
@@ -120,10 +122,10 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
     },
     expCard: {
       backgroundColor: "#ffffff",
-      padding: 12,
-      borderRadius: 6,
-      marginBottom: 10,
-      borderTopWidth: 3,
+      padding: 8,
+      borderRadius: 4,
+      marginBottom: 6,
+      borderTopWidth: 2,
       borderTopColor: accentColor,
     },
     itemTitle: {
@@ -149,9 +151,9 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
     },
     sideCard: {
       backgroundColor: "#ffffff",
-      padding: 12,
-      borderRadius: 6,
-      marginBottom: 12,
+      padding: 8,
+      borderRadius: 4,
+      marginBottom: 8,
     },
     skillBadge: {
       backgroundColor: accentColor,
