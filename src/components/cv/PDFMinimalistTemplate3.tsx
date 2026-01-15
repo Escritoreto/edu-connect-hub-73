@@ -35,17 +35,18 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
     page: {
       fontFamily: "Roboto",
       fontSize: fs.body,
-      padding: 35,
+      padding: 20,
+      paddingBottom: 15,
     },
     header: {
       alignItems: "center",
-      marginBottom: 20,
+      marginBottom: 12,
     },
     photo: {
-      width: 70,
-      height: 70,
-      borderRadius: 35,
-      marginBottom: 10,
+      width: 55,
+      height: 55,
+      borderRadius: 28,
+      marginBottom: 6,
       objectFit: "cover",
     },
     name: {
@@ -61,14 +62,14 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       fontWeight: 300,
       textTransform: "uppercase",
       letterSpacing: 3,
-      marginBottom: 10,
+      marginBottom: 6,
       textAlign: "center",
     },
     contactRow: {
       flexDirection: "row",
       justifyContent: "center",
-      gap: 15,
-      paddingTop: 10,
+      gap: 12,
+      paddingTop: 6,
       borderTopWidth: 1,
       borderTopColor: "#e5e7eb",
     },
@@ -78,12 +79,12 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       fontWeight: 300,
     },
     section: {
-      marginBottom: 18,
+      marginBottom: 12,
     },
     sectionHeader: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 10,
+      marginBottom: 6,
     },
     sectionLine: {
       flex: 1,
@@ -106,8 +107,8 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       textAlign: "center",
     },
     itemContainer: {
-      marginBottom: 10,
-      paddingBottom: 10,
+      marginBottom: 6,
+      paddingBottom: 6,
       borderBottomWidth: 1,
       borderBottomColor: "#f3f4f6",
     },
@@ -141,7 +142,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
     },
     threeColumns: {
       flexDirection: "row",
-      gap: 15,
+      gap: 12,
     },
     column: {
       flex: 1,
@@ -152,7 +153,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       color: accentColor,
       textTransform: "uppercase",
       letterSpacing: 1,
-      marginBottom: 8,
+      marginBottom: 5,
       textAlign: "center",
     },
     skillItem: {
@@ -277,7 +278,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
         </View>
 
         {data.projects.length > 0 && (
-          <View style={[styles.section, { marginTop: 15 }]}>
+          <View style={[styles.section, { marginTop: 10 }]}>
             <View style={styles.sectionHeader}>
               <View style={styles.sectionLine} />
               <Text style={styles.sectionTitle}>{t.projects}</Text>

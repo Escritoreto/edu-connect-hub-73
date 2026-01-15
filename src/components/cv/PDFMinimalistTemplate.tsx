@@ -44,10 +44,11 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
     page: {
       fontFamily: "Roboto",
       fontSize: fs.body,
-      padding: 40,
+      padding: 20,
+      paddingBottom: 15,
     },
     header: {
-      marginBottom: 20,
+      marginBottom: 12,
     },
     headerRow: {
       flexDirection: "row",
@@ -78,11 +79,11 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
     divider: {
       height: 1,
       backgroundColor: "#d1d5db",
-      marginVertical: 15,
+      marginVertical: 10,
     },
     contactRow: {
       flexDirection: "row",
-      gap: 20,
+      gap: 15,
     },
     contactItem: {
       fontSize: fs.contact,
@@ -90,7 +91,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       fontWeight: 300,
     },
     section: {
-      marginBottom: 15,
+      marginBottom: 10,
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
@@ -98,7 +99,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       color: "#111827",
       textTransform: "uppercase",
       letterSpacing: 2,
-      marginBottom: 10,
+      marginBottom: 6,
     },
     summaryText: {
       fontSize: fs.body,
@@ -107,7 +108,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       lineHeight: 1.6,
     },
     itemContainer: {
-      marginBottom: 10,
+      marginBottom: 6,
     },
     itemRow: {
       flexDirection: "row",
@@ -139,7 +140,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
     },
     threeColumnRow: {
       flexDirection: "row",
-      gap: 15,
+      gap: 12,
     },
     column: {
       flex: 1,
@@ -178,8 +179,8 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       fontWeight: 300,
     },
     photo: {
-      width: 70,
-      height: 70,
+      width: 60,
+      height: 60,
       objectFit: "cover",
     },
   });
@@ -301,7 +302,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
         </View>
 
         {data.projects.length > 0 && (
-          <View style={[styles.section, { marginTop: 10 }]}>
+          <View style={[styles.section, { marginTop: 6 }]}>
             <Text style={styles.sectionTitle}>{t.projects}</Text>
             {data.projects.map((proj) => (
               <View key={proj.id} style={styles.itemContainer}>

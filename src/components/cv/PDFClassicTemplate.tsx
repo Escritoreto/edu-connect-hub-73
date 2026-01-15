@@ -43,14 +43,15 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
     page: {
       fontFamily: "Roboto",
       fontSize: fs.body,
-      padding: 35,
+      padding: 20,
+      paddingBottom: 15,
     },
     header: {
       textAlign: "center",
       borderBottomWidth: 3,
       borderBottomColor: accentColor,
-      paddingBottom: 12,
-      marginBottom: 15,
+      paddingBottom: 8,
+      marginBottom: 10,
     },
     name: {
       fontSize: fs.name,
@@ -74,7 +75,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       color: "#64748b",
     },
     section: {
-      marginBottom: 12,
+      marginBottom: 8,
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
@@ -82,7 +83,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       color: accentColor,
       textTransform: "uppercase",
       letterSpacing: 1,
-      marginBottom: 8,
+      marginBottom: 5,
     },
     summaryText: {
       fontSize: fs.body,
@@ -96,7 +97,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       paddingLeft: 12,
     },
     itemContainer: {
-      marginBottom: 10,
+      marginBottom: 6,
     },
     itemTitle: {
       fontSize: fs.jobTitle,
@@ -122,7 +123,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
     },
     twoColumnRow: {
       flexDirection: "row",
-      gap: 20,
+      gap: 15,
     },
     column: {
       flex: 1,
@@ -146,7 +147,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
     certGrid: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: 10,
+      gap: 6,
     },
     certItem: {
       width: "48%",
@@ -161,10 +162,10 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       color: "#64748b",
     },
     photo: {
-      width: 90,
-      height: 90,
-      borderRadius: 45,
-      marginBottom: 12,
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      marginBottom: 8,
       alignSelf: "center",
       objectFit: "cover",
     },
@@ -196,7 +197,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
         </View>
 
         {data.photoPreview && (
-          <View style={{ alignItems: "center", marginBottom: 12 }}>
+          <View style={{ alignItems: "center", marginBottom: 8 }}>
             <Image src={data.photoPreview} style={styles.photo} />
           </View>
         )}
@@ -271,7 +272,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
         </View>
 
         {data.certifications.length > 0 && (
-          <View style={[styles.section, { marginTop: 12 }]}>
+          <View style={[styles.section, { marginTop: 8 }]}>
             <Text style={styles.sectionTitle}>{t.certifications}</Text>
             <View style={styles.certGrid}>
               {data.certifications.map((cert) => (
