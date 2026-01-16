@@ -77,25 +77,20 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     setIsSubmitting(true);
     
     try {
-      // Save to database if user is logged in
-      if (user) {
-        const { error } = await supabase
-          .from("course_enrollments")
-          .upsert({
-            user_id: user.id,
-            publication_id: courseId,
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            city: data.city,
-            status: "pending",
-          }, {
-            onConflict: "user_id,publication_id"
-          });
+      const { error } = await supabase
+        .from("course_enrollments")
+        .insert({
+          user_id: user?.id || null,
+          publication_id: courseId,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          city: data.city,
+          status: "pending",
+        });
 
-        if (error) {
-          throw error;
-        }
+      if (error) {
+        throw error;
       }
       
       toast({
