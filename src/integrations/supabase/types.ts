@@ -25,7 +25,7 @@ export type Database = {
           publication_id: string
           status: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           city: string
@@ -37,7 +37,7 @@ export type Database = {
           publication_id: string
           status?: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           city?: string
@@ -49,7 +49,7 @@ export type Database = {
           publication_id?: string
           status?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -213,7 +213,7 @@ export type Database = {
           publication_id: string
           status: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           city: string
@@ -226,7 +226,7 @@ export type Database = {
           publication_id: string
           status?: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           city?: string
@@ -239,7 +239,7 @@ export type Database = {
           publication_id?: string
           status?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {

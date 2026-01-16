@@ -77,22 +77,13 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
   });
 
   const onSubmit = async (data: FormData) => {
-    if (!user) {
-      toast({
-        title: "Login necessário",
-        description: "Você precisa estar logado para solicitar orientação.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
     
     try {
       const { error } = await supabase
         .from("scholarship_requests")
         .insert({
-          user_id: user.id,
+          user_id: user?.id || null,
           publication_id: scholarshipId,
           name: data.name,
           email: data.email,
@@ -279,7 +270,7 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
               type="submit" 
               className="w-full mt-6" 
               size="lg"
-              disabled={isSubmitting || !user}
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
                 "A enviar..."
@@ -290,12 +281,6 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
                 </>
               )}
             </Button>
-            
-            {!user && (
-              <p className="text-sm text-muted-foreground text-center">
-                Você precisa estar logado para solicitar orientação.
-              </p>
-            )}
           </form>
         </Form>
       </CardContent>
