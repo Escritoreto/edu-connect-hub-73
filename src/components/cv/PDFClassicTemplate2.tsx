@@ -31,11 +31,11 @@ export const PDFClassicTemplate2 = ({ data }: Props) => {
 
   const styles = StyleSheet.create({
     page: { fontFamily: "Roboto", fontSize: fs.body, flexDirection: "row", minHeight: "100%" },
-    sidebar: { width: "35%", backgroundColor: "#1e3a5f", padding: 15, color: "#ffffff", minHeight: "100%" },
-    main: { width: "65%", padding: 18 },
+    sidebar: { width: "35%", backgroundColor: "#1e3a5f", padding: 12, color: "#ffffff", minHeight: "100%" },
+    main: { width: "65%", padding: 14 },
     photo: { width: 70, height: 70, borderRadius: 35, marginBottom: 10, alignSelf: "center", objectFit: "cover", borderWidth: 2, borderColor: "#ffffff" },
-    sidebarName: { fontSize: fs.name - 6, fontWeight: 700, color: "#ffffff", textAlign: "center", marginBottom: 3 },
-    sidebarTitle: { fontSize: fs.small, color: "#93c5fd", textAlign: "center", marginBottom: 12 },
+    sidebarName: { fontSize: fs.name - 2, fontWeight: 700, color: "#ffffff", textAlign: "center", marginBottom: 3 },
+    sidebarTitle: { fontSize: fs.jobTitle, color: "#93c5fd", textAlign: "center", marginBottom: 12 },
     sidebarSection: { marginBottom: 12 },
     sidebarSectionTitle: { fontSize: fs.body, fontWeight: 700, color: "#93c5fd", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, borderBottomWidth: 1, borderBottomColor: "#3b82f6", paddingBottom: 3 },
     sidebarItem: { fontSize: fs.small, color: "#e2e8f0", marginBottom: 3 },

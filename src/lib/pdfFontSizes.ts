@@ -13,31 +13,31 @@ export const getFontSizes = (preset: FontSizePreset): FontSizes => {
   switch (preset) {
     case "small":
       return {
-        name: 20,
-        jobTitle: 9,
-        sectionTitle: 10,
-        body: 8,
-        small: 7,
-        contact: 7,
+        name: 24,
+        jobTitle: 11,
+        sectionTitle: 12,
+        body: 10,
+        small: 9,
+        contact: 9,
       };
     case "large":
+      return {
+        name: 32,
+        jobTitle: 15,
+        sectionTitle: 16,
+        body: 13,
+        small: 12,
+        contact: 12,
+      };
+    case "medium":
+    default:
       return {
         name: 28,
         jobTitle: 13,
         sectionTitle: 14,
         body: 11,
-        small: 9,
+        small: 10,
         contact: 10,
-      };
-    case "medium":
-    default:
-      return {
-        name: 24,
-        jobTitle: 11,
-        sectionTitle: 12,
-        body: 9,
-        small: 8,
-        contact: 8,
       };
   }
 };
