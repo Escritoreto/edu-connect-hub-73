@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -29,7 +30,9 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
   const accentColor = "#7c3aed";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: {
@@ -39,13 +42,13 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
     },
     main: {
       width: "68%",
-      padding: 20,
-      paddingBottom: 15,
+      padding: applyAutoAdjustToPadding(20, autoAdjust),
+      paddingBottom: applyAutoAdjustToPadding(15, autoAdjust),
     },
     sidebar: {
       width: "32%",
       backgroundColor: "#faf5ff",
-      padding: 15,
+      padding: applyAutoAdjustToPadding(15, autoAdjust),
       borderLeftWidth: 2,
       borderLeftColor: accentColor,
       minHeight: "100%",

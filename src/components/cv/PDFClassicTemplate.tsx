@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -37,14 +38,16 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
   const accentColor = getAccentColor(templateId);
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
       fontSize: fs.body,
-      padding: 20,
-      paddingBottom: 15,
+      padding: applyAutoAdjustToPadding(20, autoAdjust),
+      paddingBottom: applyAutoAdjustToPadding(15, autoAdjust),
     },
     header: {
       textAlign: "center",
@@ -75,7 +78,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       color: "#64748b",
     },
     section: {
-      marginBottom: 8,
+      marginBottom: applyAutoAdjustToSpacing(8, autoAdjust),
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
@@ -83,21 +86,21 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       color: accentColor,
       textTransform: "uppercase",
       letterSpacing: 1,
-      marginBottom: 5,
+      marginBottom: applyAutoAdjustToSpacing(5, autoAdjust),
     },
     summaryText: {
       fontSize: fs.body,
       color: "#475569",
-      lineHeight: 1.5,
+      lineHeight: applyAutoAdjustToLineHeight(1.5, autoAdjust),
       textAlign: "justify",
     },
     experienceContainer: {
       borderLeftWidth: 3,
       borderLeftColor: "#d1d5db",
-      paddingLeft: 12,
+      paddingLeft: applyAutoAdjustToPadding(12, autoAdjust),
     },
     itemContainer: {
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
     },
     itemTitle: {
       fontSize: fs.jobTitle,
@@ -108,17 +111,17 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
       fontSize: fs.body,
       color: "#64748b",
       fontStyle: "italic",
-      marginBottom: 2,
+      marginBottom: applyAutoAdjustToSpacing(2, autoAdjust),
     },
     itemDate: {
       fontSize: fs.small,
       color: "#94a3b8",
-      marginBottom: 3,
+      marginBottom: applyAutoAdjustToSpacing(3, autoAdjust),
     },
     itemDescription: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.4,
+      lineHeight: applyAutoAdjustToLineHeight(1.4, autoAdjust),
       textAlign: "justify",
     },
     twoColumnRow: {

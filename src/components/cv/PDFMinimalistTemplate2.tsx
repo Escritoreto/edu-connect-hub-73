@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -28,31 +29,33 @@ export const PDFMinimalistTemplate2 = ({ data }: Props) => {
   const accentColor = "#2563eb";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: { fontFamily: "Roboto", fontSize: fs.body, flexDirection: "row", minHeight: "100%" },
-    sidebar: { width: "30%", backgroundColor: "#f8fafc", padding: 15, borderRightWidth: 1, borderRightColor: "#e2e8f0", minHeight: "100%" },
-    main: { width: "70%", padding: 18 },
-    photo: { width: 70, height: 70, marginBottom: 12, alignSelf: "center", objectFit: "cover" },
-    sidebarSection: { marginBottom: 14 },
-    sidebarTitle: { fontSize: fs.body, fontWeight: 700, color: accentColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6, paddingBottom: 3, borderBottomWidth: 1, borderBottomColor: accentColor },
-    contactItem: { fontSize: fs.small, color: "#475569", marginBottom: 4, fontWeight: 300 },
-    skillItem: { fontSize: fs.small, color: "#475569", fontWeight: 300, marginBottom: 3, paddingLeft: 6, borderLeftWidth: 2, borderLeftColor: accentColor },
-    langItem: { fontSize: fs.small, color: "#475569", fontWeight: 300, marginBottom: 2 },
+    sidebar: { width: "30%", backgroundColor: "#f8fafc", padding: applyAutoAdjustToPadding(15, autoAdjust), borderRightWidth: 1, borderRightColor: "#e2e8f0", minHeight: "100%" },
+    main: { width: "70%", padding: applyAutoAdjustToPadding(18, autoAdjust) },
+    photo: { width: 70 * autoAdjust.fontScale, height: 70 * autoAdjust.fontScale, marginBottom: applyAutoAdjustToSpacing(12, autoAdjust), alignSelf: "center", objectFit: "cover" },
+    sidebarSection: { marginBottom: applyAutoAdjustToSpacing(14, autoAdjust) },
+    sidebarTitle: { fontSize: fs.body, fontWeight: 700, color: accentColor, textTransform: "uppercase", letterSpacing: 1, marginBottom: applyAutoAdjustToSpacing(6, autoAdjust), paddingBottom: applyAutoAdjustToSpacing(3, autoAdjust), borderBottomWidth: 1, borderBottomColor: accentColor },
+    contactItem: { fontSize: fs.small, color: "#475569", marginBottom: applyAutoAdjustToSpacing(4, autoAdjust), fontWeight: 300 },
+    skillItem: { fontSize: fs.small, color: "#475569", fontWeight: 300, marginBottom: applyAutoAdjustToSpacing(3, autoAdjust), paddingLeft: 6, borderLeftWidth: 2, borderLeftColor: accentColor },
+    langItem: { fontSize: fs.small, color: "#475569", fontWeight: 300, marginBottom: applyAutoAdjustToSpacing(2, autoAdjust) },
     name: { fontSize: fs.name + 2, fontWeight: 300, color: "#1e293b", marginBottom: 1 },
-    lastName: { fontSize: fs.name + 2, fontWeight: 700, color: accentColor, marginBottom: 4 },
-    jobTitle: { fontSize: fs.jobTitle, color: "#64748b", fontWeight: 300, textTransform: "uppercase", letterSpacing: 2, marginBottom: 12 },
-    section: { marginBottom: 12 },
-    sectionTitle: { fontSize: fs.jobTitle, fontWeight: 700, color: "#1e293b", textTransform: "uppercase", letterSpacing: 2, marginBottom: 6 },
-    divider: { height: 1, backgroundColor: "#e2e8f0", marginBottom: 6 },
-    summaryText: { fontSize: fs.small, color: "#475569", fontWeight: 300, lineHeight: 1.5 },
-    itemContainer: { marginBottom: 8 },
+    lastName: { fontSize: fs.name + 2, fontWeight: 700, color: accentColor, marginBottom: applyAutoAdjustToSpacing(4, autoAdjust) },
+    jobTitle: { fontSize: fs.jobTitle, color: "#64748b", fontWeight: 300, textTransform: "uppercase", letterSpacing: 2, marginBottom: applyAutoAdjustToSpacing(12, autoAdjust) },
+    section: { marginBottom: applyAutoAdjustToSpacing(12, autoAdjust) },
+    sectionTitle: { fontSize: fs.jobTitle, fontWeight: 700, color: "#1e293b", textTransform: "uppercase", letterSpacing: 2, marginBottom: applyAutoAdjustToSpacing(6, autoAdjust) },
+    divider: { height: 1, backgroundColor: "#e2e8f0", marginBottom: applyAutoAdjustToSpacing(6, autoAdjust) },
+    summaryText: { fontSize: fs.small, color: "#475569", fontWeight: 300, lineHeight: applyAutoAdjustToLineHeight(1.5, autoAdjust) },
+    itemContainer: { marginBottom: applyAutoAdjustToSpacing(8, autoAdjust) },
     itemHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 1 },
     itemTitle: { fontSize: fs.body, fontWeight: 400, color: "#1e293b" },
     itemDate: { fontSize: fs.small, color: accentColor, fontWeight: 300 },
-    itemSubtitle: { fontSize: fs.small, color: "#64748b", fontWeight: 300, marginBottom: 2 },
-    itemDescription: { fontSize: fs.small, color: "#475569", fontWeight: 300, lineHeight: 1.4 },
+    itemSubtitle: { fontSize: fs.small, color: "#64748b", fontWeight: 300, marginBottom: applyAutoAdjustToSpacing(2, autoAdjust) },
+    itemDescription: { fontSize: fs.small, color: "#475569", fontWeight: 300, lineHeight: applyAutoAdjustToLineHeight(1.4, autoAdjust) },
   });
 
   const formatDate = (dateStr: string) => {

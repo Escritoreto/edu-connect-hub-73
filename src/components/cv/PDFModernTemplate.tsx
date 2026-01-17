@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -47,7 +48,9 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
   const accentLight = getAccentColorLight(templateId);
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
   
   const styles = StyleSheet.create({
     page: {
@@ -59,15 +62,15 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
     sidebar: {
       width: "35%",
       backgroundColor: accentColor,
-      padding: 15,
-      paddingTop: 20,
+      padding: applyAutoAdjustToPadding(15, autoAdjust),
+      paddingTop: applyAutoAdjustToPadding(20, autoAdjust),
       color: "#ffffff",
       minHeight: "100%",
     },
     main: {
       width: "65%",
-      padding: 18,
-      paddingTop: 20,
+      padding: applyAutoAdjustToPadding(18, autoAdjust),
+      paddingTop: applyAutoAdjustToPadding(20, autoAdjust),
     },
     name: {
       fontSize: fs.name - 4,
@@ -81,56 +84,56 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
       marginBottom: 10,
     },
     sidebarSection: {
-      marginBottom: 12,
+      marginBottom: applyAutoAdjustToSpacing(12, autoAdjust),
     },
     sidebarTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
-      marginBottom: 6,
-      paddingBottom: 3,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
+      paddingBottom: applyAutoAdjustToSpacing(3, autoAdjust),
       borderBottomWidth: 1,
       borderBottomColor: "rgba(255,255,255,0.3)",
     },
     sidebarText: {
       fontSize: fs.small,
-      marginBottom: 2,
+      marginBottom: applyAutoAdjustToSpacing(2, autoAdjust),
       opacity: 0.9,
     },
     sidebarLabel: {
       fontSize: fs.small,
       fontWeight: 700,
-      marginBottom: 1,
+      marginBottom: applyAutoAdjustToSpacing(1, autoAdjust),
     },
     skillBadge: {
       backgroundColor: "rgba(255,255,255,0.2)",
-      paddingHorizontal: 5,
-      paddingVertical: 3,
+      paddingHorizontal: applyAutoAdjustToPadding(5, autoAdjust),
+      paddingVertical: applyAutoAdjustToPadding(3, autoAdjust),
       borderRadius: 3,
-      marginBottom: 3,
+      marginBottom: applyAutoAdjustToSpacing(3, autoAdjust),
     },
     skillText: {
       fontSize: fs.small,
       color: "#ffffff",
     },
     mainSection: {
-      marginBottom: 10,
+      marginBottom: applyAutoAdjustToSpacing(10, autoAdjust),
     },
     mainSectionTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 5,
-      paddingBottom: 2,
+      marginBottom: applyAutoAdjustToSpacing(5, autoAdjust),
+      paddingBottom: applyAutoAdjustToSpacing(2, autoAdjust),
       borderBottomWidth: 2,
       borderBottomColor: accentLight,
     },
     summaryText: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.4,
+      lineHeight: applyAutoAdjustToLineHeight(1.4, autoAdjust),
     },
     itemContainer: {
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
     },
     itemTitle: {
       fontSize: fs.jobTitle,
@@ -140,23 +143,23 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
     itemSubtitle: {
       fontSize: fs.small,
       color: "#64748b",
-      marginBottom: 1,
+      marginBottom: applyAutoAdjustToSpacing(1, autoAdjust),
     },
     itemDate: {
       fontSize: fs.small - 1,
       color: "#94a3b8",
-      marginBottom: 2,
+      marginBottom: applyAutoAdjustToSpacing(2, autoAdjust),
     },
     itemDescription: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.3,
+      lineHeight: applyAutoAdjustToLineHeight(1.3, autoAdjust),
     },
     photo: {
-      width: 75,
-      height: 75,
-      borderRadius: 38,
-      marginBottom: 12,
+      width: 75 * autoAdjust.fontScale,
+      height: 75 * autoAdjust.fontScale,
+      borderRadius: 38 * autoAdjust.fontScale,
+      marginBottom: applyAutoAdjustToSpacing(12, autoAdjust),
       alignSelf: "center",
       objectFit: "cover",
     },

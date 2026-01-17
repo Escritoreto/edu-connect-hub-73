@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -30,7 +31,9 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
   const bgLight = "#fff7ed";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: {
@@ -78,15 +81,15 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       borderColor: "#ffffff",
     },
     body: {
-      padding: 18,
+      padding: applyAutoAdjustToPadding(18, autoAdjust),
     },
     section: {
-      marginBottom: 12,
+      marginBottom: applyAutoAdjustToSpacing(12, autoAdjust),
     },
     sectionHeader: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
@@ -97,7 +100,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     },
     summaryBox: {
       backgroundColor: bgLight,
-      padding: 10,
+      padding: applyAutoAdjustToPadding(10, autoAdjust),
       borderRadius: 5,
       borderLeftWidth: 3,
       borderLeftColor: accentColor,
@@ -105,20 +108,20 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     summaryText: {
       fontSize: fs.body,
       color: "#475569",
-      lineHeight: 1.5,
+      lineHeight: applyAutoAdjustToLineHeight(1.5, autoAdjust),
     },
     cardsRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: 8,
+      gap: applyAutoAdjustToSpacing(8, autoAdjust),
     },
     expCard: {
       backgroundColor: "#ffffff",
       borderWidth: 1,
       borderColor: "#e2e8f0",
       borderRadius: 5,
-      padding: 10,
-      marginBottom: 6,
+      padding: applyAutoAdjustToPadding(10, autoAdjust),
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
       borderTopWidth: 2,
       borderTopColor: accentColor,
     },

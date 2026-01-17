@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -29,7 +30,9 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
   const accentLight = "#a78bfa";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: {
@@ -38,15 +41,15 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
     },
     header: {
       backgroundColor: accentColor,
-      padding: 18,
+      padding: applyAutoAdjustToPadding(18, autoAdjust),
       flexDirection: "row",
       alignItems: "center",
-      gap: 15,
+      gap: applyAutoAdjustToSpacing(15, autoAdjust),
     },
     photo: {
-      width: 60,
-      height: 60,
-      borderRadius: 30,
+      width: 60 * autoAdjust.fontScale,
+      height: 60 * autoAdjust.fontScale,
+      borderRadius: 30 * autoAdjust.fontScale,
       objectFit: "cover",
       borderWidth: 2,
       borderColor: "#ffffff",
@@ -58,16 +61,16 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       fontSize: fs.name,
       fontWeight: 700,
       color: "#ffffff",
-      marginBottom: 2,
+      marginBottom: applyAutoAdjustToSpacing(2, autoAdjust),
     },
     jobTitle: {
       fontSize: fs.jobTitle,
       color: accentLight,
-      marginBottom: 5,
+      marginBottom: applyAutoAdjustToSpacing(5, autoAdjust),
     },
     contactRow: {
       flexDirection: "row",
-      gap: 12,
+      gap: applyAutoAdjustToSpacing(12, autoAdjust),
       flexWrap: "wrap",
     },
     contactItem: {
@@ -77,8 +80,8 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
     },
     body: {
       flexDirection: "row",
-      padding: 15,
-      gap: 15,
+      padding: applyAutoAdjustToPadding(15, autoAdjust),
+      gap: applyAutoAdjustToSpacing(15, autoAdjust),
       flex: 1,
     },
     mainColumn: {
@@ -88,25 +91,25 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       width: "40%",
     },
     section: {
-      marginBottom: 10,
+      marginBottom: applyAutoAdjustToSpacing(10, autoAdjust),
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 5,
-      paddingBottom: 2,
+      marginBottom: applyAutoAdjustToSpacing(5, autoAdjust),
+      paddingBottom: applyAutoAdjustToSpacing(2, autoAdjust),
       borderBottomWidth: 2,
       borderBottomColor: accentLight,
     },
     summaryText: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.4,
+      lineHeight: applyAutoAdjustToLineHeight(1.4, autoAdjust),
     },
     itemContainer: {
-      marginBottom: 8,
-      paddingLeft: 8,
+      marginBottom: applyAutoAdjustToSpacing(8, autoAdjust),
+      paddingLeft: applyAutoAdjustToPadding(8, autoAdjust),
       borderLeftWidth: 2,
       borderLeftColor: accentLight,
     },

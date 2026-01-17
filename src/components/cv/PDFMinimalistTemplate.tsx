@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -38,14 +39,16 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
   const accentColor = getAccentColor(templateId);
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
       fontSize: fs.body,
-      padding: 20,
-      paddingBottom: 15,
+      padding: applyAutoAdjustToPadding(20, autoAdjust),
+      paddingBottom: applyAutoAdjustToPadding(15, autoAdjust),
     },
     header: {
       marginBottom: 12,
@@ -91,7 +94,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       fontWeight: 300,
     },
     section: {
-      marginBottom: 10,
+      marginBottom: applyAutoAdjustToSpacing(10, autoAdjust),
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
@@ -99,22 +102,22 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       color: "#111827",
       textTransform: "uppercase",
       letterSpacing: 2,
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
     },
     summaryText: {
       fontSize: fs.body,
       color: "#4b5563",
       fontWeight: 300,
-      lineHeight: 1.6,
+      lineHeight: applyAutoAdjustToLineHeight(1.6, autoAdjust),
     },
     itemContainer: {
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
     },
     itemRow: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "baseline",
-      marginBottom: 3,
+      marginBottom: applyAutoAdjustToSpacing(3, autoAdjust),
     },
     itemTitle: {
       fontSize: fs.jobTitle,
@@ -130,13 +133,13 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
       fontSize: fs.small,
       color: "#6b7280",
       fontWeight: 300,
-      marginBottom: 3,
+      marginBottom: applyAutoAdjustToSpacing(3, autoAdjust),
     },
     itemDescription: {
       fontSize: fs.small,
       color: "#4b5563",
       fontWeight: 300,
-      lineHeight: 1.5,
+      lineHeight: applyAutoAdjustToLineHeight(1.5, autoAdjust),
     },
     threeColumnRow: {
       flexDirection: "row",

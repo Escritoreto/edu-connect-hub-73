@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -29,7 +30,9 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
   const accentLight = "#22c55e";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: {
@@ -40,12 +43,12 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
     },
     main: {
       width: "65%",
-      padding: 18,
+      padding: applyAutoAdjustToPadding(18, autoAdjust),
     },
     sidebar: {
       width: "35%",
       backgroundColor: accentColor,
-      padding: 15,
+      padding: applyAutoAdjustToPadding(15, autoAdjust),
       color: "#ffffff",
       minHeight: "100%",
     },
@@ -67,32 +70,32 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
       marginBottom: 12,
     },
     section: {
-      marginBottom: 10,
+      marginBottom: applyAutoAdjustToSpacing(10, autoAdjust),
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
       textTransform: "uppercase",
       letterSpacing: 1,
     },
     summaryText: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.5,
+      lineHeight: applyAutoAdjustToLineHeight(1.5, autoAdjust),
       textAlign: "justify",
     },
     timelineItem: {
       flexDirection: "row",
-      marginBottom: 8,
+      marginBottom: applyAutoAdjustToSpacing(8, autoAdjust),
     },
     timelineDot: {
       width: 6,
       height: 6,
       borderRadius: 3,
       backgroundColor: accentColor,
-      marginRight: 8,
+      marginRight: applyAutoAdjustToSpacing(8, autoAdjust),
       marginTop: 3,
     },
     timelineContent: {
@@ -106,27 +109,27 @@ export const PDFModernTemplate3 = ({ data }: Props) => {
     itemSubtitle: {
       fontSize: fs.small,
       color: "#64748b",
-      marginBottom: 1,
+      marginBottom: applyAutoAdjustToSpacing(1, autoAdjust),
     },
     itemDate: {
       fontSize: fs.small - 1,
       color: accentColor,
       fontWeight: 700,
-      marginBottom: 2,
+      marginBottom: applyAutoAdjustToSpacing(2, autoAdjust),
     },
     itemDescription: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.3,
+      lineHeight: applyAutoAdjustToLineHeight(1.3, autoAdjust),
     },
     sidebarSection: {
-      marginBottom: 14,
+      marginBottom: applyAutoAdjustToSpacing(14, autoAdjust),
     },
     sidebarTitle: {
       fontSize: fs.jobTitle,
       fontWeight: 700,
-      marginBottom: 8,
-      paddingBottom: 4,
+      marginBottom: applyAutoAdjustToSpacing(8, autoAdjust),
+      paddingBottom: applyAutoAdjustToSpacing(4, autoAdjust),
       borderBottomWidth: 1,
       borderBottomColor: "rgba(255,255,255,0.3)",
       textTransform: "uppercase",
