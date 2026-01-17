@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -30,7 +31,9 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
   const bgLight = "#faf5ff";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: {
@@ -85,12 +88,12 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       color: "#1e293b",
     },
     body: {
-      padding: 15,
-      paddingHorizontal: 20,
+      padding: applyAutoAdjustToPadding(15, autoAdjust),
+      paddingHorizontal: applyAutoAdjustToPadding(20, autoAdjust),
     },
     threeColumn: {
       flexDirection: "row",
-      gap: 12,
+      gap: applyAutoAdjustToSpacing(12, autoAdjust),
     },
     mainColumn: {
       width: "66%",
@@ -99,17 +102,17 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       width: "34%",
     },
     section: {
-      marginBottom: 10,
+      marginBottom: applyAutoAdjustToSpacing(10, autoAdjust),
     },
     sectionTitle: {
       fontSize: fs.sectionTitle,
       fontWeight: 700,
       color: accentColor,
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
     },
     summaryBox: {
       backgroundColor: "#ffffff",
-      padding: 8,
+      padding: applyAutoAdjustToPadding(8, autoAdjust),
       borderRadius: 4,
       borderLeftWidth: 3,
       borderLeftColor: accentColor,
@@ -117,14 +120,14 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
     summaryText: {
       fontSize: fs.small,
       color: "#475569",
-      lineHeight: 1.5,
+      lineHeight: applyAutoAdjustToLineHeight(1.5, autoAdjust),
       fontStyle: "italic",
     },
     expCard: {
       backgroundColor: "#ffffff",
-      padding: 8,
+      padding: applyAutoAdjustToPadding(8, autoAdjust),
       borderRadius: 4,
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
       borderTopWidth: 2,
       borderTopColor: accentColor,
     },

@@ -10,6 +10,7 @@ import {
 import { CVData } from "@/types/cv";
 import { cvTranslations } from "@/lib/cvTranslations";
 import { getFontSizes } from "@/lib/pdfFontSizes";
+import { calculateAutoAdjust, applyAutoAdjustToFonts, applyAutoAdjustToSpacing, applyAutoAdjustToLineHeight, applyAutoAdjustToPadding } from "@/lib/pdfAutoAdjust";
 
 Font.register({
   family: "Roboto",
@@ -29,14 +30,16 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
   const accentLight = "#bbf7d0";
   const t = cvTranslations[data.cvLanguage || "pt"];
   const locale = data.cvLanguage === "zh" ? "zh-CN" : data.cvLanguage === "fr" ? "fr-FR" : data.cvLanguage === "en" ? "en-US" : "pt-BR";
-  const fs = getFontSizes(data.fontSize || "medium");
+  const baseFonts = getFontSizes(data.fontSize || "medium");
+  const autoAdjust = calculateAutoAdjust(data);
+  const fs = applyAutoAdjustToFonts(baseFonts, autoAdjust);
 
   const styles = StyleSheet.create({
     page: {
       fontFamily: "Roboto",
       fontSize: fs.body,
-      padding: 20,
-      paddingBottom: 15,
+      padding: applyAutoAdjustToPadding(20, autoAdjust),
+      paddingBottom: applyAutoAdjustToPadding(15, autoAdjust),
     },
     header: {
       flexDirection: "row",
@@ -88,7 +91,7 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
       width: "35%",
     },
     section: {
-      marginBottom: 10,
+      marginBottom: applyAutoAdjustToSpacing(10, autoAdjust),
     },
     sectionBar: {
       width: 20,
@@ -99,14 +102,14 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
     summaryText: {
       fontSize: fs.body,
       color: "#475569",
-      lineHeight: 1.5,
+      lineHeight: applyAutoAdjustToLineHeight(1.5, autoAdjust),
       textAlign: "justify",
     },
     timelineItem: {
-      paddingLeft: 10,
+      paddingLeft: applyAutoAdjustToPadding(10, autoAdjust),
       borderLeftWidth: 2,
       borderLeftColor: accentLight,
-      marginBottom: 6,
+      marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
       position: "relative",
     },
     timelineDot: {
