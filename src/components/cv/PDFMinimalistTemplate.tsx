@@ -201,8 +201,8 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
+      <Page size="A4" style={styles.page} wrap>
+        <View style={styles.header} wrap={false}>
           <View style={styles.headerRow}>
             <View style={styles.nameContainer}>
               <Text style={styles.firstName}>{data.firstName}</Text>
@@ -224,7 +224,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
         </View>
 
         {data.summary && (
-          <View style={styles.section}>
+          <View style={styles.section} wrap={false}>
             <Text style={styles.summaryText}>{data.summary}</Text>
           </View>
         )}
@@ -233,7 +233,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t.experience}</Text>
             {data.experience.map((exp) => (
-              <View key={exp.id} style={styles.itemContainer}>
+              <View key={exp.id} style={styles.itemContainer} wrap={false}>
                 <View style={styles.itemRow}>
                   <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
                   <Text style={styles.itemDate}>
@@ -253,7 +253,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t.education}</Text>
             {data.education.map((edu) => (
-              <View key={edu.id} style={styles.itemContainer}>
+              <View key={edu.id} style={styles.itemContainer} wrap={false}>
                 <View style={styles.itemRow}>
                   <Text style={styles.itemTitle}>{edu.degree}</Text>
                   <Text style={styles.itemDate}>
@@ -266,7 +266,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
           </View>
         )}
 
-        <View style={styles.threeColumnRow}>
+        <View style={styles.threeColumnRow} wrap={false}>
           {data.skills.length > 0 && (
             <View style={styles.column}>
               <Text style={styles.sectionTitle}>{t.skills}</Text>
@@ -308,7 +308,7 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
           <View style={[styles.section, { marginTop: 6 }]}>
             <Text style={styles.sectionTitle}>{t.projects}</Text>
             {data.projects.map((proj) => (
-              <View key={proj.id} style={styles.itemContainer}>
+              <View key={proj.id} style={styles.itemContainer} wrap={false}>
                 <Text style={styles.itemTitle}>{proj.name}</Text>
                 {proj.description && (
                   <Text style={styles.itemDescription}>{proj.description}</Text>
