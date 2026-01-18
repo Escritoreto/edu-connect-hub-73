@@ -188,8 +188,8 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
+      <Page size="A4" style={styles.page} wrap>
+        <View style={styles.header} wrap={false}>
           <Text style={styles.name}>{fullName}</Text>
           {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
           <View style={styles.contactRow}>
@@ -200,13 +200,13 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
         </View>
 
         {data.photoPreview && (
-          <View style={{ alignItems: "center", marginBottom: 8 }}>
+          <View style={{ alignItems: "center", marginBottom: 8 }} wrap={false}>
             <Image src={data.photoPreview} style={styles.photo} />
           </View>
         )}
 
         {data.summary && (
-          <View style={styles.section}>
+          <View style={styles.section} wrap={false}>
             <Text style={styles.sectionTitle}>{t.professionalSummary}</Text>
             <Text style={styles.summaryText}>{data.summary}</Text>
           </View>
@@ -217,7 +217,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
             <Text style={styles.sectionTitle}>{t.experience}</Text>
             <View style={styles.experienceContainer}>
               {data.experience.map((exp) => (
-                <View key={exp.id} style={styles.itemContainer}>
+                <View key={exp.id} style={styles.itemContainer} wrap={false}>
                   <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
                   <Text style={styles.itemSubtitle}>{exp.company}</Text>
                   <Text style={styles.itemDate}>
@@ -237,7 +237,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
             <Text style={styles.sectionTitle}>{t.education}</Text>
             <View style={styles.experienceContainer}>
               {data.education.map((edu) => (
-                <View key={edu.id} style={styles.itemContainer}>
+                <View key={edu.id} style={styles.itemContainer} wrap={false}>
                   <Text style={styles.itemTitle}>{edu.degree}</Text>
                   <Text style={styles.itemSubtitle}>{edu.institution}</Text>
                   <Text style={styles.itemDate}>
@@ -249,7 +249,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
           </View>
         )}
 
-        <View style={styles.twoColumnRow}>
+        <View style={styles.twoColumnRow} wrap={false}>
           {data.skills.length > 0 && (
             <View style={styles.column}>
               <Text style={styles.sectionTitle}>{t.skills}</Text>
@@ -279,7 +279,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
             <Text style={styles.sectionTitle}>{t.certifications}</Text>
             <View style={styles.certGrid}>
               {data.certifications.map((cert) => (
-                <View key={cert.id} style={styles.certItem}>
+                <View key={cert.id} style={styles.certItem} wrap={false}>
                   <Text style={styles.certName}>{cert.name}</Text>
                   <Text style={styles.certInstitution}>{cert.institution}</Text>
                 </View>
@@ -292,7 +292,7 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t.projects}</Text>
             {data.projects.map((proj) => (
-              <View key={proj.id} style={styles.itemContainer}>
+              <View key={proj.id} style={styles.itemContainer} wrap={false}>
                 <Text style={styles.certName}>{proj.name}</Text>
                 {proj.description && (
                   <Text style={{ fontSize: fs.small, color: "#475569" }}>{proj.description}</Text>

@@ -179,8 +179,8 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.sidebar}>
+      <Page size="A4" style={styles.page} wrap>
+        <View style={styles.sidebar} wrap={false}>
           {data.photoPreview && (
             <Image src={data.photoPreview} style={styles.photo} />
           )}
@@ -243,13 +243,13 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
         </View>
 
         <View style={styles.main}>
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10 }} wrap={false}>
             <Text style={styles.name}>{fullName}</Text>
             {jobTitle && <Text style={styles.jobTitle}>{jobTitle}</Text>}
           </View>
 
           {data.summary && (
-            <View style={styles.mainSection}>
+            <View style={styles.mainSection} wrap={false}>
               <Text style={styles.mainSectionTitle}>{t.aboutMe}</Text>
               <Text style={styles.summaryText}>{data.summary}</Text>
             </View>
@@ -259,7 +259,7 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
             <View style={styles.mainSection}>
               <Text style={styles.mainSectionTitle}>{t.experience}</Text>
               {data.experience.map((exp) => (
-                <View key={exp.id} style={styles.itemContainer}>
+                <View key={exp.id} style={styles.itemContainer} wrap={false}>
                   <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
                   <Text style={styles.itemSubtitle}>{exp.company}</Text>
                   <Text style={styles.itemDate}>
@@ -277,7 +277,7 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
             <View style={styles.mainSection}>
               <Text style={styles.mainSectionTitle}>{t.education}</Text>
               {data.education.map((edu) => (
-                <View key={edu.id} style={styles.itemContainer}>
+                <View key={edu.id} style={styles.itemContainer} wrap={false}>
                   <Text style={styles.itemTitle}>{edu.degree}</Text>
                   <Text style={styles.itemSubtitle}>{edu.institution}</Text>
                   <Text style={styles.itemDate}>
@@ -292,7 +292,7 @@ export const PDFModernTemplate = ({ data, templateId }: Props) => {
             <View style={styles.mainSection}>
               <Text style={styles.mainSectionTitle}>{t.projects}</Text>
               {data.projects.map((proj) => (
-                <View key={proj.id} style={styles.itemContainer}>
+                <View key={proj.id} style={styles.itemContainer} wrap={false}>
                   <Text style={styles.itemTitle}>{proj.name}</Text>
                   {proj.description && (
                     <Text style={styles.itemDescription}>{proj.description}</Text>

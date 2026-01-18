@@ -93,12 +93,13 @@ export const PDFPreview = ({ data }: PDFPreviewProps) => {
     // Debounce PDF generation to avoid too many re-renders
     const timeoutId = setTimeout(() => {
       generatePdf();
-    }, 500);
+    }, 800);
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [pdfComponent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   // Cleanup URL on unmount
   useEffect(() => {
