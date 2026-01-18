@@ -171,12 +171,20 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
     },
   });
 
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr: string | undefined | null): string => {
     if (!dateStr) return "";
     if (dateStr.toLowerCase() === "presente" || dateStr.toLowerCase() === "atual") return t.present;
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return dateStr;
     return date.toLocaleDateString(locale, { month: "short", year: "numeric" });
+  };
+
+  const formatDateRange = (startDate: string | undefined | null, endDate: string | undefined | null, fallback: string): string => {
+    const start = formatDate(startDate);
+    const end = formatDate(endDate) || fallback;
+    if (!start && !end) return "";
+    if (!start) return end;
+    return `${start} - ${end}`;
   };
 
   const phone = data.phone ? `${data.countryCode} ${data.phone}` : "";
@@ -216,7 +224,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
                 <View style={styles.itemHeader}>
                   <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
                   <Text style={styles.itemDate}>
-                    {formatDate(exp.startDate)} — {formatDate(exp.endDate) || t.present}
+                    {formatDateRange(exp.startDate, exp.endDate, t.present)}
                   </Text>
                 </View>
                 <Text style={styles.itemSubtitle}>{exp.company}</Text>
@@ -240,7 +248,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
                 <View style={styles.itemHeader}>
                   <Text style={styles.itemTitle}>{edu.degree}</Text>
                   <Text style={styles.itemDate}>
-                    {formatDate(edu.startDate)} — {formatDate(edu.endDate) || t.studying}
+                    {formatDateRange(edu.startDate, edu.endDate, t.studying)}
                   </Text>
                 </View>
                 <Text style={styles.itemSubtitle}>{edu.institution}</Text>

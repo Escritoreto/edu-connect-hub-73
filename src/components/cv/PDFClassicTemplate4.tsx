@@ -200,12 +200,20 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
     },
   });
 
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr: string | undefined | null): string => {
     if (!dateStr) return "";
     if (dateStr.toLowerCase() === "presente" || dateStr.toLowerCase() === "atual") return t.present;
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return dateStr;
     return date.toLocaleDateString(locale, { month: "long", year: "numeric" });
+  };
+
+  const formatDateRange = (startDate: string | undefined | null, endDate: string | undefined | null, fallback: string): string => {
+    const start = formatDate(startDate);
+    const end = formatDate(endDate) || fallback;
+    if (!start && !end) return "";
+    if (!start) return end;
+    return `${start} - ${end}`;
   };
 
   const fullName = `${data.firstName} ${data.lastName}`;
@@ -251,7 +259,7 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
                       <Text style={styles.itemTitle}>{exp.jobTitle}</Text>
                       <Text style={styles.itemSubtitle}>{exp.company}</Text>
                       <Text style={styles.itemDate}>
-                        {formatDate(exp.startDate)} - {formatDate(exp.endDate) || t.present}
+                        {formatDateRange(exp.startDate, exp.endDate, t.present)}
                       </Text>
                       {exp.responsibilities && (
                         <Text style={styles.itemDescription}>{exp.responsibilities}</Text>
@@ -269,7 +277,7 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
                       <Text style={styles.itemTitle}>{edu.degree}</Text>
                       <Text style={styles.itemSubtitle}>{edu.institution}</Text>
                       <Text style={styles.itemDate}>
-                        {formatDate(edu.startDate)} - {formatDate(edu.endDate) || t.studying}
+                        {formatDateRange(edu.startDate, edu.endDate, t.studying)}
                       </Text>
                     </View>
                   ))}
