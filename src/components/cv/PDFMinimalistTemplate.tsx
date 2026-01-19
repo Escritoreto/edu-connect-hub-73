@@ -86,12 +86,13 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
     },
     contactRow: {
       flexDirection: "row",
-      gap: 15,
+      flexWrap: "wrap",
     },
     contactItem: {
       fontSize: fs.contact,
       color: "#6b7280",
       fontWeight: 300,
+      marginRight: 15,
     },
     section: {
       marginBottom: applyAutoAdjustToSpacing(10, autoAdjust),
@@ -143,10 +144,10 @@ export const PDFMinimalistTemplate = ({ data, templateId }: Props) => {
     },
     threeColumnRow: {
       flexDirection: "row",
-      gap: 12,
     },
     column: {
       flex: 1,
+      marginRight: 12,
     },
     skillBadge: {
       borderWidth: 1,

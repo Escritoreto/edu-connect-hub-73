@@ -71,7 +71,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
     contactRow: {
       flexDirection: "row",
       justifyContent: "center",
-      gap: 12,
+      flexWrap: "wrap",
       paddingTop: 6,
       borderTopWidth: 1,
       borderTopColor: "#e5e7eb",
@@ -80,6 +80,7 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
       fontSize: fs.small,
       color: "#6b7280",
       fontWeight: 300,
+      marginHorizontal: 6,
     },
     section: {
       marginBottom: 12,
@@ -145,10 +146,10 @@ export const PDFMinimalistTemplate3 = ({ data }: Props) => {
     },
     threeColumns: {
       flexDirection: "row",
-      gap: 12,
     },
     column: {
       flex: 1,
+      marginRight: 12,
     },
     columnTitle: {
       fontSize: fs.small,

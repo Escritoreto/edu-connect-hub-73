@@ -71,10 +71,11 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
     contactRow: {
       flexDirection: "row",
       justifyContent: "center",
-      gap: 15,
+      flexWrap: "wrap",
     },
     contactItem: {
       fontSize: fs.contact,
+      marginHorizontal: 8,
       color: "#64748b",
     },
     section: {
@@ -126,10 +127,10 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
     },
     twoColumnRow: {
       flexDirection: "row",
-      gap: 15,
     },
     column: {
       flex: 1,
+      marginRight: 10,
     },
     skillRow: {
       flexDirection: "row",
@@ -150,10 +151,11 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
     certGrid: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: 6,
     },
     certItem: {
       width: "48%",
+      marginBottom: 6,
+      marginRight: 4,
     },
     certName: {
       fontSize: fs.body,

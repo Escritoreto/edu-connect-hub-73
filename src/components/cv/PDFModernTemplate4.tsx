@@ -64,13 +64,13 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     },
     contactRow: {
       flexDirection: "row",
-      gap: 10,
       flexWrap: "wrap",
     },
     contactItem: {
       fontSize: fs.contact,
       color: "#ffffff",
       opacity: 0.9,
+      marginRight: 10,
     },
     photo: {
       width: 70,
@@ -113,7 +113,6 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     cardsRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: applyAutoAdjustToSpacing(8, autoAdjust),
     },
     expCard: {
       backgroundColor: "#ffffff",
@@ -122,6 +121,7 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
       borderRadius: 5,
       padding: applyAutoAdjustToPadding(10, autoAdjust),
       marginBottom: applyAutoAdjustToSpacing(6, autoAdjust),
+      marginRight: applyAutoAdjustToSpacing(8, autoAdjust),
       borderTopWidth: 2,
       borderTopColor: accentColor,
     },
@@ -149,10 +149,10 @@ export const PDFModernTemplate4 = ({ data }: Props) => {
     },
     threeColumns: {
       flexDirection: "row",
-      gap: 12,
     },
     column: {
       flex: 1,
+      marginRight: 12,
     },
     skillTag: {
       backgroundColor: accentColor,

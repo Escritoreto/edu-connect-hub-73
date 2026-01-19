@@ -43,7 +43,6 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
     },
     header: {
       flexDirection: "row",
-      gap: 10,
       paddingBottom: 10,
       borderBottomWidth: 2,
       borderBottomColor: accentLight,
@@ -56,6 +55,7 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
       objectFit: "cover",
       borderWidth: 2,
       borderColor: accentColor,
+      marginRight: 10,
     },
     headerContent: {
       flex: 1,
@@ -73,19 +73,19 @@ export const PDFClassicTemplate3 = ({ data }: Props) => {
     },
     contactRow: {
       flexDirection: "row",
-      gap: 12,
       flexWrap: "wrap",
     },
     contactItem: {
       fontSize: fs.small,
       color: "#64748b",
+      marginRight: 12,
     },
     twoColumn: {
       flexDirection: "row",
-      gap: 15,
     },
     mainColumn: {
       width: "65%",
+      marginRight: 15,
     },
     sideColumn: {
       width: "35%",

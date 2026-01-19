@@ -44,7 +44,6 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       padding: applyAutoAdjustToPadding(18, autoAdjust),
       flexDirection: "row",
       alignItems: "center",
-      gap: applyAutoAdjustToSpacing(15, autoAdjust),
     },
     photo: {
       width: 60 * autoAdjust.fontScale,
@@ -53,6 +52,7 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
       objectFit: "cover",
       borderWidth: 2,
       borderColor: "#ffffff",
+      marginRight: applyAutoAdjustToSpacing(15, autoAdjust),
     },
     headerContent: {
       flex: 1,
@@ -70,22 +70,22 @@ export const PDFModernTemplate2 = ({ data }: Props) => {
     },
     contactRow: {
       flexDirection: "row",
-      gap: applyAutoAdjustToSpacing(12, autoAdjust),
       flexWrap: "wrap",
     },
     contactItem: {
       fontSize: fs.contact,
       color: "#ffffff",
       opacity: 0.9,
+      marginRight: applyAutoAdjustToSpacing(12, autoAdjust),
     },
     body: {
       flexDirection: "row",
       padding: applyAutoAdjustToPadding(15, autoAdjust),
-      gap: applyAutoAdjustToSpacing(15, autoAdjust),
       flex: 1,
     },
     mainColumn: {
       width: "60%",
+      marginRight: applyAutoAdjustToSpacing(15, autoAdjust),
     },
     sideColumn: {
       width: "40%",
