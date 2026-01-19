@@ -211,7 +211,7 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={styles.page} wrap>
         <View style={styles.main}>
           <View style={{ marginBottom: 15 }}>
             <Text style={styles.headerName}>{data.firstName}</Text>

@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
   contactRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 15,
   },
   contactItem: {
     fontSize: 9,
     color: "#475569",
+    marginRight: 15,
   },
   section: {
     marginBottom: 15,
@@ -113,13 +113,14 @@ const styles = StyleSheet.create({
   skillsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 5,
   },
   skillBadge: {
     backgroundColor: "#e0f2fe",
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 3,
+    marginRight: 5,
+    marginBottom: 5,
   },
   skillText: {
     fontSize: 9,
@@ -168,10 +169,10 @@ const styles = StyleSheet.create({
   },
   twoColumnLayout: {
     flexDirection: "row",
-    gap: 20,
   },
   leftColumn: {
     flex: 2,
+    marginRight: 20,
   },
   rightColumn: {
     flex: 1,

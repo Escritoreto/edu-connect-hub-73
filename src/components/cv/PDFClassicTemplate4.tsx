@@ -80,12 +80,12 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "center",
-      gap: 15,
       flexWrap: "wrap",
     },
     contactItem: {
       fontSize: fs.small,
       color: "#1e293b",
+      marginHorizontal: 8,
     },
     body: {
       padding: applyAutoAdjustToPadding(15, autoAdjust),
@@ -93,9 +93,9 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
     },
     threeColumn: {
       flexDirection: "row",
-      gap: applyAutoAdjustToSpacing(12, autoAdjust),
     },
     mainColumn: {
+      marginRight: applyAutoAdjustToSpacing(12, autoAdjust),
       width: "66%",
     },
     sideColumn: {
@@ -222,7 +222,7 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={styles.page} wrap>
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <Text style={styles.name}>{fullName}</Text>
