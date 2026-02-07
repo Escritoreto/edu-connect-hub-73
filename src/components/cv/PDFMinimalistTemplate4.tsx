@@ -116,7 +116,6 @@ export const PDFMinimalistTemplate4 = ({ data }: Props) => {
       fontSize: fs.small,
       color: "#6b7280",
       fontWeight: 300,
-      fontStyle: "italic",
       marginBottom: 3,
     },
     itemDescription: {
