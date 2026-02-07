@@ -71,7 +71,6 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
     jobTitle: {
       fontSize: fs.sectionTitle,
       color: "#64748b",
-      fontStyle: "italic",
       marginBottom: 6,
     },
     contactBar: {
@@ -121,7 +120,6 @@ export const PDFClassicTemplate4 = ({ data }: Props) => {
       fontSize: fs.small,
       color: "#475569",
       lineHeight: applyAutoAdjustToLineHeight(1.5, autoAdjust),
-      fontStyle: "italic",
     },
     expCard: {
       backgroundColor: "#ffffff",

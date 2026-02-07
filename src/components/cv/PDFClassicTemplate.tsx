@@ -65,7 +65,6 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
     jobTitle: {
       fontSize: fs.jobTitle,
       color: "#64748b",
-      fontStyle: "italic",
       marginBottom: 8,
     },
     contactRow: {
@@ -111,7 +110,6 @@ export const PDFClassicTemplate = ({ data, templateId }: Props) => {
     itemSubtitle: {
       fontSize: fs.body,
       color: "#64748b",
-      fontStyle: "italic",
       marginBottom: applyAutoAdjustToSpacing(2, autoAdjust),
     },
     itemDate: {
