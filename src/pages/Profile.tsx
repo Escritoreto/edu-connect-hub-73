@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
@@ -31,6 +31,8 @@ const Profile = () => {
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [isLoadingCourses, setIsLoadingCourses] = useState(true);
+  const [scholarshipRequests, setScholarshipRequests] = useState<any[]>([]);
+  const [isLoadingScholarships, setIsLoadingScholarships] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -42,6 +44,7 @@ const Profile = () => {
     if (user) {
       fetchProfile();
       fetchEnrolledCourses();
+      fetchScholarshipRequests();
     }
   }, [user]);
 
@@ -68,6 +71,31 @@ const Profile = () => {
       setEnrolledCourses(data);
     }
     setIsLoadingCourses(false);
+  };
+
+  const fetchScholarshipRequests = async () => {
+    if (!user) return;
+    
+    setIsLoadingScholarships(true);
+    const { data, error } = await supabase
+      .from("scholarship_requests")
+      .select(`
+        *,
+        publications:publication_id (
+          id,
+          title,
+          image_url,
+          country,
+          category
+        )
+      `)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setScholarshipRequests(data);
+    }
+    setIsLoadingScholarships(false);
   };
 
   const fetchProfile = async () => {
@@ -284,6 +312,13 @@ const Profile = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm">
+                      <GraduationCap className="h-4 w-4 text-primary" />
+                      <span>Bolsas Solicitadas</span>
+                    </div>
+                    <span className="font-semibold">{scholarshipRequests.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm">
                       <Heart className="h-4 w-4 text-destructive" />
                       <span>Favoritos</span>
                     </div>
@@ -355,6 +390,78 @@ const Profile = () => {
                           </Badge>
                           <span className="text-xs">
                             Inscrito em {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Scholarship Requests Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <GraduationCap className="h-5 w-5 text-primary" />
+                Bolsas Solicitadas
+              </CardTitle>
+              <CardDescription>
+                Bolsas de estudo que você solicitou orientação
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoadingScholarships ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              ) : scholarshipRequests.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <GraduationCap className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                  <p>Você ainda não solicitou orientação para nenhuma bolsa</p>
+                  <Button
+                    variant="outline"
+                    className="mt-4"
+                    onClick={() => navigate("/scholarships")}
+                  >
+                    Explorar Bolsas
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {scholarshipRequests.map((request: any) => (
+                    <div
+                      key={request.id}
+                      className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/publication/${request.publication_id}`)}
+                    >
+                      {request.publications?.image_url && (
+                        <img
+                          src={request.publications.image_url}
+                          alt={request.publications.title}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground line-clamp-1">
+                          {request.publications?.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                          {request.publications?.country && (
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              <span>{request.publications.country}</span>
+                            </div>
+                          )}
+                          <Badge 
+                            variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"}
+                            className="text-xs"
+                          >
+                            {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
+                          </Badge>
+                          <span className="text-xs">
+                            Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}
                           </span>
                         </div>
                       </div>
