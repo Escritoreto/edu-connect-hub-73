@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { GraduationCap, Send } from "lucide-react";
+import CreateAccountAfterSubmit from "./CreateAccountAfterSubmit";
 
 const formSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100, "Nome muito longo"),
@@ -42,45 +43,28 @@ interface ScholarshipRequestFormProps {
 }
 
 const mozambiqueCities = [
-  "Maputo",
-  "Matola",
-  "Beira",
-  "Nampula",
-  "Chimoio",
-  "Nacala",
-  "Quelimane",
-  "Tete",
-  "Lichinga",
-  "Pemba",
-  "Xai-Xai",
-  "Maxixe",
-  "Inhambane",
-  "Gurué",
-  "Cuamba",
-  "Outra",
+  "Maputo", "Matola", "Beira", "Nampula", "Chimoio", "Nacala",
+  "Quelimane", "Tete", "Lichinga", "Pemba", "Xai-Xai", "Maxixe",
+  "Inhambane", "Gurué", "Cuamba", "Outra",
 ];
 
 const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: ScholarshipRequestFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOtherCity, setIsOtherCity] = useState(false);
+  const [showAccountDialog, setShowAccountDialog] = useState(false);
+  const [submittedData, setSubmittedData] = useState<{ email: string; name: string; recordId: string } | null>(null);
   const { user } = useAuth();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      city: "",
-      message: "",
-    },
+    defaultValues: { name: "", email: "", phone: "", city: "", message: "" },
   });
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     
     try {
-      const { error } = await supabase
+      const { data: inserted, error } = await supabase
         .from("scholarship_requests")
         .insert({
           user_id: user?.id || null,
@@ -91,16 +75,22 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
           city: data.city,
           message: data.message || null,
           status: "pending",
-        });
+        })
+        .select("id")
+        .single();
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
       
       toast({
         title: "Solicitação enviada!",
-        description: `Sua solicitação de orientação para "${scholarshipTitle}" foi enviada. Entraremos em contacto em breve.`,
+        description: `Sua solicitação de orientação para "${scholarshipTitle}" foi enviada.`,
       });
+
+      // If user is not logged in, prompt account creation
+      if (!user && inserted) {
+        setSubmittedData({ email: data.email, name: data.name, recordId: inserted.id });
+        setShowAccountDialog(true);
+      }
       
       form.reset();
     } catch (error: any) {
@@ -114,6 +104,15 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
     }
   };
 
+  const handleAccountCreated = async (userId: string) => {
+    if (!submittedData) return;
+    // Link the request to the new user
+    await supabase
+      .from("scholarship_requests")
+      .update({ user_id: userId })
+      .eq("id", submittedData.recordId);
+  };
+
   const handleCityChange = (value: string) => {
     if (value === "Outra") {
       setIsOtherCity(true);
@@ -125,166 +124,99 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
   };
 
   return (
-    <Card className="border-primary/20 shadow-lg">
-      <CardHeader className="bg-primary/5">
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <GraduationCap className="h-5 w-5 text-primary" />
-          Solicitar Orientação
-        </CardTitle>
-        <CardDescription>
-          Preencha os dados abaixo para solicitar orientação sobre esta bolsa
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="pt-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
+    <>
+      <Card className="border-primary/20 shadow-lg">
+        <CardHeader className="bg-primary/5">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <GraduationCap className="h-5 w-5 text-primary" />
+            Solicitar Orientação
+          </CardTitle>
+          <CardDescription>
+            Preencha os dados abaixo para solicitar orientação sobre esta bolsa
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nome Completo</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="Seu nome completo" 
-                      {...field} 
-                      className="bg-background"
-                    />
-                  </FormControl>
+                  <FormControl><Input placeholder="Seu nome completo" {...field} className="bg-background" /></FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
+              <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="email" 
-                      placeholder="seu.email@exemplo.com" 
-                      {...field} 
-                      className="bg-background"
-                    />
-                  </FormControl>
+                  <FormControl><Input type="email" placeholder="seu.email@exemplo.com" {...field} className="bg-background" /></FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
 
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
+              <FormField control={form.control} name="phone" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Contacto (Telefone)</FormLabel>
                   <FormControl>
                     <div className="flex gap-2">
-                      <span className="flex items-center px-3 bg-muted rounded-md text-sm text-muted-foreground border border-input">
-                        +258
-                      </span>
-                      <Input 
-                        type="tel" 
-                        placeholder="84 123 4567" 
-                        {...field} 
-                        className="bg-background"
-                      />
+                      <span className="flex items-center px-3 bg-muted rounded-md text-sm text-muted-foreground border border-input">+258</span>
+                      <Input type="tel" placeholder="84 123 4567" {...field} className="bg-background" />
                     </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
 
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
+              <FormField control={form.control} name="city" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cidade</FormLabel>
                   {!isOtherCity ? (
                     <Select onValueChange={handleCityChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="bg-background">
-                          <SelectValue placeholder="Selecione sua cidade" />
-                        </SelectTrigger>
+                        <SelectTrigger className="bg-background"><SelectValue placeholder="Selecione sua cidade" /></SelectTrigger>
                       </FormControl>
                       <SelectContent className="bg-popover">
-                        {mozambiqueCities.map((city) => (
-                          <SelectItem key={city} value={city}>
-                            {city}
-                          </SelectItem>
-                        ))}
+                        {mozambiqueCities.map((city) => (<SelectItem key={city} value={city}>{city}</SelectItem>))}
                       </SelectContent>
                     </Select>
                   ) : (
                     <FormControl>
                       <div className="flex gap-2">
-                        <Input 
-                          placeholder="Digite o nome da sua cidade" 
-                          {...field} 
-                          className="bg-background"
-                        />
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            setIsOtherCity(false);
-                            form.setValue("city", "");
-                          }}
-                        >
-                          Voltar
-                        </Button>
+                        <Input placeholder="Digite o nome da sua cidade" {...field} className="bg-background" />
+                        <Button type="button" variant="outline" size="sm" onClick={() => { setIsOtherCity(false); form.setValue("city", ""); }}>Voltar</Button>
                       </div>
                     </FormControl>
                   )}
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
 
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
+              <FormField control={form.control} name="message" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Mensagem (Opcional)</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Descreva suas dúvidas ou necessidades específicas..." 
-                      {...field} 
-                      className="bg-background"
-                      rows={4}
-                    />
-                  </FormControl>
+                  <FormControl><Textarea placeholder="Descreva suas dúvidas ou necessidades específicas..." {...field} className="bg-background" rows={4} /></FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
-            />
+              )} />
 
-            <Button 
-              type="submit" 
-              className="w-full mt-6" 
-              size="lg"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                "A enviar..."
-              ) : (
-                <>
-                  <Send className="h-4 w-4 mr-2" />
-                  Solicitar Orientação
-                </>
-              )}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              <Button type="submit" className="w-full mt-6" size="lg" disabled={isSubmitting}>
+                {isSubmitting ? "A enviar..." : (<><Send className="h-4 w-4 mr-2" />Solicitar Orientação</>)}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
+      {submittedData && (
+        <CreateAccountAfterSubmit
+          open={showAccountDialog}
+          onOpenChange={setShowAccountDialog}
+          email={submittedData.email}
+          fullName={submittedData.name}
+          onAccountCreated={handleAccountCreated}
+        />
+      )}
+    </>
   );
 };
 
