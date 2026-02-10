@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GraduationCap, Menu, X, LogOut, Settings, Heart, User } from "lucide-react";
+import { NotificationBell } from "@/components/NotificationBell";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,6 +57,7 @@ const Header = () => {
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-4">
           {user ? <>
+              <NotificationBell userId={user.id} />
               <Button variant="ghost" asChild>
                 <Link to="/favorites">
                   <Heart className="h-4 w-4 mr-2" />
