@@ -11,10 +11,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home, GraduationCap } from "lucide-react";
+import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home, GraduationCap, MessageSquare } from "lucide-react";
 import EnrollmentsManager from "@/components/admin/EnrollmentsManager";
 import PublicationsManager from "@/components/admin/PublicationsManager";
 import ScholarshipRequestsManager from "@/components/admin/ScholarshipRequestsManager";
+import { UsersManager } from "@/components/admin/UsersManager";
+import { MessagesPanel } from "@/components/MessagesPanel";
+import { NotificationBell } from "@/components/NotificationBell";
 
 const Admin = () => {
   const { user, loading: authLoading, isAdmin, signOut } = useAuth();
@@ -293,6 +296,7 @@ const Admin = () => {
             <span className="text-lg font-bold text-white">Painel Admin</span>
           </div>
           <div className="flex items-center gap-3">
+            {user && <NotificationBell userId={user.id} />}
             <Link to="/">
               <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-700">
                 <Home className="h-4 w-4 mr-2" />
@@ -344,7 +348,7 @@ const Admin = () => {
 
           {/* Main Tabs */}
           <Tabs defaultValue="manage" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 bg-slate-800/50">
+            <TabsList className="grid w-full grid-cols-6 bg-slate-800/50">
               <TabsTrigger value="manage" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                 <FileText className="h-4 w-4" />
                 Gerenciar
@@ -359,6 +363,14 @@ const Admin = () => {
               <TabsTrigger value="scholarships" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                 <GraduationCap className="h-4 w-4" />
                 Bolsas
+              </TabsTrigger>
+              <TabsTrigger value="users" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <Users className="h-4 w-4" />
+                Usuários
+              </TabsTrigger>
+              <TabsTrigger value="messages" className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <MessageSquare className="h-4 w-4" />
+                Mensagens
               </TabsTrigger>
             </TabsList>
 
@@ -733,6 +745,14 @@ const Admin = () => {
 
             <TabsContent value="scholarships">
               <ScholarshipRequestsManager />
+            </TabsContent>
+
+            <TabsContent value="users">
+              {user && <UsersManager adminId={user.id} />}
+            </TabsContent>
+
+            <TabsContent value="messages">
+              {user && <MessagesPanel currentUserId={user.id} isAdmin={true} />}
             </TabsContent>
           </Tabs>
         </div>

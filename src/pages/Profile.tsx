@@ -16,6 +16,7 @@ import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap } fro
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
+import { MessagesPanel } from "@/components/MessagesPanel";
 
 const Profile = () => {
   const { user, loading } = useAuth();
@@ -537,6 +538,8 @@ const Profile = () => {
               )}
             </CardContent>
           </Card>
+          {/* Messages Section */}
+          {user && <MessagesPanel currentUserId={user.id} />}
         </div>
       </main>
       <Footer />
