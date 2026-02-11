@@ -76,6 +76,8 @@ const ScholarshipRequestsManager = () => {
   const updateStatus = async (requestId: string, newStatus: string) => {
     setUpdatingId(requestId);
     
+    const request = requests.find(r => r.id === requestId);
+    
     const { error } = await supabase
       .from("scholarship_requests")
       .update({ status: newStatus })
@@ -88,6 +90,23 @@ const ScholarshipRequestsManager = () => {
         variant: "destructive",
       });
     } else {
+      // Send notification to user if they have an account
+      if (request?.user_id && (newStatus === "approved" || newStatus === "rejected" || newStatus === "contacted")) {
+        const statusMap: Record<string, string> = {
+          approved: "aprovada",
+          rejected: "rejeitada",
+          contacted: "em análise",
+        };
+        const statusText = statusMap[newStatus] || newStatus;
+        const scholarshipName = request.publications?.title || "bolsa";
+        await supabase.from("notifications").insert({
+          user_id: request.user_id,
+          title: `Solicitação ${statusText}!`,
+          message: `A sua solicitação de orientação para "${scholarshipName}" foi ${statusText}.`,
+          link: "/profile",
+        });
+      }
+      
       toast({
         title: "Status atualizado!",
         description: `Solicitação ${newStatus === "approved" ? "aprovada" : newStatus === "rejected" ? "rejeitada" : "atualizada"} com sucesso.`,

@@ -67,6 +67,8 @@ const EnrollmentsManager = () => {
   const updateStatus = async (enrollmentId: string, newStatus: string) => {
     setUpdatingId(enrollmentId);
     
+    const enrollment = enrollments.find(e => e.id === enrollmentId);
+    
     const { error } = await supabase
       .from("course_enrollments")
       .update({ status: newStatus })
@@ -79,6 +81,18 @@ const EnrollmentsManager = () => {
         variant: "destructive",
       });
     } else {
+      // Send notification to user if they have an account
+      if (enrollment?.user_id && (newStatus === "approved" || newStatus === "rejected")) {
+        const statusText = newStatus === "approved" ? "aprovada" : "rejeitada";
+        const courseName = enrollment.publications?.title || "curso";
+        await supabase.from("notifications").insert({
+          user_id: enrollment.user_id,
+          title: `Inscrição ${statusText}!`,
+          message: `A sua inscrição no curso "${courseName}" foi ${statusText}.`,
+          link: "/profile",
+        });
+      }
+      
       toast({
         title: "Status atualizado!",
         description: `Inscrição ${newStatus === "approved" ? "aprovada" : newStatus === "rejected" ? "rejeitada" : "atualizada"} com sucesso.`,
