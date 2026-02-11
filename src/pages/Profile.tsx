@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
@@ -34,6 +34,8 @@ const Profile = () => {
   const [isLoadingCourses, setIsLoadingCourses] = useState(true);
   const [scholarshipRequests, setScholarshipRequests] = useState<any[]>([]);
   const [isLoadingScholarships, setIsLoadingScholarships] = useState(true);
+  const [cvDownloads, setCvDownloads] = useState<any[]>([]);
+  const [isLoadingCvDownloads, setIsLoadingCvDownloads] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -46,6 +48,7 @@ const Profile = () => {
       fetchProfile();
       fetchEnrolledCourses();
       fetchScholarshipRequests();
+      fetchCvDownloads();
     }
   }, [user]);
 
@@ -97,6 +100,20 @@ const Profile = () => {
       setScholarshipRequests(data);
     }
     setIsLoadingScholarships(false);
+  };
+
+  const fetchCvDownloads = async () => {
+    if (!user) return;
+    setIsLoadingCvDownloads(true);
+    const { data, error } = await supabase
+      .from("cv_downloads")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    if (!error && data) {
+      setCvDownloads(data);
+    }
+    setIsLoadingCvDownloads(false);
   };
 
   const fetchProfile = async () => {
@@ -325,6 +342,13 @@ const Profile = () => {
                     </div>
                     <span className="font-semibold">{favorites.length}</span>
                   </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm">
+                      <FileText className="h-4 w-4 text-primary" />
+                      <span>CVs Baixados</span>
+                    </div>
+                    <span className="font-semibold">{cvDownloads.length}</span>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -473,7 +497,56 @@ const Profile = () => {
             </CardContent>
           </Card>
 
-          {/* Favorites Section */}
+          {/* CV Downloads History */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                Histórico de CVs Baixados
+              </CardTitle>
+              <CardDescription>
+                Currículos que você gerou e baixou
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoadingCvDownloads ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              ) : cvDownloads.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                  <p>Você ainda não baixou nenhum currículo</p>
+                  <Button
+                    variant="outline"
+                    className="mt-4"
+                    onClick={() => navigate("/cv-builder")}
+                  >
+                    Criar Currículo
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {cvDownloads.map((dl: any) => (
+                    <div
+                      key={dl.id}
+                      className="flex items-center gap-4 p-3 rounded-lg border border-border"
+                    >
+                      <FileText className="h-8 w-8 text-primary shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground text-sm">{dl.cv_name}</p>
+                        <p className="text-xs text-muted-foreground">Modelo: {dl.template_name}</p>
+                      </div>
+                      <span className="text-xs text-muted-foreground shrink-0">
+                        {format(new Date(dl.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Histórico de Candidaturas</CardTitle>

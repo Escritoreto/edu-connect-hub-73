@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home, GraduationCap, MessageSquare } from "lucide-react";
+import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home, GraduationCap, MessageSquare, Download } from "lucide-react";
 import EnrollmentsManager from "@/components/admin/EnrollmentsManager";
 import PublicationsManager from "@/components/admin/PublicationsManager";
 import ScholarshipRequestsManager from "@/components/admin/ScholarshipRequestsManager";
@@ -24,7 +24,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [stats, setStats] = useState({ users: 0, totalViews: 0 });
+  const [stats, setStats] = useState({ users: 0, totalViews: 0, cvDownloads: 0 });
 
   // Basic Form state
   const [title, setTitle] = useState("");
@@ -84,9 +84,14 @@ const Admin = () => {
     
     const totalViews = publications?.reduce((acc, pub) => acc + (pub.views_count || 0), 0) || 0;
 
+    const { count: cvCount } = await supabase
+      .from("cv_downloads")
+      .select("*", { count: "exact", head: true });
+
     setStats({
       users: usersCount || 0,
       totalViews,
+      cvDownloads: cvCount || 0,
     });
   };
 
@@ -324,7 +329,7 @@ const Admin = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
             <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-300">Usuários Registrados</CardTitle>
@@ -342,6 +347,16 @@ const Admin = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-white">{stats.totalViews}</div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-slate-300">CVs Baixados</CardTitle>
+                <Download className="h-4 w-4 text-amber-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">{stats.cvDownloads}</div>
               </CardContent>
             </Card>
           </div>

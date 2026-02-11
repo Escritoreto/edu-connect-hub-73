@@ -61,6 +61,30 @@ export type Database = {
           },
         ]
       }
+      cv_downloads: {
+        Row: {
+          created_at: string
+          cv_name: string
+          id: string
+          template_name: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          cv_name: string
+          id?: string
+          template_name: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          cv_name?: string
+          id?: string
+          template_name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
