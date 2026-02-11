@@ -131,6 +131,14 @@ export const MessagesPanel = ({ currentUserId, targetUserId, isAdmin }: Props) =
       receiver_id: selectedUser,
       content: input.trim(),
     });
+    // Create notification for the receiver
+    const notifTitle = isAdmin ? "Nova mensagem do Admin" : "Nova mensagem";
+    await supabase.from("notifications").insert({
+      user_id: selectedUser,
+      title: notifTitle,
+      message: input.trim().slice(0, 100),
+      link: isAdmin ? "/profile" : "/admin",
+    }).then(() => {});
     setInput("");
     setSending(false);
   };

@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -518,6 +519,15 @@ const CVBuilder = () => {
       URL.revokeObjectURL(url);
       
       toast.success("PDF baixado com sucesso!", { id: "pdf-loading" });
+      
+      // Track the download
+      const { data: { session } } = await supabase.auth.getSession();
+      const templateInfo = availableTemplates.find(t => t.id === templateId);
+      await supabase.from("cv_downloads").insert({
+        user_id: session?.user?.id || null,
+        template_name: templateInfo?.name || templateId,
+        cv_name: `CV_${cvData.firstName}_${cvData.lastName}`,
+      } as any);
     } catch (error) {
       console.error("Error generating PDF:", error);
       const message = error instanceof Error ? error.message : String(error);
