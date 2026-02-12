@@ -104,9 +104,9 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button size="lg" variant="secondary" asChild className="text-base">
-                <Link to="/auth" className="text-sm">
-                  Começar Gratuitamente
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                <Link to="/auth" className="text-sm">Criar Conta
+
+                <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20">
