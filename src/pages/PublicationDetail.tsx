@@ -161,19 +161,7 @@ const PublicationDetail = () => {
 
             {/* Sidebar - Quick Info */}
             <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Informações Rápidas</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {publication.country && <div className="flex items-start gap-2">
-                      <MapPin className="h-5 w-5 text-primary mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm">País</p>
-                        <p className="text-sm text-muted-foreground">{publication.country}</p>
-                      </div>
-                    </div>}
-                  {publication.deadline
+              
 
 
 
@@ -181,17 +169,29 @@ const PublicationDetail = () => {
 
 
 
-                }
-                  {publication.value && <div className="flex items-start gap-2">
-                      <Gift className="h-5 w-5 text-primary mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm">Valor</p>
-                        <p className="text-sm font-semibold text-primary">{publication.value}</p>
-                      </div>
-                    </div>}
-                  
-                </CardContent>
-              </Card>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
               {publication.external_link && <Button size="lg" className="w-full" asChild>
                   
