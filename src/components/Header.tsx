@@ -155,7 +155,7 @@ const Header = () => {
                     <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Entrar</Link>
                   </Button>
                    <Button variant="hero" asChild>
-                    <Link to="/auth?tab=signup" onClick={() => setIsMenuOpen(false)}>Começar Agora</Link>
+                    <Link to="/auth?tab=signup" onClick={() => setIsMenuOpen(false)}>Registrar-se</Link>
                   </Button>
                 </>}
             </div>
