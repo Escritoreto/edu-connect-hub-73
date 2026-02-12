@@ -23,7 +23,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { favorites } = useFavorites();
-  
+
   const [profile, setProfile] = useState<any>(null);
   const [fullName, setFullName] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -54,11 +54,11 @@ const Profile = () => {
 
   const fetchEnrolledCourses = async () => {
     if (!user) return;
-    
+
     setIsLoadingCourses(true);
-    const { data, error } = await supabase
-      .from("course_enrollments")
-      .select(`
+    const { data, error } = await supabase.
+    from("course_enrollments").
+    select(`
         *,
         publications:publication_id (
           id,
@@ -67,9 +67,9 @@ const Profile = () => {
           value,
           category
         )
-      `)
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      `).
+    eq("user_id", user.id).
+    order("created_at", { ascending: false });
 
     if (!error && data) {
       setEnrolledCourses(data);
@@ -79,11 +79,11 @@ const Profile = () => {
 
   const fetchScholarshipRequests = async () => {
     if (!user) return;
-    
+
     setIsLoadingScholarships(true);
-    const { data, error } = await supabase
-      .from("scholarship_requests")
-      .select(`
+    const { data, error } = await supabase.
+    from("scholarship_requests").
+    select(`
         *,
         publications:publication_id (
           id,
@@ -92,9 +92,9 @@ const Profile = () => {
           country,
           category
         )
-      `)
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      `).
+    eq("user_id", user.id).
+    order("created_at", { ascending: false });
 
     if (!error && data) {
       setScholarshipRequests(data);
@@ -105,11 +105,11 @@ const Profile = () => {
   const fetchCvDownloads = async () => {
     if (!user) return;
     setIsLoadingCvDownloads(true);
-    const { data, error } = await supabase
-      .from("cv_downloads")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+    const { data, error } = await supabase.
+    from("cv_downloads").
+    select("*").
+    eq("user_id", user.id).
+    order("created_at", { ascending: false });
     if (!error && data) {
       setCvDownloads(data);
     }
@@ -118,19 +118,19 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     if (!user) return;
-    
+
     setIsLoadingProfile(true);
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .single();
+    const { data, error } = await supabase.
+    from("profiles").
+    select("*").
+    eq("id", user.id).
+    single();
 
     if (error) {
       toast({
         title: "Erro ao carregar perfil",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     } else {
       setProfile(data);
@@ -147,7 +147,7 @@ const Profile = () => {
         toast({
           title: "Arquivo muito grande",
           description: "A imagem deve ter no máximo 5MB",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
@@ -162,17 +162,17 @@ const Profile = () => {
     const fileExt = avatarFile.name.split(".").pop();
     const fileName = `${user.id}/${Date.now()}.${fileExt}`;
 
-    const { error: uploadError, data } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, avatarFile, { upsert: true });
+    const { error: uploadError, data } = await supabase.storage.
+    from("avatars").
+    upload(fileName, avatarFile, { upsert: true });
 
     if (uploadError) {
       throw uploadError;
     }
 
-    const { data: { publicUrl } } = supabase.storage
-      .from("avatars")
-      .getPublicUrl(fileName);
+    const { data: { publicUrl } } = supabase.storage.
+    from("avatars").
+    getPublicUrl(fileName);
 
     return publicUrl;
   };
@@ -189,19 +189,19 @@ const Profile = () => {
         avatarUrl = await uploadAvatar();
       }
 
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          full_name: fullName,
-          avatar_url: avatarUrl,
-        })
-        .eq("id", user.id);
+      const { error } = await supabase.
+      from("profiles").
+      update({
+        full_name: fullName,
+        avatar_url: avatarUrl
+      }).
+      eq("id", user.id);
 
       if (error) throw error;
 
       toast({
         title: "Perfil atualizado!",
-        description: "Suas informações foram salvas com sucesso.",
+        description: "Suas informações foram salvas com sucesso."
       });
 
       fetchProfile();
@@ -209,7 +209,7 @@ const Profile = () => {
       toast({
         title: "Erro ao salvar perfil",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsSaving(false);
@@ -220,8 +220,8 @@ const Profile = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -266,8 +266,8 @@ const Profile = () => {
                           type="file"
                           accept="image/*"
                           className="hidden"
-                          onChange={handleAvatarChange}
-                        />
+                          onChange={handleAvatarChange} />
+
                         <p className="text-xs text-muted-foreground">
                           PNG, JPG ou WEBP (máx. 5MB)
                         </p>
@@ -282,8 +282,8 @@ const Profile = () => {
                         id="fullName"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        placeholder="Digite seu nome completo"
-                      />
+                        placeholder="Digite seu nome completo" />
+
                     </div>
 
                     <div className="space-y-2">
@@ -293,22 +293,22 @@ const Profile = () => {
                         type="email"
                         value={user?.email || ""}
                         disabled
-                        className="bg-muted"
-                      />
+                        className="bg-muted" />
+
                       <p className="text-xs text-muted-foreground">
                         O email não pode ser alterado
                       </p>
                     </div>
 
                     <Button type="submit" disabled={isSaving} className="w-full">
-                      {isSaving ? (
-                        <>
+                      {isSaving ?
+                      <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Salvando...
-                        </>
-                      ) : (
-                        "Salvar Alterações"
-                      )}
+                        </> :
+
+                      "Salvar Alterações"
+                      }
                     </Button>
                   </form>
                 </CardContent>
@@ -366,51 +366,51 @@ const Profile = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {isLoadingCourses ? (
-                <div className="flex justify-center py-8">
+              {isLoadingCourses ?
+              <div className="flex justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                </div>
-              ) : enrolledCourses.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
+                </div> :
+              enrolledCourses.length === 0 ?
+              <div className="text-center py-8 text-muted-foreground">
                   <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-20" />
                   <p>Você ainda não se inscreveu em nenhum curso</p>
                   <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => navigate("/courses")}
-                  >
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => navigate("/courses")}>
+
                     Explorar Cursos
                   </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {enrolledCourses.map((enrollment: any) => (
-                    <div
-                      key={enrollment.id}
-                      className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/publication/${enrollment.publication_id}`)}
-                    >
-                      {enrollment.publications?.image_url && (
-                        <img
-                          src={enrollment.publications.image_url}
-                          alt={enrollment.publications.title}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      )}
+                </div> :
+
+              <div className="space-y-4">
+                  {enrolledCourses.map((enrollment: any) =>
+                <div
+                  key={enrollment.id}
+                  className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/publication/${enrollment.publication_id}`)}>
+
+                      {enrollment.publications?.image_url &&
+                  <img
+                    src={enrollment.publications.image_url}
+                    alt={enrollment.publications.title}
+                    className="w-16 h-16 object-cover rounded" />
+
+                  }
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground line-clamp-1">
                           {enrollment.publications?.title}
                         </h3>
                         <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                          {enrollment.publications?.value && (
-                            <span className="font-medium text-primary">
+                          {enrollment.publications?.value &&
+                      <span className="font-medium text-primary">
                               {enrollment.publications.value}
                             </span>
-                          )}
-                          <Badge 
-                            variant={enrollment.status === "approved" ? "default" : enrollment.status === "pending" ? "secondary" : "destructive"}
-                            className="text-xs"
-                          >
+                      }
+                          <Badge
+                        variant={enrollment.status === "approved" ? "default" : enrollment.status === "pending" ? "secondary" : "destructive"}
+                        className="text-xs">
+
                             {enrollment.status === "pending" ? "Pendente" : enrollment.status === "approved" ? "Aprovado" : enrollment.status}
                           </Badge>
                           <span className="text-xs">
@@ -419,9 +419,9 @@ const Profile = () => {
                         </div>
                       </div>
                     </div>
-                  ))}
+                )}
                 </div>
-              )}
+              }
             </CardContent>
           </Card>
 
@@ -437,52 +437,52 @@ const Profile = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {isLoadingScholarships ? (
-                <div className="flex justify-center py-8">
+              {isLoadingScholarships ?
+              <div className="flex justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                </div>
-              ) : scholarshipRequests.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
+                </div> :
+              scholarshipRequests.length === 0 ?
+              <div className="text-center py-8 text-muted-foreground">
                   <GraduationCap className="h-12 w-12 mx-auto mb-4 opacity-20" />
                   <p>Você ainda não solicitou orientação para nenhuma bolsa</p>
                   <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => navigate("/scholarships")}
-                  >
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => navigate("/scholarships")}>
+
                     Explorar Bolsas
                   </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {scholarshipRequests.map((request: any) => (
-                    <div
-                      key={request.id}
-                      className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/publication/${request.publication_id}`)}
-                    >
-                      {request.publications?.image_url && (
-                        <img
-                          src={request.publications.image_url}
-                          alt={request.publications.title}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      )}
+                </div> :
+
+              <div className="space-y-4">
+                  {scholarshipRequests.map((request: any) =>
+                <div
+                  key={request.id}
+                  className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/publication/${request.publication_id}`)}>
+
+                      {request.publications?.image_url &&
+                  <img
+                    src={request.publications.image_url}
+                    alt={request.publications.title}
+                    className="w-16 h-16 object-cover rounded" />
+
+                  }
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground line-clamp-1">
                           {request.publications?.title}
                         </h3>
                         <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                          {request.publications?.country && (
-                            <div className="flex items-center gap-1">
+                          {request.publications?.country &&
+                      <div className="flex items-center gap-1">
                               <MapPin className="h-3 w-3" />
                               <span>{request.publications.country}</span>
                             </div>
-                          )}
-                          <Badge 
-                            variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"}
-                            className="text-xs"
-                          >
+                      }
+                          <Badge
+                        variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"}
+                        className="text-xs">
+
                             {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
                           </Badge>
                           <span className="text-xs">
@@ -491,9 +491,9 @@ const Profile = () => {
                         </div>
                       </div>
                     </div>
-                  ))}
+                )}
                 </div>
-              )}
+              }
             </CardContent>
           </Card>
 
@@ -509,29 +509,29 @@ const Profile = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {isLoadingCvDownloads ? (
-                <div className="flex justify-center py-8">
+              {isLoadingCvDownloads ?
+              <div className="flex justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                </div>
-              ) : cvDownloads.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
+                </div> :
+              cvDownloads.length === 0 ?
+              <div className="text-center py-8 text-muted-foreground">
                   <FileText className="h-12 w-12 mx-auto mb-4 opacity-20" />
                   <p>Você ainda não baixou nenhum currículo</p>
                   <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => navigate("/cv-builder")}
-                  >
+                  variant="outline"
+                  className="mt-4"
+                  onClick={() => navigate("/cv-builder")}>
+
                     Criar Currículo
                   </Button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {cvDownloads.map((dl: any) => (
-                    <div
-                      key={dl.id}
-                      className="flex items-center gap-4 p-3 rounded-lg border border-border"
-                    >
+                </div> :
+
+              <div className="space-y-3">
+                  {cvDownloads.map((dl: any) =>
+                <div
+                  key={dl.id}
+                  className="flex items-center gap-4 p-3 rounded-lg border border-border">
+
                       <FileText className="h-8 w-8 text-primary shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-foreground text-sm">{dl.cv_name}</p>
@@ -541,9 +541,9 @@ const Profile = () => {
                         {format(new Date(dl.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                       </span>
                     </div>
-                  ))}
+                )}
                 </div>
-              )}
+              }
             </CardContent>
           </Card>
 
@@ -554,70 +554,70 @@ const Profile = () => {
                 Bolsas e cursos que você salvou nos favoritos
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              {favorites.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Heart className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                  <p>Você ainda não salvou nenhuma oportunidade</p>
-                  <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={() => navigate("/scholarships")}
-                  >
-                    Explorar Bolsas
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {favorites.map((fav: any) => (
-                    <div
-                      key={fav.id}
-                      className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
-                      onClick={() => navigate(`/publication/${fav.publication_id}`)}
-                    >
-                      {fav.publications?.image_url && (
-                        <img
-                          src={fav.publications.image_url}
-                          alt={fav.publications.title}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground line-clamp-1">
-                          {fav.publications?.title}
-                        </h3>
-                        <div className="flex flex-wrap gap-3 mt-2 text-sm text-muted-foreground">
-                          {fav.publications?.country && (
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              <span>{fav.publications.country}</span>
-                            </div>
-                          )}
-                          {fav.publications?.deadline && (
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
-                              <span>
-                                {format(new Date(fav.publications.deadline), "dd/MM/yyyy", {
-                                  locale: ptBR,
-                                })}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           </Card>
           {/* Messages Section */}
           {user && <MessagesPanel currentUserId={user.id} />}
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>);
+
 };
 
 export default Profile;
