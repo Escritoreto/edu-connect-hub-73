@@ -104,7 +104,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button size="lg" variant="secondary" asChild className="text-base">
-                <Link to="/auth" className="text-sm">Criar Conta
+                <Link to="/auth" className="text-sm">Registrar-
 
                 <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

@@ -89,7 +89,7 @@ const Header = () => {
                 <Link to="/auth">Entrar</Link>
               </Button>
               <Button variant="hero" asChild>
-                <Link to="/auth">Criar conta</Link>
+                <Link to="/auth">Registrar</Link>
               </Button>
             </>}
         </div>
