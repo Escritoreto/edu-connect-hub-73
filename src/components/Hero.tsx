@@ -9,7 +9,7 @@ const Hero = () => {
   const rotatingTexts = ["Encontre bolsas, empregos e cursos de inglês e mais em um só lugar. Prepare-se para estudar ou trabalhar no país e no exterior — e crie seu currículo gratuito em segundos. Tudo isso com apenas alguns cliques!", "Ajudamos você a organizar a sua jornada de estudo ou trabalho na Europa, Ásia, América e África. Se você concluiu ensino médio ou ainda está cursando, nós ajudamos!"];
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTextIndex(prev => (prev + 1) % rotatingTexts.length);
+      setCurrentTextIndex((prev) => (prev + 1) % rotatingTexts.length);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -51,7 +51,7 @@ const Hero = () => {
               </Button>
               <Button size="lg" variant="outline" asChild className="text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20">
                 <Link to="/courses" className="text-sm">
-                  Ver Cursos Gratuitos
+                  Cursos disponíveis       
                 </Link>
               </Button>
             </div>
