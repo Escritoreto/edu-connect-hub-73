@@ -173,15 +173,15 @@ const PublicationDetail = () => {
                         <p className="text-sm text-muted-foreground">{publication.country}</p>
                       </div>
                     </div>}
-                  {publication.deadline && <div className="flex items-start gap-2">
-                      <Calendar className="h-5 w-5 text-primary mt-0.5" />
-                      <div>
-                        <p className="font-semibold text-sm">Prazo Final</p>
-                        <p className="text-sm text-muted-foreground">
-                          {format(new Date(publication.deadline), "dd/MM/yyyy")}
-                        </p>
-                      </div>
-                    </div>}
+                  {publication.deadline
+
+
+
+
+
+
+
+                }
                   {publication.value && <div className="flex items-start gap-2">
                       <Gift className="h-5 w-5 text-primary mt-0.5" />
                       <div>
