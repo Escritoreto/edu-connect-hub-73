@@ -178,7 +178,7 @@ const PublicationDetail = () => {
                       <div>
                         <p className="font-semibold text-sm">Estimativa de Abertura</p>
                         <p className="text-sm text-muted-foreground">
-                          {format(new Date(publication.deadline), "MMMM 'de' yyyy")}
+                          {format(new Date(publication.deadline), "dd 'de' MMMM")}
                         </p>
                       </div>
                     </div>}

@@ -85,8 +85,8 @@ const Index = () => {
                         </p>}
                       {scholarship.deadline && <span className="text-muted-foreground text-xs">
                           Abertura estimada: {new Date(scholarship.deadline).toLocaleDateString('pt-BR', {
-                    month: 'long',
-                    year: 'numeric'
+                    day: 'numeric',
+                    month: 'long'
                   })}
                         </span>}
                     </div>

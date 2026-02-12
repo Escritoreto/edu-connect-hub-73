@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -62,8 +62,15 @@ const getCategoryLabel = (category: string) => {
 const PublicationCard = ({
   publication
 }: PublicationCardProps) => {
+  const navigate = useNavigate();
   const displayDescription = publication.short_description || publication.description;
-  return <Card className="hover:shadow-card transition-all overflow-hidden relative">
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't navigate if clicking on FavoriteButton or its children
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-favorite-button]')) return;
+    navigate(`/publication/${publication.id}`);
+  };
+  return <Card className="hover:shadow-card transition-all overflow-hidden relative cursor-pointer" onClick={handleCardClick}>
       {publication.is_featured && <div className="absolute top-4 right-4 z-10">
           <Badge className="bg-primary text-primary-foreground flex items-center gap-1">
             <Star className="h-3 w-3 fill-current" />
@@ -116,7 +123,7 @@ const PublicationCard = ({
               </div>}
             {publication.deadline && <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Abertura estimada: {format(new Date(publication.deadline), "MMM yyyy")}
+                Abertura estimada: {format(new Date(publication.deadline), "dd 'de' MMMM")}
               </div>}
             
           </div>
