@@ -22,6 +22,7 @@ const FavoriteButton = ({ publicationId, variant = "default", className }: Favor
   if (variant === "icon") {
     return (
       <button
+        data-favorite-button
         onClick={handleClick}
         className={cn(
           "p-2 rounded-full hover:bg-muted transition-colors",
@@ -41,6 +42,7 @@ const FavoriteButton = ({ publicationId, variant = "default", className }: Favor
 
   return (
     <Button
+      data-favorite-button
       variant={favorited ? "default" : "outline"}
       size="sm"
       onClick={handleClick}
