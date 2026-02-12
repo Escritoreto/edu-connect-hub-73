@@ -269,28 +269,28 @@ const PublicationDetail = () => {
 
 
 
-                <CardContent>
-                  <div className="space-y-3">
-                    {importantDates.application_start && <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                        <span className="font-semibold">Início das Candidaturas</span>
-                        <span className="text-muted-foreground">
-                          {format(new Date(importantDates.application_start), "dd/MM/yyyy")}
-                        </span>
-                      </div>}
-                    {importantDates.application_end && <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                        <span className="font-semibold">Fim das Candidaturas</span>
-                        <span className="text-muted-foreground">
-                          {format(new Date(importantDates.application_end), "dd/MM/yyyy")}
-                        </span>
-                      </div>}
-                    {importantDates.result_date && <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                        <span className="font-semibold">Data dos Resultados</span>
-                        <span className="text-muted-foreground">
-                          {format(new Date(importantDates.result_date), "dd/MM/yyyy")}
-                        </span>
-                      </div>}
-                  </div>
-                </CardContent>
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               </Card>}
 
             {/* Vacancies by Country */}
