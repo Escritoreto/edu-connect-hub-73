@@ -9,12 +9,12 @@ const About = () => {
         {/* Hero Section */}
         <section className="bg-gradient-primary py-16 text-primary-foreground">
           <div className="container">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4">
+            <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-left">
               Sobre o UpMentor
             </h1>
-            <p className="text-lg opacity-90 max-w-2xl">Sabemos o quanto é desafiador para muitos jovens identificarem seus verdadeiros objetivos e sonhos antes e depois do ensino médio.
-Por isso, criamos uma plataforma que conecta estudantes a oportunidades reais — desde bolsas de estudo e empregos, até cursos de capacitação e formação internacional.
-Nosso propósito é orientar, inspirar e preparar os jovens para o futuro, oferecendo caminhos concretos para transformar sonhos em conquistas.</p>
+            <p className="text-lg opacity-90 max-w-2xl text-justify font-serif font-medium">Sabemos o quanto é desafiador para muitos jovens identificarem seus verdadeiros objetivos e sonhos antes e depois do ensino médio. Por isso, criamos uma plataforma que conecta estudantes a oportunidades reais desde bolsas de estudo e empregos, até cursos de capacitação e formação internacional. Nosso propósito é orientar, inspirar e preparar os jovens para o futuro, oferecendo caminhos concretos para transformar sonhos em conquistas.
+
+          </p>
           </div>
         </section>
 
