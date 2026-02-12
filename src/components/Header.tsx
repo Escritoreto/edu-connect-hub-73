@@ -86,7 +86,7 @@ const Header = () => {
               </Button>
             </> : <>
               <Button variant="ghost" asChild>
-                <Link to="/auth">Login</Link>
+                <Link to="/auth">Entrar</Link>
               </Button>
               <Button variant="hero" asChild>
                 <Link to="/auth">Criar conta</Link>
