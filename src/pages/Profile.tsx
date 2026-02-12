@@ -548,12 +548,12 @@ const Profile = () => {
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>Histórico de Candidaturas</CardTitle>
-              <CardDescription>
-                Bolsas e cursos que você salvou nos favoritos
-              </CardDescription>
-            </CardHeader>
+            
+
+
+
+
+
             
 
 
