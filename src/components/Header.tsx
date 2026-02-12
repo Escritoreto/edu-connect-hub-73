@@ -44,7 +44,7 @@ const Header = () => {
           </Link>
           <Link to="/courses" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">Cursos</Link>
           <Link to="/cv-builder" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-            Criar Currículo
+            Criar CV
           </Link>
           <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Blog
