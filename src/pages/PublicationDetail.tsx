@@ -176,9 +176,9 @@ const PublicationDetail = () => {
                   {publication.deadline && <div className="flex items-start gap-2">
                       <Calendar className="h-5 w-5 text-primary mt-0.5" />
                       <div>
-                        <p className="font-semibold text-sm">Prazo Final</p>
+                        <p className="font-semibold text-sm">Estimativa de Abertura</p>
                         <p className="text-sm text-muted-foreground">
-                          {format(new Date(publication.deadline), "dd/MM/yyyy")}
+                          {format(new Date(publication.deadline), "MMMM 'de' yyyy")}
                         </p>
                       </div>
                     </div>}
@@ -451,29 +451,43 @@ const PublicationDetail = () => {
                         <div className="flex items-start gap-3 py-2">
                           <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="font-semibold">Análise do seu perfil</p>
-                            <p className="text-sm text-muted-foreground">Avaliamos suas qualificações e chances</p>
+                            <p className="font-semibold">Análise completa do seu perfil</p>
+                            <p className="text-sm text-muted-foreground">Avaliamos suas qualificações acadêmicas, experiência e compatibilidade com a bolsa para maximizar suas chances de aprovação</p>
                           </div>
                         </div>
                         <div className="flex items-start gap-3 py-2">
                           <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="font-semibold">Orientação personalizada</p>
-                            <p className="text-sm text-muted-foreground">Receba dicas específicas para sua candidatura</p>
+                            <p className="font-semibold">Orientação personalizada na candidatura</p>
+                            <p className="text-sm text-muted-foreground">Receba um plano detalhado com prazos, documentos necessários e dicas específicas para destacar sua candidatura</p>
                           </div>
                         </div>
                         <div className="flex items-start gap-3 py-2">
                           <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="font-semibold">Suporte na documentação</p>
-                            <p className="text-sm text-muted-foreground">Ajudamos com os documentos necessários</p>
+                            <p className="font-semibold">Preparação de documentos e cartas</p>
+                            <p className="text-sm text-muted-foreground">Apoio na elaboração de cartas de motivação, CVs acadêmicos e revisão de toda a documentação exigida</p>
                           </div>
                         </div>
                         <div className="flex items-start gap-3 py-2">
                           <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="font-semibold">Acompanhamento contínuo</p>
-                            <p className="text-sm text-muted-foreground">Suporte até a aprovação final</p>
+                            <p className="font-semibold">Preparação para entrevistas</p>
+                            <p className="text-sm text-muted-foreground">Simulação de entrevistas e orientação sobre perguntas frequentes das comissões de seleção</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 py-2">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Alerta antecipado de abertura</p>
+                            <p className="text-sm text-muted-foreground">Seja notificado assim que a bolsa abrir candidaturas, garantindo que você se prepare com antecedência</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 py-2">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Acompanhamento contínuo até a aprovação</p>
+                            <p className="text-sm text-muted-foreground">Suporte em todas as etapas do processo, desde a candidatura até a obtenção do visto e chegada ao destino</p>
                           </div>
                         </div>
                       </CardContent>
