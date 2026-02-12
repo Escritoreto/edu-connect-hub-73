@@ -86,10 +86,10 @@ const Header = () => {
               </Button>
             </> : <>
               <Button variant="ghost" asChild>
-                <Link to="/auth">Entrar</Link>
+                <Link to="/auth">Login</Link>
               </Button>
               <Button variant="hero" asChild>
-                <Link to="/auth">Começar Agora</Link>
+                <Link to="/auth">Sign in</Link>
               </Button>
             </>}
         </div>
