@@ -89,7 +89,7 @@ const Header = () => {
                 <Link to="/auth">Entrar</Link>
               </Button>
               <Button variant="hero" asChild>
-                <Link to="/auth">Registrar</Link>
+                <Link to="/auth?tab=signup">Registrar</Link>
               </Button>
             </>}
         </div>
@@ -154,8 +154,8 @@ const Header = () => {
                   <Button variant="ghost" asChild>
                     <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Entrar</Link>
                   </Button>
-                  <Button variant="hero" asChild>
-                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>Começar Agora</Link>
+                   <Button variant="hero" asChild>
+                    <Link to="/auth?tab=signup" onClick={() => setIsMenuOpen(false)}>Começar Agora</Link>
                   </Button>
                 </>}
             </div>

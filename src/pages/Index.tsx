@@ -56,37 +56,41 @@ const Index = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
               {loading ? Array.from({
               length: 3
-            }).map((_, index) => <div key={index} className="bg-card border border-border rounded-xl p-6">
-                    <Skeleton className="h-6 w-24 mb-3" />
-                    <Skeleton className="h-6 w-full mb-2" />
-                    <Skeleton className="h-4 w-3/4 mb-4" />
-                    <Skeleton className="h-4 w-full" />
-                  </div>) : featuredScholarships.length > 0 ? featuredScholarships.map((scholarship, index) => <div key={scholarship.id} className="bg-card border border-border rounded-xl p-6 hover:shadow-card transition-all group animate-fade-in" style={{
+            }).map((_, index) => <div key={index} className="bg-card border border-border rounded-xl overflow-hidden">
+                    <Skeleton className="h-40 w-full" />
+                    <div className="p-4">
+                      <Skeleton className="h-6 w-24 mb-3" />
+                      <Skeleton className="h-6 w-full mb-2" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                  </div>) : featuredScholarships.length > 0 ? featuredScholarships.map((scholarship, index) => <Link to={`/publication/${scholarship.id}`} key={scholarship.id} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-card transition-all group animate-fade-in block" style={{
               animationDelay: `${index * 100}ms`
             }}>
-                    <div className="mb-4">
-                      {scholarship.value && <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-3">
+                    <div className="relative h-40 sm:h-48 overflow-hidden">
+                      <img
+                        src={scholarship.image_url || "/placeholder.svg"}
+                        alt={scholarship.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      {scholarship.value && <div className="absolute top-2 left-2 px-2 py-1 bg-primary text-primary-foreground rounded-full text-xs font-medium">
                           {scholarship.value}
                         </div>}
-                      <h3 className="text-sm sm:text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-sm sm:text-lg font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2">
                         {scholarship.title}
                       </h3>
-                      {scholarship.country && <p className="text-muted-foreground text-sm mb-4">
+                      {scholarship.country && <p className="text-muted-foreground text-xs sm:text-sm mb-2">
                           {scholarship.country}
                         </p>}
-                    </div>
-                    <div className="flex justify-between items-center text-sm">
-                      {scholarship.deadline && <span className="text-muted-foreground">
+                      {scholarship.deadline && <span className="text-muted-foreground text-xs">
                           Prazo: {new Date(scholarship.deadline).toLocaleDateString('pt-BR', {
                     month: 'short',
                     year: 'numeric'
                   })}
                         </span>}
-                      <Button variant="link" size="sm" asChild className="p-0">
-                        <Link to={`/publication/${scholarship.id}`}>Ver mais →</Link>
-                      </Button>
                     </div>
-                  </div>) : <div className="col-span-3 text-center py-8 text-muted-foreground">
+                  </Link>) : <div className="col-span-3 text-center py-8 text-muted-foreground">
                   Nenhuma bolsa em destaque no momento
                 </div>}
             </div>
@@ -104,8 +108,7 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button size="lg" variant="secondary" asChild className="text-base">
-                <Link to="/auth" className="text-sm">Registrar-
-
+                <Link to="/auth?tab=signup" className="text-sm">Registrar-se
                 <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
