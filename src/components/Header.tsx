@@ -31,8 +31,8 @@ const Header = () => {
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2 group border-0">
-          <GraduationCap className="h-8 w-8 text-primary transition-transform group-hover:scale-110" />
-          <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <GraduationCap className="h-8 text-primary transition-transform group-hover:scale-110 w-[20px]" />
+          <span className="bg-gradient-primary bg-clip-text text-transparent text-sm font-extrabold">
             UpMentor
           </span>
         </Link>
