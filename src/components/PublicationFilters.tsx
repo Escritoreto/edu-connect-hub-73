@@ -28,15 +28,15 @@ const PublicationFilters = ({
 }: PublicationFiltersProps) => {
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="relative mb-4">
-        
-        <Input
-          placeholder="Pesquisar por título..."
-          className="pl-12 h-14 text-lg bg-card text-foreground placeholder:text-muted-foreground shadow-sm border border-border/60"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)} />
+      
 
-      </div>
+
+
+
+
+
+
+
       
       <div className="flex gap-3">
         <Select value={countryFilter} onValueChange={setCountryFilter}>
