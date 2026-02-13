@@ -15,8 +15,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from
+"@/components/ui/dialog";
 
 interface ScholarshipRequest {
   id: string;
@@ -49,23 +49,23 @@ const ScholarshipRequestsManager = () => {
 
   const fetchRequests = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("scholarship_requests")
-      .select(`
+    const { data, error } = await supabase.
+    from("scholarship_requests").
+    select(`
         *,
         publications:publication_id (
           id,
           title,
           country
         )
-      `)
-      .order("created_at", { ascending: false });
+      `).
+    order("created_at", { ascending: false });
 
     if (error) {
       toast({
         title: "Erro ao carregar solicitações",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     } else {
       setRequests(data || []);
@@ -75,19 +75,19 @@ const ScholarshipRequestsManager = () => {
 
   const updateStatus = async (requestId: string, newStatus: string) => {
     setUpdatingId(requestId);
-    
-    const request = requests.find(r => r.id === requestId);
-    
-    const { error } = await supabase
-      .from("scholarship_requests")
-      .update({ status: newStatus })
-      .eq("id", requestId);
+
+    const request = requests.find((r) => r.id === requestId);
+
+    const { error } = await supabase.
+    from("scholarship_requests").
+    update({ status: newStatus }).
+    eq("id", requestId);
 
     if (error) {
       toast({
         title: "Erro ao atualizar status",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
     } else {
       // Send notification to user if they have an account
@@ -95,7 +95,7 @@ const ScholarshipRequestsManager = () => {
         const statusMap: Record<string, string> = {
           approved: "aprovada",
           rejected: "rejeitada",
-          contacted: "em análise",
+          contacted: "em análise"
         };
         const statusText = statusMap[newStatus] || newStatus;
         const scholarshipName = request.publications?.title || "bolsa";
@@ -103,13 +103,13 @@ const ScholarshipRequestsManager = () => {
           user_id: request.user_id,
           title: `Solicitação ${statusText}!`,
           message: `A sua solicitação de orientação para "${scholarshipName}" foi ${statusText}.`,
-          link: "/profile",
+          link: "/profile"
         });
       }
-      
+
       toast({
         title: "Status atualizado!",
-        description: `Solicitação ${newStatus === "approved" ? "aprovada" : newStatus === "rejected" ? "rejeitada" : "atualizada"} com sucesso.`,
+        description: `Solicitação ${newStatus === "approved" ? "aprovada" : newStatus === "rejected" ? "rejeitada" : "atualizada"} com sucesso.`
       });
       fetchRequests();
     }
@@ -123,50 +123,50 @@ const ScholarshipRequestsManager = () => {
           <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
             <CheckCircle className="h-3 w-3 mr-1" />
             Aprovado
-          </Badge>
-        );
+          </Badge>);
+
       case "rejected":
         return (
           <Badge className="bg-red-500/10 text-red-600 border-red-500/20">
             <XCircle className="h-3 w-3 mr-1" />
             Rejeitado
-          </Badge>
-        );
+          </Badge>);
+
       case "contacted":
         return (
           <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
             <MessageSquare className="h-3 w-3 mr-1" />
             Contactado
-          </Badge>
-        );
+          </Badge>);
+
       default:
         return (
           <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
             <Clock className="h-3 w-3 mr-1" />
             Pendente
-          </Badge>
-        );
+          </Badge>);
+
     }
   };
 
-  const filteredRequests = filterStatus === "all" 
-    ? requests 
-    : requests.filter(r => r.status === filterStatus);
+  const filteredRequests = filterStatus === "all" ?
+  requests :
+  requests.filter((r) => r.status === filterStatus);
 
   const stats = {
     total: requests.length,
-    pending: requests.filter(r => r.status === "pending").length,
-    contacted: requests.filter(r => r.status === "contacted").length,
-    approved: requests.filter(r => r.status === "approved").length,
-    rejected: requests.filter(r => r.status === "rejected").length,
+    pending: requests.filter((r) => r.status === "pending").length,
+    contacted: requests.filter((r) => r.status === "contacted").length,
+    approved: requests.filter((r) => r.status === "approved").length,
+    rejected: requests.filter((r) => r.status === "rejected").length
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -233,13 +233,13 @@ const ScholarshipRequestsManager = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {filteredRequests.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
+          {filteredRequests.length === 0 ?
+          <div className="text-center py-12 text-muted-foreground">
               <GraduationCap className="h-12 w-12 mx-auto mb-4 opacity-20" />
               <p>Nenhuma solicitação encontrada</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
+            </div> :
+
+          <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -252,8 +252,8 @@ const ScholarshipRequestsManager = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRequests.map((request) => (
-                    <TableRow key={request.id}>
+                  {filteredRequests.map((request) =>
+                <TableRow key={request.id}>
                       <TableCell>
                         <div>
                           <p className="font-medium">{request.name}</p>
@@ -268,11 +268,11 @@ const ScholarshipRequestsManager = () => {
                           <p className="font-medium line-clamp-1">
                             {request.publications?.title || "Bolsa removida"}
                           </p>
-                          {request.publications?.country && (
-                            <p className="text-xs text-primary">
+                          {request.publications?.country &&
+                      <p className="text-xs text-primary">
                               {request.publications.country}
                             </p>
-                          )}
+                      }
                         </div>
                       </TableCell>
                       <TableCell>
@@ -289,8 +289,8 @@ const ScholarshipRequestsManager = () => {
                               +258 {request.phone}
                             </a>
                           </div>
-                          {request.message && (
-                            <Dialog>
+                          {request.message &&
+                      <Dialog>
                               <DialogTrigger asChild>
                                 <Button variant="ghost" size="sm" className="h-6 text-xs px-2">
                                   <MessageSquare className="h-3 w-3 mr-1" />
@@ -309,7 +309,7 @@ const ScholarshipRequestsManager = () => {
                                 </div>
                               </DialogContent>
                             </Dialog>
-                          )}
+                      }
                         </div>
                       </TableCell>
                       <TableCell>
@@ -322,77 +322,77 @@ const ScholarshipRequestsManager = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
-                          {request.status === "pending" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                              onClick={() => updateStatus(request.id, "contacted")}
-                              disabled={updatingId === request.id}
-                            >
-                              {updatingId === request.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <MessageSquare className="h-4 w-4" />
-                              )}
+                          {request.status === "pending" &&
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                        onClick={() => updateStatus(request.id, "contacted")}
+                        disabled={updatingId === request.id}>
+
+                              {updatingId === request.id ?
+                        <Loader2 className="h-4 w-4 animate-spin" /> :
+
+                        <MessageSquare className="h-4 w-4" />
+                        }
                             </Button>
-                          )}
-                          {request.status !== "approved" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-green-600 border-green-600 hover:bg-green-50"
-                              onClick={() => updateStatus(request.id, "approved")}
-                              disabled={updatingId === request.id}
-                            >
-                              {updatingId === request.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <CheckCircle className="h-4 w-4" />
-                              )}
+                      }
+                          {request.status !== "approved" &&
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-green-600 border-green-600 hover:bg-green-50"
+                        onClick={() => updateStatus(request.id, "approved")}
+                        disabled={updatingId === request.id}>
+
+                              {updatingId === request.id ?
+                        <Loader2 className="h-4 w-4 animate-spin" /> :
+
+                        <CheckCircle className="h-4 w-4" />
+                        }
                             </Button>
-                          )}
-                          {request.status !== "rejected" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-red-600 border-red-600 hover:bg-red-50"
-                              onClick={() => updateStatus(request.id, "rejected")}
-                              disabled={updatingId === request.id}
-                            >
-                              {updatingId === request.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <XCircle className="h-4 w-4" />
-                              )}
+                      }
+                          {request.status !== "rejected" &&
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-red-600 border-red-600 hover:bg-red-50"
+                        onClick={() => updateStatus(request.id, "rejected")}
+                        disabled={updatingId === request.id}>
+
+                              {updatingId === request.id ?
+                        <Loader2 className="h-4 w-4 animate-spin" /> :
+
+                        <XCircle className="h-4 w-4" />
+                        }
                             </Button>
-                          )}
-                          {request.status !== "pending" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateStatus(request.id, "pending")}
-                              disabled={updatingId === request.id}
-                            >
-                              {updatingId === request.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <Clock className="h-4 w-4" />
-                              )}
+                      }
+                          {request.status !== "pending" &&
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateStatus(request.id, "pending")}
+                        disabled={updatingId === request.id}>
+
+                              {updatingId === request.id ?
+                        <Loader2 className="h-4 w-4 animate-spin" /> :
+
+                        <Clock className="h-4 w-4" />
+                        }
                             </Button>
-                          )}
+                      }
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))}
+                )}
                 </TableBody>
               </Table>
             </div>
-          )}
+          }
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>);
+
 };
 
 export default ScholarshipRequestsManager;
