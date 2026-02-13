@@ -36,7 +36,7 @@ const Hero = () => {
                 y: -20
               }} transition={{
                 duration: 0.5
-              }} className="text-sm sm:text-lg text-primary-foreground/90 leading-relaxed">
+              }} className="text-sm sm:text-lg text-primary-foreground/90 leading-relaxed text-justify">
                   {rotatingTexts[currentTextIndex]}
                 </motion.p>
               </AnimatePresence>
