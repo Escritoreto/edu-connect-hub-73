@@ -45,7 +45,7 @@ const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" variant="secondary" asChild className="text-base group">
                 <Link to="/scholarships" className="text-sm">
-                  Buscar Bolsas
+                   Bolsas disponíveis   
                   
                 </Link>
               </Button>
