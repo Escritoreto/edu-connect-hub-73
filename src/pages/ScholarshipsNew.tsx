@@ -20,11 +20,11 @@ const ScholarshipsNew = () => {
 
   const fetchPublications = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("publications")
-      .select("*")
-      .eq("category", "scholarship")
-      .order("created_at", { ascending: false });
+    const { data, error } = await supabase.
+    from("publications").
+    select("*").
+    eq("category", "scholarship").
+    order("created_at", { ascending: false });
 
     if (!error && data) {
       setPublications(data);
@@ -38,7 +38,7 @@ const ScholarshipsNew = () => {
 
     if (searchQuery) {
       filtered = filtered.filter((pub) =>
-        pub.title.toLowerCase().includes(searchQuery.toLowerCase())
+      pub.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -65,8 +65,8 @@ const ScholarshipsNew = () => {
         {/* Hero Section */}
         <section className="bg-gradient-primary py-16 text-primary-foreground">
           <div className="container">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4">Bolsas de Estudo</h1>
-            <p className="text-lg opacity-90 mb-8 max-w-2xl">
+            <h1 className="lg:text-5xl font-bold mb-4 text-2xl">Bolsas de Estudo</h1>
+            <p className="opacity-90 mb-8 max-w-2xl text-base">
               Encontre a bolsa perfeita para seus estudos. Milhares de oportunidades em universidades do mundo todo.
             </p>
 
@@ -83,8 +83,8 @@ const ScholarshipsNew = () => {
               setStudyLevelFilter={() => {}}
               statusFilter=""
               setStatusFilter={() => {}}
-              onSearch={handleSearch}
-            />
+              onSearch={handleSearch} />
+
           </div>
         </section>
 
@@ -98,32 +98,32 @@ const ScholarshipsNew = () => {
               </p>
             </div>
 
-            {loading ? (
-              <div className="space-y-6">
-                {[1, 2, 3].map((i) => (
-                  <Skeleton key={i} className="h-48 w-full" />
-                ))}
-              </div>
-            ) : filteredPublications.length > 0 ? (
-              <div className="grid gap-6">
-                {filteredPublications.map((publication) => (
-                  <PublicationCard key={publication.id} publication={publication} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
+            {loading ?
+            <div className="space-y-6">
+                {[1, 2, 3].map((i) =>
+              <Skeleton key={i} className="h-48 w-full" />
+              )}
+              </div> :
+            filteredPublications.length > 0 ?
+            <div className="grid gap-6">
+                {filteredPublications.map((publication) =>
+              <PublicationCard key={publication.id} publication={publication} />
+              )}
+              </div> :
+
+            <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
                   Nenhuma bolsa encontrada com os filtros selecionados.
                 </p>
               </div>
-            )}
+            }
           </div>
         </section>
       </main>
 
       <Footer />
-    </div>
-  );
+    </div>);
+
 };
 
 export default ScholarshipsNew;
