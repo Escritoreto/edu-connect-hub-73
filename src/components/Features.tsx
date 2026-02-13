@@ -30,7 +30,7 @@ const Features = () => {
   return <section className="py-20 bg-background">
       <div className="container">
         <div className="text-center mb-12 space-y-4 animate-fade-in">
-          <h2 className="lg:text-5xl font-bold text-foreground text-2xl">
+          <h2 className="lg:text-5xl font-bold text-foreground text-xl">
             Tudo que você precisa em um só lugar
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base">
