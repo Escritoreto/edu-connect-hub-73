@@ -24,18 +24,18 @@ const PublicationFilters = ({
   countryFilter,
   setCountryFilter,
   areaFilter,
-  setAreaFilter,
+  setAreaFilter
 }: PublicationFiltersProps) => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="relative mb-4">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-          placeholder="Pesquisar por título..."
-          className="pl-12 h-14 text-lg bg-card text-foreground placeholder:text-muted-foreground shadow-sm border border-border/60"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        
+
+
+
+
+
       </div>
       
       <div className="flex gap-3">
@@ -70,8 +70,8 @@ const PublicationFilters = ({
           </SelectContent>
         </Select>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default PublicationFilters;
