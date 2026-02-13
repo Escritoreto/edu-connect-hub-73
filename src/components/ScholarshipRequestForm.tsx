@@ -52,8 +52,8 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOtherCity, setIsOtherCity] = useState(false);
   const [showAccountDialog, setShowAccountDialog] = useState(false);
-  const [submittedData, setSubmittedData] = useState<{ email: string; name: string; recordId: string } | null>(null);
   const { user } = useAuth();
+  const [submittedData, setSubmittedData] = useState<{ email: string; name: string } | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -64,7 +64,8 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
     setIsSubmitting(true);
     
     try {
-      const { data: inserted, error } = await supabase
+      // Insert without .select() to avoid RLS issues for anonymous users
+      const { error } = await supabase
         .from("scholarship_requests")
         .insert({
           user_id: user?.id || null,
@@ -75,20 +76,18 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
           city: data.city,
           message: data.message || null,
           status: "pending",
-        })
-        .select("id")
-        .single();
+        });
 
       if (error) throw error;
       
       toast({
         title: "Solicitação enviada!",
-        description: `Sua solicitação de orientação para "${scholarshipTitle}" foi enviada.`,
+        description: `Sua solicitação de orientação para "${scholarshipTitle}" foi enviada com sucesso.`,
       });
 
       // If user is not logged in, prompt account creation
-      if (!user && inserted) {
-        setSubmittedData({ email: data.email, name: data.name, recordId: inserted.id });
+      if (!user) {
+        setSubmittedData({ email: data.email, name: data.name });
         setShowAccountDialog(true);
       }
       
@@ -106,11 +105,12 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
 
   const handleAccountCreated = async (userId: string) => {
     if (!submittedData) return;
-    // Link the request to the new user
+    // Link all pending requests with this email to the new user
     await supabase
       .from("scholarship_requests")
       .update({ user_id: userId })
-      .eq("id", submittedData.recordId);
+      .eq("email", submittedData.email)
+      .is("user_id", null);
   };
 
   const handleCityChange = (value: string) => {

@@ -50,7 +50,7 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOtherCity, setIsOtherCity] = useState(false);
   const [showAccountDialog, setShowAccountDialog] = useState(false);
-  const [submittedData, setSubmittedData] = useState<{ email: string; name: string; recordId: string } | null>(null);
+  const [submittedData, setSubmittedData] = useState<{ email: string; name: string } | null>(null);
   const { user } = useAuth();
 
   const form = useForm<FormData>({
@@ -62,7 +62,7 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     setIsSubmitting(true);
     
     try {
-      const { data: inserted, error } = await supabase
+      const { error } = await supabase
         .from("course_enrollments")
         .insert({
           user_id: user?.id || null,
@@ -72,9 +72,7 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
           phone: data.phone,
           city: data.city,
           status: "pending",
-        })
-        .select("id")
-        .single();
+        });
 
       if (error) throw error;
       
@@ -84,8 +82,8 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
       });
 
       // If user is not logged in, prompt account creation
-      if (!user && inserted) {
-        setSubmittedData({ email: data.email, name: data.name, recordId: inserted.id });
+      if (!user) {
+        setSubmittedData({ email: data.email, name: data.name });
         setShowAccountDialog(true);
       }
       
@@ -106,7 +104,8 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     await supabase
       .from("course_enrollments")
       .update({ user_id: userId })
-      .eq("id", submittedData.recordId);
+      .eq("email", submittedData.email)
+      .is("user_id", null);
   };
 
   const handleCityChange = (value: string) => {
