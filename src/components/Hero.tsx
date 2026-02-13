@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -46,7 +46,7 @@ const Hero = () => {
               <Button size="lg" variant="secondary" asChild className="text-base group">
                 <Link to="/scholarships" className="text-sm">
                   Buscar Bolsas
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20">
