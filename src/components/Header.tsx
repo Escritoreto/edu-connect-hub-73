@@ -110,7 +110,7 @@ const Header = () => {
               Cursos Online
             </Link>
             <Link to="/cv-builder" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
-              Criar Currículo
+              Criar CV
             </Link>
             <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
               Blog
