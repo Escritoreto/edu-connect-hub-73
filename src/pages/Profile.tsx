@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText } from "lucide-react";
+import { PaymentInfoCard } from "@/components/PaymentInfoCard";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
@@ -418,6 +419,11 @@ const Profile = () => {
                           </span>
                         </div>
                       </div>
+                      {enrollment.status === "approved" && (
+                        <div className="mt-3 w-full">
+                          <PaymentInfoCard type="course" publicationTitle={enrollment.publications?.title} />
+                        </div>
+                      )}
                     </div>
                 )}
                 </div>
@@ -490,6 +496,11 @@ const Profile = () => {
                           </span>
                         </div>
                       </div>
+                      {request.status === "approved" && (
+                        <div className="mt-3 w-full">
+                          <PaymentInfoCard type="scholarship" />
+                        </div>
+                      )}
                     </div>
                 )}
                 </div>
