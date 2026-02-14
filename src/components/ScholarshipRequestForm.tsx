@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,19 +9,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@/components/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { GraduationCap, Send } from "lucide-react";
@@ -60,11 +51,27 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
     defaultValues: { name: "", email: "", phone: "", city: "", message: "" },
   });
 
+  // Auto-fill for logged-in users
+  useEffect(() => {
+    if (user) {
+      const fetchProfile = async () => {
+        const { data } = await supabase
+          .from("profiles")
+          .select("full_name, email")
+          .eq("id", user.id)
+          .single();
+        if (data) {
+          if (data.full_name) form.setValue("name", data.full_name);
+          if (data.email || user.email) form.setValue("email", data.email || user.email || "");
+        }
+      };
+      fetchProfile();
+    }
+  }, [user, form]);
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    
     try {
-      // Insert without .select() to avoid RLS issues for anonymous users
       const { error } = await supabase
         .from("scholarship_requests")
         .insert({
@@ -85,7 +92,6 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
         description: `Sua solicitação de orientação para "${scholarshipTitle}" foi enviada com sucesso.`,
       });
 
-      // If user is not logged in, prompt account creation
       if (!user) {
         setSubmittedData({ email: data.email, name: data.name });
         setShowAccountDialog(true);
@@ -105,7 +111,6 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
 
   const handleAccountCreated = async (userId: string) => {
     if (!submittedData) return;
-    // Link all pending requests with this email to the new user
     await supabase
       .from("scholarship_requests")
       .update({ user_id: userId })
@@ -122,6 +127,8 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
       form.setValue("city", value);
     }
   };
+
+  const isLoggedIn = !!user;
 
   return (
     <>
@@ -141,7 +148,7 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
               <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nome Completo</FormLabel>
-                  <FormControl><Input placeholder="Seu nome completo" {...field} className="bg-background" /></FormControl>
+                  <FormControl><Input placeholder="Seu nome completo" {...field} className="bg-background" readOnly={isLoggedIn} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -149,7 +156,7 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl><Input type="email" placeholder="seu.email@exemplo.com" {...field} className="bg-background" /></FormControl>
+                  <FormControl><Input type="email" placeholder="seu.email@exemplo.com" {...field} className="bg-background" readOnly={isLoggedIn} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
