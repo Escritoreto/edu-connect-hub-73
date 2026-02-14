@@ -71,7 +71,7 @@ export interface CVData {
   selectedPurpose: string;
   
   // Language for CV sections
-  cvLanguage: "pt" | "en" | "fr" | "zh";
+  cvLanguage: "pt" | "en" | "fr" | "zh" | "es" | "ar" | "tr" | "de" | "it" | "ru" | "sw";
   
   // Font size control
   fontSize: "small" | "medium" | "large";
