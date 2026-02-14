@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, CheckCircle, XCircle, Clock, BookOpen, Mail, Phone, MapPin } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Clock, BookOpen, Mail, Phone, MapPin, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Enrollment {
   id: string;
@@ -36,28 +40,23 @@ const EnrollmentsManager = () => {
 
   useEffect(() => {
     fetchEnrollments();
+    // Run cleanup on load
+    cleanupOldRecords();
   }, []);
+
+  const cleanupOldRecords = async () => {
+    await supabase.rpc("cleanup_old_requests");
+  };
 
   const fetchEnrollments = async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("course_enrollments")
-      .select(`
-        *,
-        publications:publication_id (
-          id,
-          title,
-          value
-        )
-      `)
+      .select(`*, publications:publication_id (id, title, value)`)
       .order("created_at", { ascending: false });
 
     if (error) {
-      toast({
-        title: "Erro ao carregar inscrições",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Erro ao carregar inscrições", description: error.message, variant: "destructive" });
     } else {
       setEnrollments(data || []);
     }
@@ -66,22 +65,12 @@ const EnrollmentsManager = () => {
 
   const updateStatus = async (enrollmentId: string, newStatus: string) => {
     setUpdatingId(enrollmentId);
-    
     const enrollment = enrollments.find(e => e.id === enrollmentId);
-    
-    const { error } = await supabase
-      .from("course_enrollments")
-      .update({ status: newStatus })
-      .eq("id", enrollmentId);
+    const { error } = await supabase.from("course_enrollments").update({ status: newStatus }).eq("id", enrollmentId);
 
     if (error) {
-      toast({
-        title: "Erro ao atualizar status",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Erro ao atualizar status", description: error.message, variant: "destructive" });
     } else {
-      // Send notification to user if they have an account
       if (enrollment?.user_id && (newStatus === "approved" || newStatus === "rejected")) {
         const statusText = newStatus === "approved" ? "aprovada" : "rejeitada";
         const courseName = enrollment.publications?.title || "curso";
@@ -92,46 +81,34 @@ const EnrollmentsManager = () => {
           link: "/profile",
         });
       }
-      
-      toast({
-        title: "Status atualizado!",
-        description: `Inscrição ${newStatus === "approved" ? "aprovada" : newStatus === "rejected" ? "rejeitada" : "atualizada"} com sucesso.`,
-      });
+      toast({ title: "Status atualizado!" });
       fetchEnrollments();
     }
     setUpdatingId(null);
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "approved":
-        return (
-          <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
-            <CheckCircle className="h-3 w-3 mr-1" />
-            Aprovado
-          </Badge>
-        );
-      case "rejected":
-        return (
-          <Badge className="bg-red-500/10 text-red-600 border-red-500/20">
-            <XCircle className="h-3 w-3 mr-1" />
-            Rejeitado
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-            <Clock className="h-3 w-3 mr-1" />
-            Pendente
-          </Badge>
-        );
+  const deleteEnrollment = async (enrollmentId: string) => {
+    const { error } = await supabase.from("course_enrollments").delete().eq("id", enrollmentId);
+    if (error) {
+      toast({ title: "Erro ao eliminar", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Inscrição eliminada!" });
+      fetchEnrollments();
     }
   };
 
-  const filteredEnrollments = filterStatus === "all" 
-    ? enrollments 
-    : enrollments.filter(e => e.status === filterStatus);
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "approved":
+        return <Badge className="bg-green-500/10 text-green-600 border-green-500/20"><CheckCircle className="h-3 w-3 mr-1" />Aprovado</Badge>;
+      case "rejected":
+        return <Badge className="bg-red-500/10 text-red-600 border-red-500/20"><XCircle className="h-3 w-3 mr-1" />Rejeitado</Badge>;
+      default:
+        return <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20"><Clock className="h-3 w-3 mr-1" />Pendente</Badge>;
+    }
+  };
 
+  const filteredEnrollments = filterStatus === "all" ? enrollments : enrollments.filter(e => e.status === filterStatus);
   const stats = {
     total: enrollments.length,
     pending: enrollments.filter(e => e.status === "pending").length,
@@ -140,60 +117,27 @@ const EnrollmentsManager = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <div className="flex items-center justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">Total</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-            <p className="text-xs text-muted-foreground">Pendentes</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
-            <p className="text-xs text-muted-foreground">Aprovados</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
-            <p className="text-xs text-muted-foreground">Rejeitados</p>
-          </CardContent>
-        </Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{stats.total}</div><p className="text-xs text-muted-foreground">Total</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold text-yellow-600">{stats.pending}</div><p className="text-xs text-muted-foreground">Pendentes</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold text-green-600">{stats.approved}</div><p className="text-xs text-muted-foreground">Aprovados</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold text-red-600">{stats.rejected}</div><p className="text-xs text-muted-foreground">Rejeitados</p></CardContent></Card>
       </div>
 
-      {/* Filter */}
       <Card>
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                Inscrições em Cursos
-              </CardTitle>
-              <CardDescription>
-                Gerencie as inscrições dos usuários nos cursos
-              </CardDescription>
+              <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5" />Inscrições em Cursos</CardTitle>
+              <CardDescription>Gerencie as inscrições dos usuários nos cursos</CardDescription>
             </div>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filtrar por status" />
-              </SelectTrigger>
+              <SelectTrigger className="w-[180px]"><SelectValue placeholder="Filtrar por status" /></SelectTrigger>
               <SelectContent className="bg-background">
                 <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="pending">Pendentes</SelectItem>
@@ -228,94 +172,61 @@ const EnrollmentsManager = () => {
                       <TableCell>
                         <div>
                           <p className="font-medium">{enrollment.name}</p>
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <MapPin className="h-3 w-3" />
-                            {enrollment.city}
-                          </div>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="h-3 w-3" />{enrollment.city}</div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div>
-                          <p className="font-medium line-clamp-1">
-                            {enrollment.publications?.title || "Curso removido"}
-                          </p>
-                          {enrollment.publications?.value && (
-                            <p className="text-xs text-primary">
-                              {enrollment.publications.value}
-                            </p>
-                          )}
+                          <p className="font-medium line-clamp-1">{enrollment.publications?.title || "Curso removido"}</p>
+                          {enrollment.publications?.value && <p className="text-xs text-primary">{enrollment.publications.value}</p>}
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          <div className="flex items-center gap-1 text-xs">
-                            <Mail className="h-3 w-3" />
-                            <a href={`mailto:${enrollment.email}`} className="hover:underline">
-                              {enrollment.email}
-                            </a>
-                          </div>
-                          <div className="flex items-center gap-1 text-xs">
-                            <Phone className="h-3 w-3" />
-                            <a href={`tel:+258${enrollment.phone}`} className="hover:underline">
-                              +258 {enrollment.phone}
-                            </a>
-                          </div>
+                          <div className="flex items-center gap-1 text-xs"><Mail className="h-3 w-3" /><a href={`mailto:${enrollment.email}`} className="hover:underline">{enrollment.email}</a></div>
+                          <div className="flex items-center gap-1 text-xs"><Phone className="h-3 w-3" /><a href={`tel:+258${enrollment.phone}`} className="hover:underline">+258 {enrollment.phone}</a></div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(enrollment.status)}
-                      </TableCell>
+                      <TableCell><span className="text-sm text-muted-foreground">{format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}</span></TableCell>
+                      <TableCell>{getStatusBadge(enrollment.status)}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           {enrollment.status !== "approved" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-green-600 border-green-600 hover:bg-green-50"
-                              onClick={() => updateStatus(enrollment.id, "approved")}
-                              disabled={updatingId === enrollment.id}
-                            >
-                              {updatingId === enrollment.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <CheckCircle className="h-4 w-4" />
-                              )}
+                            <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50" onClick={() => updateStatus(enrollment.id, "approved")} disabled={updatingId === enrollment.id}>
+                              {updatingId === enrollment.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
                             </Button>
                           )}
                           {enrollment.status !== "rejected" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-red-600 border-red-600 hover:bg-red-50"
-                              onClick={() => updateStatus(enrollment.id, "rejected")}
-                              disabled={updatingId === enrollment.id}
-                            >
-                              {updatingId === enrollment.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <XCircle className="h-4 w-4" />
-                              )}
+                            <Button size="sm" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50" onClick={() => updateStatus(enrollment.id, "rejected")} disabled={updatingId === enrollment.id}>
+                              {updatingId === enrollment.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
                             </Button>
                           )}
                           {enrollment.status !== "pending" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateStatus(enrollment.id, "pending")}
-                              disabled={updatingId === enrollment.id}
-                            >
-                              {updatingId === enrollment.id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <Clock className="h-4 w-4" />
-                              )}
+                            <Button size="sm" variant="outline" onClick={() => updateStatus(enrollment.id, "pending")} disabled={updatingId === enrollment.id}>
+                              {updatingId === enrollment.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Clock className="h-4 w-4" />}
                             </Button>
                           )}
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button size="sm" variant="outline" className="text-destructive border-destructive hover:bg-destructive/10">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Eliminar inscrição?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Esta ação não pode ser desfeita. A inscrição de {enrollment.name} será permanentemente eliminada.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => deleteEnrollment(enrollment.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                  Eliminar
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </TableCell>
                     </TableRow>

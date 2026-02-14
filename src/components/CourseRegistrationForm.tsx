@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,19 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@/components/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { ClipboardList, Send } from "lucide-react";
@@ -58,9 +49,26 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     defaultValues: { name: "", email: "", phone: "", city: "" },
   });
 
+  // Auto-fill for logged-in users
+  useEffect(() => {
+    if (user) {
+      const fetchProfile = async () => {
+        const { data } = await supabase
+          .from("profiles")
+          .select("full_name, email")
+          .eq("id", user.id)
+          .single();
+        if (data) {
+          if (data.full_name) form.setValue("name", data.full_name);
+          if (data.email || user.email) form.setValue("email", data.email || user.email || "");
+        }
+      };
+      fetchProfile();
+    }
+  }, [user, form]);
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
-    
     try {
       const { error } = await supabase
         .from("course_enrollments")
@@ -81,7 +89,6 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
         description: `Obrigado pelo interesse no curso "${courseTitle}". Entraremos em contacto em breve.`,
       });
 
-      // If user is not logged in, prompt account creation
       if (!user) {
         setSubmittedData({ email: data.email, name: data.name });
         setShowAccountDialog(true);
@@ -118,6 +125,8 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     }
   };
 
+  const isLoggedIn = !!user;
+
   return (
     <>
       <Card className="border-primary/20 shadow-lg">
@@ -136,7 +145,7 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
               <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nome Completo</FormLabel>
-                  <FormControl><Input placeholder="Seu nome completo" {...field} className="bg-background" /></FormControl>
+                  <FormControl><Input placeholder="Seu nome completo" {...field} className="bg-background" readOnly={isLoggedIn} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -144,7 +153,7 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl><Input type="email" placeholder="seu.email@exemplo.com" {...field} className="bg-background" /></FormControl>
+                  <FormControl><Input type="email" placeholder="seu.email@exemplo.com" {...field} className="bg-background" readOnly={isLoggedIn} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />

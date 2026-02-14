@@ -5,6 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Banknote, Copy, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface PaymentSettings {
   iban: string;
@@ -19,9 +26,10 @@ interface PaymentSettings {
 interface PaymentInfoCardProps {
   type: "scholarship" | "course";
   publicationTitle?: string;
+  coursePrice?: string | null;
 }
 
-export const PaymentInfoCard = ({ type, publicationTitle }: PaymentInfoCardProps) => {
+export const PaymentInfoCard = ({ type, publicationTitle, coursePrice }: PaymentInfoCardProps) => {
   const [settings, setSettings] = useState<PaymentSettings | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const { toast } = useToast();
@@ -53,22 +61,38 @@ export const PaymentInfoCard = ({ type, publicationTitle }: PaymentInfoCardProps
 
   if (!settings) return null;
 
+  const priceDisplay = type === "course" && coursePrice
+    ? coursePrice
+    : `${settings.scholarship_price} ${settings.currency}`;
+
   return (
-    <Card className="border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Banknote className="h-5 w-5 text-amber-600" />
-          Informações de Pagamento
-        </CardTitle>
-        <CardDescription>
-          {type === "scholarship" 
-            ? `Assistência de bolsa: ${settings.scholarship_price} ${settings.currency}`
-            : publicationTitle
-          }
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button
+          size="sm"
+          variant="outline"
+          className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Banknote className="h-4 w-4 mr-1" />
+          Ver Pagamento
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md" onClick={(e) => e.stopPropagation()}>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Banknote className="h-5 w-5 text-amber-600" />
+            Informações de Pagamento
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="text-sm">
+              Valor: {priceDisplay}
+            </Badge>
+          </div>
+
           <div className="rounded-lg border border-border p-3 space-y-2">
             <p className="text-sm font-semibold text-foreground">Transferência Bancária (IBAN)</p>
             <div className="flex items-center justify-between">
@@ -102,20 +126,12 @@ export const PaymentInfoCard = ({ type, publicationTitle }: PaymentInfoCardProps
               </Button>
             </div>
           </div>
+
+          <p className="text-xs text-muted-foreground italic">
+            {settings.payment_note}
+          </p>
         </div>
-
-        {type === "scholarship" && (
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="text-sm">
-              Valor: {settings.scholarship_price} {settings.currency}
-            </Badge>
-          </div>
-        )}
-
-        <p className="text-xs text-muted-foreground italic">
-          {settings.payment_note}
-        </p>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 };

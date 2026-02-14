@@ -409,6 +409,7 @@ export type Database = {
     }
     Functions: {
       cleanup_old_messages: { Args: never; Returns: undefined }
+      cleanup_old_requests: { Args: never; Returns: undefined }
       get_registered_users_count: { Args: never; Returns: number }
       has_role: {
         Args: {
