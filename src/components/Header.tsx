@@ -32,7 +32,7 @@ const Header = () => {
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2 group border-0">
           <GraduationCap className="h-8 text-primary transition-transform group-hover:scale-110 w-[20px]" />
-          <span className="bg-gradient-primary bg-clip-text text-transparent font-extrabold text-base">
+          <span className="bg-gradient-primary bg-clip-text text-transparent font-extrabold text-lg">
             UpMentor
           </span>
         </Link>
