@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, CheckCircle, XCircle, Clock, GraduationCap, Mail, Phone, MapPin, MessageSquare, Trash2 } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Clock, GraduationCap, Mail, Phone, MapPin, MessageSquare, Trash2, Banknote } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -27,6 +27,7 @@ interface ScholarshipRequest {
   city: string;
   message: string | null;
   status: string;
+  payment_status: string | null;
   created_at: string;
   publications: {
     id: string;
@@ -86,6 +87,27 @@ const ScholarshipRequestsManager = () => {
         });
       }
       toast({ title: "Status atualizado!" });
+      fetchRequests();
+    }
+    setUpdatingId(null);
+  };
+
+  const approvePayment = async (requestId: string) => {
+    setUpdatingId(requestId);
+    const request = requests.find(r => r.id === requestId);
+    const { error } = await supabase.from("scholarship_requests").update({ payment_status: "confirmed" }).eq("id", requestId);
+    if (error) {
+      toast({ title: "Erro ao aprovar pagamento", description: error.message, variant: "destructive" });
+    } else {
+      if (request?.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: request.user_id,
+          title: "Pagamento confirmado!",
+          message: `O pagamento da bolsa "${request.publications?.title}" foi confirmado.`,
+          link: "/profile",
+        });
+      }
+      toast({ title: "Pagamento aprovado!" });
       fetchRequests();
     }
     setUpdatingId(null);
@@ -170,9 +192,10 @@ const ScholarshipRequestsManager = () => {
                     <TableHead>Candidato</TableHead>
                     <TableHead>Bolsa</TableHead>
                     <TableHead>Contacto</TableHead>
-                    <TableHead>Data</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
+                     <TableHead>Data</TableHead>
+                     <TableHead>Status</TableHead>
+                     <TableHead>Pagamento</TableHead>
+                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -212,6 +235,20 @@ const ScholarshipRequestsManager = () => {
                       </TableCell>
                       <TableCell><span className="text-sm text-muted-foreground">{format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}</span></TableCell>
                       <TableCell>{getStatusBadge(request.status)}</TableCell>
+                      <TableCell>
+                        {request.payment_status === "confirmed" ? (
+                          <Badge className="bg-green-500/10 text-green-600 border-green-500/20"><CheckCircle className="h-3 w-3 mr-1" />Confirmado</Badge>
+                        ) : request.payment_status === "paid" ? (
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20"><Banknote className="h-3 w-3 mr-1" />Pago</Badge>
+                            <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 text-xs h-7" onClick={() => approvePayment(request.id)} disabled={updatingId === request.id}>
+                              {updatingId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <>Aprovar</>}
+                            </Button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           {request.status === "pending" && (

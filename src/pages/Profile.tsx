@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2 } from "lucide-react";
 import { PaymentInfoCard } from "@/components/PaymentInfoCard";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +37,7 @@ const Profile = () => {
   const [isLoadingScholarships, setIsLoadingScholarships] = useState(true);
   const [cvDownloads, setCvDownloads] = useState<any[]>([]);
   const [isLoadingCvDownloads, setIsLoadingCvDownloads] = useState(true);
+  const [markingPaidId, setMarkingPaidId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -173,6 +174,20 @@ const Profile = () => {
     }
   };
 
+  const markAsPaid = async (id: string, type: "course" | "scholarship") => {
+    setMarkingPaidId(id);
+    const table = type === "course" ? "course_enrollments" : "scholarship_requests";
+    const { error } = await supabase.from(table).update({ payment_status: "paid" } as any).eq("id", id);
+    if (error) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Marcado como pago!", description: "O administrador será notificado para confirmar." });
+      if (type === "course") fetchEnrolledCourses();
+      else fetchScholarshipRequests();
+    }
+    setMarkingPaidId(null);
+  };
+
   if (loading || isLoadingProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -297,7 +312,28 @@ const Profile = () => {
                             {enrollment.status === "pending" ? "Pendente" : enrollment.status === "approved" ? "Aprovado" : enrollment.status}
                           </Badge>
                           {enrollment.status === "approved" && (
-                            <PaymentInfoCard type="course" publicationTitle={enrollment.publications?.title} coursePrice={enrollment.publications?.value} />
+                            <>
+                              <PaymentInfoCard type="course" publicationTitle={enrollment.publications?.title} coursePrice={enrollment.publications?.value} />
+                              {enrollment.payment_status === "confirmed" ? (
+                                <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado
+                                </Badge>
+                              ) : enrollment.payment_status === "paid" ? (
+                                <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs">
+                                  <Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação
+                                </Badge>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7"
+                                  onClick={(e) => { e.stopPropagation(); markAsPaid(enrollment.id, "course"); }}
+                                  disabled={markingPaidId === enrollment.id}
+                                >
+                                  {markingPaidId === enrollment.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
+                                </Button>
+                              )}
+                            </>
                           )}
                           <span className="text-xs">
                             Inscrito em {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}
@@ -350,7 +386,28 @@ const Profile = () => {
                             {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
                           </Badge>
                           {request.status === "approved" && (
-                            <PaymentInfoCard type="scholarship" />
+                            <>
+                              <PaymentInfoCard type="scholarship" />
+                              {request.payment_status === "confirmed" ? (
+                                <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado
+                                </Badge>
+                              ) : request.payment_status === "paid" ? (
+                                <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs">
+                                  <Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação
+                                </Badge>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7"
+                                  onClick={(e) => { e.stopPropagation(); markAsPaid(request.id, "scholarship"); }}
+                                  disabled={markingPaidId === request.id}
+                                >
+                                  {markingPaidId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
+                                </Button>
+                              )}
+                            </>
                           )}
                           <span className="text-xs">
                             Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}
