@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, CheckCircle, XCircle, Clock, BookOpen, Mail, Phone, MapPin, Trash2 } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Clock, BookOpen, Mail, Phone, MapPin, Trash2, Banknote } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -23,6 +23,7 @@ interface Enrollment {
   phone: string;
   city: string;
   status: string;
+  payment_status: string | null;
   created_at: string;
   publications: {
     id: string;
@@ -82,6 +83,27 @@ const EnrollmentsManager = () => {
         });
       }
       toast({ title: "Status atualizado!" });
+      fetchEnrollments();
+    }
+    setUpdatingId(null);
+  };
+
+  const approvePayment = async (enrollmentId: string) => {
+    setUpdatingId(enrollmentId);
+    const enrollment = enrollments.find(e => e.id === enrollmentId);
+    const { error } = await supabase.from("course_enrollments").update({ payment_status: "confirmed" }).eq("id", enrollmentId);
+    if (error) {
+      toast({ title: "Erro ao aprovar pagamento", description: error.message, variant: "destructive" });
+    } else {
+      if (enrollment?.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: enrollment.user_id,
+          title: "Pagamento confirmado!",
+          message: `O pagamento do curso "${enrollment.publications?.title}" foi confirmado.`,
+          link: "/profile",
+        });
+      }
+      toast({ title: "Pagamento aprovado!" });
       fetchEnrollments();
     }
     setUpdatingId(null);
@@ -161,9 +183,10 @@ const EnrollmentsManager = () => {
                     <TableHead>Aluno</TableHead>
                     <TableHead>Curso</TableHead>
                     <TableHead>Contacto</TableHead>
-                    <TableHead>Data</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
+                     <TableHead>Data</TableHead>
+                     <TableHead>Status</TableHead>
+                     <TableHead>Pagamento</TableHead>
+                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -189,6 +212,20 @@ const EnrollmentsManager = () => {
                       </TableCell>
                       <TableCell><span className="text-sm text-muted-foreground">{format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}</span></TableCell>
                       <TableCell>{getStatusBadge(enrollment.status)}</TableCell>
+                      <TableCell>
+                        {enrollment.payment_status === "confirmed" ? (
+                          <Badge className="bg-green-500/10 text-green-600 border-green-500/20"><CheckCircle className="h-3 w-3 mr-1" />Confirmado</Badge>
+                        ) : enrollment.payment_status === "paid" ? (
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20"><Banknote className="h-3 w-3 mr-1" />Pago</Badge>
+                            <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 text-xs h-7" onClick={() => approvePayment(enrollment.id)} disabled={updatingId === enrollment.id}>
+                              {updatingId === enrollment.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <>Aprovar</>}
+                            </Button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           {enrollment.status !== "approved" && (

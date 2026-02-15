@@ -45,6 +45,7 @@ const PublicationsManager = () => {
   const [editValue, setEditValue] = useState("");
   const [editStatus, setEditStatus] = useState("");
   const [editIsFeatured, setEditIsFeatured] = useState(false);
+  const [editExternalLink, setEditExternalLink] = useState("");
 
   useEffect(() => {
     fetchPublications();
@@ -77,6 +78,7 @@ const PublicationsManager = () => {
     setEditValue(publication.value || "");
     setEditStatus(publication.status || "Aberta");
     setEditIsFeatured(publication.is_featured || false);
+    setEditExternalLink(publication.external_link || "");
     setIsEditDialogOpen(true);
   };
 
@@ -93,6 +95,7 @@ const PublicationsManager = () => {
         value: editValue || null,
         status: editStatus,
         is_featured: editIsFeatured,
+        external_link: editExternalLink || null,
       })
       .eq("id", editingPublication.id);
 
@@ -332,6 +335,14 @@ const PublicationsManager = () => {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Link Externo</Label>
+                <Input
+                  value={editExternalLink}
+                  onChange={(e) => setEditExternalLink(e.target.value)}
+                  placeholder="https://exemplo.com"
+                />
               </div>
               <div className="flex items-center gap-2">
                 <input
