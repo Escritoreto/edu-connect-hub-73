@@ -94,10 +94,13 @@ const Header = () => {
             </>}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        {/* Mobile Actions */}
+        <div className="md:hidden flex items-center gap-1">
+          {user && <NotificationBell userId={user.id} />}
+          <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
