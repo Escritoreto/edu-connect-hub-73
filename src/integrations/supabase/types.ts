@@ -21,6 +21,7 @@ export type Database = {
           email: string
           id: string
           name: string
+          payment_status: string | null
           phone: string
           publication_id: string
           status: string
@@ -33,6 +34,7 @@ export type Database = {
           email: string
           id?: string
           name: string
+          payment_status?: string | null
           phone: string
           publication_id: string
           status?: string
@@ -45,6 +47,7 @@ export type Database = {
           email?: string
           id?: string
           name?: string
+          payment_status?: string | null
           phone?: string
           publication_id?: string
           status?: string
@@ -311,6 +314,7 @@ export type Database = {
           id: string
           message: string | null
           name: string
+          payment_status: string | null
           phone: string
           publication_id: string
           status: string
@@ -324,6 +328,7 @@ export type Database = {
           id?: string
           message?: string | null
           name: string
+          payment_status?: string | null
           phone: string
           publication_id: string
           status?: string
@@ -337,6 +342,7 @@ export type Database = {
           id?: string
           message?: string | null
           name?: string
+          payment_status?: string | null
           phone?: string
           publication_id?: string
           status?: string
