@@ -21,7 +21,7 @@ const Hero = () => {
           <div className="space-y-8 animate-fade-in">
             
             
-            <h1 className="sm:text-4xl lg:text-6xl text-primary-foreground leading-tight font-semibold font-sans mx-0 my-0 px-0 py-0 pb-[20px] pr-[20px] text-xl text-center">​Onde seus sonhos começam, a UpMentor está presente</h1>
+            <h1 className="sm:text-4xl lg:text-6xl text-primary-foreground leading-tight font-semibold font-sans mx-0 my-0 px-0 py-0 pb-[20px] pr-[20px] text-xl text-center">​Onde seus sonhos começam a UpMentor está presente</h1>
             
             <div className="h-24 sm:h-28 flex items-center">
               <AnimatePresence mode="wait">
