@@ -14,8 +14,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { ClipboardList, Send } from "lucide-react";
-import CreateAccountAfterSubmit from "./CreateAccountAfterSubmit";
+import { ClipboardList, Send, LogIn, UserPlus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const formSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100, "Nome muito longo"),
@@ -40,8 +40,6 @@ const mozambiqueCities = [
 const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOtherCity, setIsOtherCity] = useState(false);
-  const [showAccountDialog, setShowAccountDialog] = useState(false);
-  const [submittedData, setSubmittedData] = useState<{ email: string; name: string } | null>(null);
   const { user } = useAuth();
 
   const form = useForm<FormData>({
@@ -49,7 +47,6 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     defaultValues: { name: "", email: "", phone: "", city: "" },
   });
 
-  // Auto-fill for logged-in users
   useEffect(() => {
     if (user) {
       const fetchProfile = async () => {
@@ -67,13 +64,49 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     }
   }, [user, form]);
 
+  // If not logged in, show account creation prompt
+  if (!user) {
+    return (
+      <Card className="border-primary/20 shadow-lg">
+        <CardHeader className="bg-primary/5">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <ClipboardList className="h-5 w-5 text-primary" />
+            Formulário de Inscrição
+          </CardTitle>
+          <CardDescription>
+            Para se inscrever neste curso, é necessário ter uma conta
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Crie uma conta gratuita ou faça login para preencher o formulário de inscrição e acompanhar o status da sua solicitação.
+          </p>
+          <div className="flex flex-col gap-3">
+            <Button asChild className="w-full">
+              <Link to="/auth?tab=signup">
+                <UserPlus className="h-4 w-4 mr-2" />
+                Criar Conta Gratuita
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/auth">
+                <LogIn className="h-4 w-4 mr-2" />
+                Já tenho conta - Entrar
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
       const { error } = await supabase
         .from("course_enrollments")
         .insert({
-          user_id: user?.id || null,
+          user_id: user.id,
           publication_id: courseId,
           name: data.name,
           email: data.email,
@@ -88,11 +121,6 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
         title: "Inscrição enviada!",
         description: `Obrigado pelo interesse no curso "${courseTitle}". Entraremos em contacto em breve.`,
       });
-
-      if (!user) {
-        setSubmittedData({ email: data.email, name: data.name });
-        setShowAccountDialog(true);
-      }
       
       form.reset();
     } catch (error: any) {
@@ -106,15 +134,6 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     }
   };
 
-  const handleAccountCreated = async (userId: string) => {
-    if (!submittedData) return;
-    await supabase
-      .from("course_enrollments")
-      .update({ user_id: userId })
-      .eq("email", submittedData.email)
-      .is("user_id", null);
-  };
-
   const handleCityChange = (value: string) => {
     if (value === "Outra") {
       setIsOtherCity(true);
@@ -125,94 +144,80 @@ const CourseRegistrationForm = ({ courseTitle, courseId }: CourseRegistrationFor
     }
   };
 
-  const isLoggedIn = !!user;
-
   return (
-    <>
-      <Card className="border-primary/20 shadow-lg">
-        <CardHeader className="bg-primary/5">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <ClipboardList className="h-5 w-5 text-primary" />
-            Formulário de Inscrição
-          </CardTitle>
-          <CardDescription>
-            Preencha os dados abaixo para se inscrever neste curso
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField control={form.control} name="name" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome Completo</FormLabel>
-                  <FormControl><Input placeholder="Seu nome completo" {...field} className="bg-background" readOnly={isLoggedIn} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
+    <Card className="border-primary/20 shadow-lg">
+      <CardHeader className="bg-primary/5">
+        <CardTitle className="flex items-center gap-2 text-xl">
+          <ClipboardList className="h-5 w-5 text-primary" />
+          Formulário de Inscrição
+        </CardTitle>
+        <CardDescription>
+          Preencha os dados abaixo para se inscrever neste curso
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="pt-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField control={form.control} name="name" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome Completo</FormLabel>
+                <FormControl><Input placeholder="Seu nome completo" {...field} className="bg-background" readOnly /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
 
-              <FormField control={form.control} name="email" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl><Input type="email" placeholder="seu.email@exemplo.com" {...field} className="bg-background" readOnly={isLoggedIn} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
+            <FormField control={form.control} name="email" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl><Input type="email" placeholder="seu.email@exemplo.com" {...field} className="bg-background" readOnly /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
 
-              <FormField control={form.control} name="phone" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contacto (Telefone)</FormLabel>
+            <FormField control={form.control} name="phone" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Contacto (Telefone)</FormLabel>
+                <FormControl>
+                  <div className="flex gap-2">
+                    <span className="flex items-center px-3 bg-muted rounded-md text-sm text-muted-foreground border border-input">+258</span>
+                    <Input type="tel" placeholder="84 123 4567" {...field} className="bg-background" />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField control={form.control} name="city" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cidade</FormLabel>
+                {!isOtherCity ? (
+                  <Select onValueChange={handleCityChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="bg-background"><SelectValue placeholder="Selecione sua cidade" /></SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-popover">
+                      {mozambiqueCities.map((city) => (<SelectItem key={city} value={city}>{city}</SelectItem>))}
+                    </SelectContent>
+                  </Select>
+                ) : (
                   <FormControl>
                     <div className="flex gap-2">
-                      <span className="flex items-center px-3 bg-muted rounded-md text-sm text-muted-foreground border border-input">+258</span>
-                      <Input type="tel" placeholder="84 123 4567" {...field} className="bg-background" />
+                      <Input placeholder="Digite o nome da sua cidade" {...field} className="bg-background" />
+                      <Button type="button" variant="outline" size="sm" onClick={() => { setIsOtherCity(false); form.setValue("city", ""); }}>Voltar</Button>
                     </div>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
+                )}
+                <FormMessage />
+              </FormItem>
+            )} />
 
-              <FormField control={form.control} name="city" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Cidade</FormLabel>
-                  {!isOtherCity ? (
-                    <Select onValueChange={handleCityChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="bg-background"><SelectValue placeholder="Selecione sua cidade" /></SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-popover">
-                        {mozambiqueCities.map((city) => (<SelectItem key={city} value={city}>{city}</SelectItem>))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <FormControl>
-                      <div className="flex gap-2">
-                        <Input placeholder="Digite o nome da sua cidade" {...field} className="bg-background" />
-                        <Button type="button" variant="outline" size="sm" onClick={() => { setIsOtherCity(false); form.setValue("city", ""); }}>Voltar</Button>
-                      </div>
-                    </FormControl>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )} />
-
-              <Button type="submit" className="w-full mt-6" size="lg" disabled={isSubmitting}>
-                {isSubmitting ? "A enviar..." : (<><Send className="h-4 w-4 mr-2" />Enviar Inscrição</>)}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-
-      {submittedData && (
-        <CreateAccountAfterSubmit
-          open={showAccountDialog}
-          onOpenChange={setShowAccountDialog}
-          email={submittedData.email}
-          fullName={submittedData.name}
-          onAccountCreated={handleAccountCreated}
-        />
-      )}
-    </>
+            <Button type="submit" className="w-full mt-6" size="lg" disabled={isSubmitting}>
+              {isSubmitting ? "A enviar..." : (<><Send className="h-4 w-4 mr-2" />Enviar Inscrição</>)}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 };
 
