@@ -1,117 +1,80 @@
 import { Link } from "react-router-dom";
-import { GraduationCap, Facebook, Instagram, Mail } from "lucide-react";
+import { GraduationCap, Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
+
 const Footer = () => {
-  return <footer className="bg-muted/30 border-t border-border">
-      <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+  return (
+    <footer className="bg-foreground text-background/80">
+      <div className="container py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center space-x-2 group">
-              <GraduationCap className="h-8 w-8 text-primary transition-transform group-hover:scale-110" />
-              <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                UpMentor
-              </span>
+              <GraduationCap className="h-8 w-8 text-secondary transition-transform group-hover:scale-110" />
+              <span className="text-xl font-bold text-background">UpMentor</span>
             </Link>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-background/60 leading-relaxed">
               Conectando estudantes a oportunidades globais de educação e carreira.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Facebook className="h-5 w-5" />
+            <div className="flex space-x-3 pt-2">
+              <a href="#" className="w-9 h-9 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors" aria-label="Facebook">
+                <Facebook className="h-4 w-4" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                
+              <a href="#" className="w-9 h-9 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors" aria-label="Instagram">
+                <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                
+              <a href="mailto:contato@upmentor.com" className="w-9 h-9 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors" aria-label="Email">
+                <Mail className="h-4 w-4" />
               </a>
             </div>
           </div>
 
           {/* Plataforma */}
           <div>
-            <h3 className="font-semibold mb-4">Plataforma</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/scholarships" className="text-muted-foreground hover:text-primary transition-colors">
-                  Bolsas de Estudo
-                </Link>
-              </li>
-              <li>
-                <Link to="/courses" className="text-muted-foreground hover:text-primary transition-colors">
-                  Cursos Online
-                </Link>
-              </li>
-              <li>
-                <Link to="/cv-builder" className="text-muted-foreground hover:text-primary transition-colors">
-                  Criar Currículo
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors">
-                  Blog
-                </Link>
-              </li>
+            <h3 className="font-semibold mb-4 text-background">Plataforma</h3>
+            <ul className="space-y-3 text-sm">
+              <li><Link to="/scholarships" className="text-background/60 hover:text-secondary transition-colors">Bolsas de Estudo</Link></li>
+              <li><Link to="/courses" className="text-background/60 hover:text-secondary transition-colors">Cursos Online</Link></li>
+              <li><Link to="/cv-builder" className="text-background/60 hover:text-secondary transition-colors">Criar Currículo</Link></li>
+              <li><Link to="/blog" className="text-background/60 hover:text-secondary transition-colors">Blog</Link></li>
             </ul>
           </div>
 
           {/* Suporte */}
           <div>
-            <h3 className="font-semibold mb-4">Suporte</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors">
-                  Sobre Nós
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
-                  Contato
-                </Link>
-              </li>
-              <li>
-                <Link to="/faq" className="text-muted-foreground hover:text-primary transition-colors">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link to="/help" className="text-muted-foreground hover:text-primary transition-colors">
-                  Central de Ajuda
-                </Link>
-              </li>
+            <h3 className="font-semibold mb-4 text-background">Suporte</h3>
+            <ul className="space-y-3 text-sm">
+              <li><Link to="/about" className="text-background/60 hover:text-secondary transition-colors">Sobre Nós</Link></li>
+              <li><Link to="/auth" className="text-background/60 hover:text-secondary transition-colors">Criar Conta</Link></li>
+              <li><Link to="/auth" className="text-background/60 hover:text-secondary transition-colors">Entrar</Link></li>
             </ul>
           </div>
 
-          {/* Newsletter */}
+          {/* Contato */}
           <div>
-            <h3 className="font-semibold mb-4">Newsletter</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Receba dicas e novidades sobre bolsas e educação.
-            </p>
-            <div className="flex gap-2">
-              <input type="email" placeholder="Seu e-mail" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
-              <button className="inline-flex items-center justify-center h-10 px-4 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
-                <Mail className="h-4 w-4" />
-              </button>
-            </div>
+            <h3 className="font-semibold mb-4 text-background">Contato</h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-2 text-background/60">
+                <Mail className="h-4 w-4 shrink-0" />
+                contato@upmentor.com
+              </li>
+              <li className="flex items-center gap-2 text-background/60">
+                <MapPin className="h-4 w-4 shrink-0" />
+                Moçambique
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-          <p>&copy; 2025 UpMentor. Todos os direitos reservados.</p>
-          <div className="flex space-x-4 mt-4 md:mt-0">
-            <Link to="/privacy" className="hover:text-primary transition-colors">
-              Política de Privacidade
-            </Link>
-            <Link to="/terms" className="hover:text-primary transition-colors">
-              Termos de Uso
-            </Link>
+        <div className="mt-10 pt-8 border-t border-background/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-background/40">
+          <p>&copy; {new Date().getFullYear()} UpMentor. Todos os direitos reservados.</p>
+          <div className="flex space-x-6">
+            <Link to="/about" className="hover:text-secondary transition-colors">Política de Privacidade</Link>
+            <Link to="/about" className="hover:text-secondary transition-colors">Termos de Uso</Link>
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;
