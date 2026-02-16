@@ -6,10 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Pencil, Trash2, Search, Eye } from "lucide-react";
+import { Loader2, Pencil, Trash2, Search, Eye, Upload, Megaphone } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -21,11 +21,13 @@ interface Publication {
   status: string | null;
   views_count: number | null;
   is_featured: boolean | null;
+  is_promotion: boolean | null;
   created_at: string;
   description: string;
   short_description: string | null;
   value: string | null;
   external_link: string | null;
+  image_url: string | null;
 }
 
 const PublicationsManager = () => {
@@ -45,7 +47,11 @@ const PublicationsManager = () => {
   const [editValue, setEditValue] = useState("");
   const [editStatus, setEditStatus] = useState("");
   const [editIsFeatured, setEditIsFeatured] = useState(false);
+  const [editIsPromotion, setEditIsPromotion] = useState(false);
   const [editExternalLink, setEditExternalLink] = useState("");
+  const [editImageUrl, setEditImageUrl] = useState("");
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editImagePreview, setEditImagePreview] = useState("");
 
   useEffect(() => {
     fetchPublications();
@@ -59,11 +65,7 @@ const PublicationsManager = () => {
       .order("created_at", { ascending: false });
 
     if (error) {
-      toast({
-        title: "Erro ao carregar publicações",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Erro ao carregar publicações", description: error.message, variant: "destructive" });
     } else {
       setPublications(data || []);
     }
@@ -78,13 +80,52 @@ const PublicationsManager = () => {
     setEditValue(publication.value || "");
     setEditStatus(publication.status || "Aberta");
     setEditIsFeatured(publication.is_featured || false);
+    setEditIsPromotion((publication as any).is_promotion || false);
     setEditExternalLink(publication.external_link || "");
+    setEditImageUrl(publication.image_url || "");
+    setEditImageFile(null);
+    setEditImagePreview(publication.image_url || "");
     setIsEditDialogOpen(true);
+  };
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setEditImageFile(file);
+      setEditImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `publications/${Date.now()}_${Math.random().toString(36).slice(2)}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('publication-images')
+      .upload(fileName, file);
+
+    if (uploadError) {
+      toast({ title: "Erro no upload", description: uploadError.message, variant: "destructive" });
+      return null;
+    }
+
+    const { data } = supabase.storage
+      .from('publication-images')
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
   };
 
   const handleSaveEdit = async () => {
     if (!editingPublication) return;
     setIsSaving(true);
+
+    let imageUrl = editImageUrl;
+    if (editImageFile) {
+      const uploaded = await uploadImage(editImageFile);
+      if (uploaded) imageUrl = uploaded;
+      else { setIsSaving(false); return; }
+    }
 
     const { error } = await supabase
       .from("publications")
@@ -95,21 +136,16 @@ const PublicationsManager = () => {
         value: editValue || null,
         status: editStatus,
         is_featured: editIsFeatured,
+        is_promotion: editIsPromotion,
         external_link: editExternalLink || null,
-      })
+        image_url: imageUrl || null,
+      } as any)
       .eq("id", editingPublication.id);
 
     if (error) {
-      toast({
-        title: "Erro ao atualizar",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Erro ao atualizar", description: error.message, variant: "destructive" });
     } else {
-      toast({
-        title: "Publicação atualizada!",
-        description: "As alterações foram salvas com sucesso.",
-      });
+      toast({ title: "Publicação atualizada!", description: "As alterações foram salvas com sucesso." });
       setIsEditDialogOpen(false);
       fetchPublications();
     }
@@ -118,18 +154,10 @@ const PublicationsManager = () => {
 
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("publications").delete().eq("id", id);
-
     if (error) {
-      toast({
-        title: "Erro ao excluir",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Erro ao excluir", description: error.message, variant: "destructive" });
     } else {
-      toast({
-        title: "Publicação excluída",
-        description: "A publicação foi removida com sucesso.",
-      });
+      toast({ title: "Publicação excluída", description: "A publicação foi removida com sucesso." });
       fetchPublications();
     }
   };
@@ -141,11 +169,7 @@ const PublicationsManager = () => {
   });
 
   const getCategoryLabel = (category: string) => {
-    const labels: Record<string, string> = {
-      scholarship: "Bolsa",
-      job: "Emprego",
-      course: "Curso",
-    };
+    const labels: Record<string, string> = { scholarship: "Bolsa", job: "Emprego", course: "Curso" };
     return labels[category] || category;
   };
 
@@ -213,7 +237,14 @@ const PublicationsManager = () => {
               {filteredPublications.map((pub) => (
                 <TableRow key={pub.id}>
                   <TableCell className="font-medium max-w-[200px] truncate">
-                    {pub.title}
+                    <div className="flex items-center gap-2">
+                      {pub.title}
+                      {(pub as any).is_promotion && (
+                        <Badge className="bg-orange-500/20 text-orange-400 text-xs">
+                          <Megaphone className="h-3 w-3 mr-1" />Promo
+                        </Badge>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <Badge className={getCategoryColor(pub.category)}>
@@ -240,11 +271,7 @@ const PublicationsManager = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(pub)}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(pub)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <AlertDialog>
@@ -262,9 +289,7 @@ const PublicationsManager = () => {
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(pub.id)}>
-                              Excluir
-                            </AlertDialogAction>
+                            <AlertDialogAction onClick={() => handleDelete(pub.id)}>Excluir</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
@@ -290,44 +315,56 @@ const PublicationsManager = () => {
               <DialogTitle>Editar Publicação</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              {/* Image Upload */}
+              <div className="space-y-2">
+                <Label>Imagem da Publicação</Label>
+                {editImagePreview && (
+                  <img src={editImagePreview} alt="Preview" className="w-full h-40 object-cover rounded-lg" />
+                )}
+                <div className="flex gap-2">
+                  <Input
+                    value={editImageUrl}
+                    onChange={(e) => { setEditImageUrl(e.target.value); setEditImagePreview(e.target.value); setEditImageFile(null); }}
+                    placeholder="URL da imagem ou faça upload"
+                    className="flex-1"
+                  />
+                  <Label htmlFor="edit-image-upload" className="cursor-pointer">
+                    <div className="flex items-center gap-1 px-3 py-2 border border-input rounded-md hover:bg-muted text-sm">
+                      <Upload className="h-4 w-4" />
+                      Upload
+                    </div>
+                  </Label>
+                  <Input
+                    id="edit-image-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageFileChange}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label>Título</Label>
-                <Input
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                />
+                <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label>Descrição Curta</Label>
-                <Textarea
-                  value={editShortDescription}
-                  onChange={(e) => setEditShortDescription(e.target.value)}
-                  rows={2}
-                />
+                <Textarea value={editShortDescription} onChange={(e) => setEditShortDescription(e.target.value)} rows={2} />
               </div>
               <div className="space-y-2">
                 <Label>Descrição Completa</Label>
-                <Textarea
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                  rows={6}
-                />
+                <Textarea value={editDescription} onChange={(e) => setEditDescription(e.target.value)} rows={6} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Valor</Label>
-                  <Input
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    placeholder="Ex: Cobertura Total"
-                  />
+                  <Input value={editValue} onChange={(e) => setEditValue(e.target.value)} placeholder="Ex: Cobertura Total" />
                 </div>
                 <div className="space-y-2">
                   <Label>Status</Label>
                   <Select value={editStatus} onValueChange={setEditStatus}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent className="bg-background">
                       <SelectItem value="Aberta">Aberta</SelectItem>
                       <SelectItem value="Fechada">Fechada</SelectItem>
@@ -338,35 +375,25 @@ const PublicationsManager = () => {
               </div>
               <div className="space-y-2">
                 <Label>Link Externo</Label>
-                <Input
-                  value={editExternalLink}
-                  onChange={(e) => setEditExternalLink(e.target.value)}
-                  placeholder="https://exemplo.com"
-                />
+                <Input value={editExternalLink} onChange={(e) => setEditExternalLink(e.target.value)} placeholder="https://exemplo.com" />
               </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  checked={editIsFeatured}
-                  onChange={(e) => setEditIsFeatured(e.target.checked)}
-                  className="h-4 w-4"
-                />
-                <Label htmlFor="featured">Publicação em destaque</Label>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="featured" checked={editIsFeatured} onChange={(e) => setEditIsFeatured(e.target.checked)} className="h-4 w-4" />
+                  <Label htmlFor="featured">Publicação em destaque</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="promotion" checked={editIsPromotion} onChange={(e) => setEditIsPromotion(e.target.checked)} className="h-4 w-4" />
+                  <Label htmlFor="promotion" className="flex items-center gap-1">
+                    <Megaphone className="h-4 w-4 text-orange-500" />
+                    Publicar como promoção
+                  </Label>
+                </div>
               </div>
               <div className="flex justify-end gap-2 pt-4">
-                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-                  Cancelar
-                </Button>
+                <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancelar</Button>
                 <Button onClick={handleSaveEdit} disabled={isSaving}>
-                  {isSaving ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Salvando...
-                    </>
-                  ) : (
-                    "Salvar Alterações"
-                  )}
+                  {isSaving ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />Salvando...</>) : "Salvar Alterações"}
                 </Button>
               </div>
             </div>

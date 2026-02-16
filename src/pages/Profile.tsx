@@ -45,13 +45,6 @@ const Profile = () => {
     }
   }, [user, loading, navigate]);
 
-  // Link unlinked enrollments/requests by email when user loads profile
-  useEffect(() => {
-    if (user?.email) {
-      linkUnlinkedRecords(user.id, user.email);
-    }
-  }, [user]);
-
   const linkUnlinkedRecords = async (userId: string, email: string) => {
     // Link course enrollments
     await supabase
@@ -68,12 +61,19 @@ const Profile = () => {
       .is("user_id", null);
   };
 
+  // Link unlinked records FIRST, then fetch all data
   useEffect(() => {
     if (user) {
-      fetchProfile();
-      fetchEnrolledCourses();
-      fetchScholarshipRequests();
-      fetchCvDownloads();
+      const init = async () => {
+        if (user.email) {
+          await linkUnlinkedRecords(user.id, user.email);
+        }
+        fetchProfile();
+        fetchEnrolledCourses();
+        fetchScholarshipRequests();
+        fetchCvDownloads();
+      };
+      init();
     }
   }, [user]);
 

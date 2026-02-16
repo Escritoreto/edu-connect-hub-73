@@ -238,6 +238,7 @@ export type Database = {
           image_url: string | null
           important_dates: Json | null
           is_featured: boolean | null
+          is_promotion: boolean | null
           requirements: string | null
           scholarship_type: string | null
           short_description: string | null
@@ -265,6 +266,7 @@ export type Database = {
           image_url?: string | null
           important_dates?: Json | null
           is_featured?: boolean | null
+          is_promotion?: boolean | null
           requirements?: string | null
           scholarship_type?: string | null
           short_description?: string | null
@@ -292,6 +294,7 @@ export type Database = {
           image_url?: string | null
           important_dates?: Json | null
           is_featured?: boolean | null
+          is_promotion?: boolean | null
           requirements?: string | null
           scholarship_type?: string | null
           short_description?: string | null
