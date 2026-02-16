@@ -385,30 +385,40 @@ const Profile = () => {
                           >
                             {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
                           </Badge>
-                          {request.status === "approved" && (
-                            <>
-                              <PaymentInfoCard type="scholarship" />
-                              {request.payment_status === "confirmed" ? (
+                          {request.status === "approved" && (() => {
+                            const isMozambique = request.publications?.country?.toLowerCase()?.includes("moçambique") || request.publications?.country?.toLowerCase()?.includes("mozambique");
+                            if (isMozambique) {
+                              return (
                                 <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs">
-                                  <CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />Gratuito
                                 </Badge>
-                              ) : request.payment_status === "paid" ? (
-                                <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs">
-                                  <Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação
-                                </Badge>
-                              ) : (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7"
-                                  onClick={(e) => { e.stopPropagation(); markAsPaid(request.id, "scholarship"); }}
-                                  disabled={markingPaidId === request.id}
-                                >
-                                  {markingPaidId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
-                                </Button>
-                              )}
-                            </>
-                          )}
+                              );
+                            }
+                            return (
+                              <>
+                                <PaymentInfoCard type="scholarship" />
+                                {request.payment_status === "confirmed" ? (
+                                  <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs">
+                                    <CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado
+                                  </Badge>
+                                ) : request.payment_status === "paid" ? (
+                                  <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs">
+                                    <Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação
+                                  </Badge>
+                                ) : (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7"
+                                    onClick={(e) => { e.stopPropagation(); markAsPaid(request.id, "scholarship"); }}
+                                    disabled={markingPaidId === request.id}
+                                  >
+                                    {markingPaidId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
+                                  </Button>
+                                )}
+                              </>
+                            );
+                          })()}
                           <span className="text-xs">
                             Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}
                           </span>

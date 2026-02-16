@@ -16,6 +16,7 @@ import AdminLogin from "./pages/AdminLogin";
 import PublicationDetail from "./pages/PublicationDetail";
 import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import { ChatWidget } from "./components/ChatWidget";
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/publication/:id" element={<PublicationDetail />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
