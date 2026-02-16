@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Eye, GraduationCap, Briefcase, BookOpen, Star } from "lucide-react";
+import { MapPin, Calendar, Eye, GraduationCap, Briefcase, BookOpen, Star, Megaphone } from "lucide-react";
 import { format } from "date-fns";
 import FavoriteButton from "@/components/FavoriteButton";
 interface Publication {
@@ -20,6 +20,7 @@ interface Publication {
   views_count: number;
   created_at: string;
   is_featured?: boolean;
+  is_promotion?: boolean;
   scholarship_type?: string | null;
   study_level?: string | null;
   status?: string | null;
@@ -71,11 +72,15 @@ const PublicationCard = ({
     navigate(`/publication/${publication.id}`);
   };
   return <Card className="hover:shadow-card transition-all overflow-hidden relative cursor-pointer" onClick={handleCardClick}>
-      {publication.is_featured && <div className="absolute top-4 right-4 z-10">
-          <Badge className="bg-primary text-primary-foreground flex items-center gap-1">
+      {(publication.is_featured || publication.is_promotion) && <div className="absolute top-4 right-4 z-10 flex flex-col gap-1">
+          {publication.is_featured && <Badge className="bg-primary text-primary-foreground flex items-center gap-1">
             <Star className="h-3 w-3 fill-current" />
             Em Destaque
-          </Badge>
+          </Badge>}
+          {publication.is_promotion && <Badge className="bg-orange-500 text-white flex items-center gap-1">
+            <Megaphone className="h-3 w-3" />
+            Promoção
+          </Badge>}
         </div>}
       
       <div className="flex flex-col lg:flex-row">
