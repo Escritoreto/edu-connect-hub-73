@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2 } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School } from "lucide-react";
 import { PaymentInfoCard } from "@/components/PaymentInfoCard";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,7 @@ const Profile = () => {
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const [isLoadingCourses, setIsLoadingCourses] = useState(true);
   const [scholarshipRequests, setScholarshipRequests] = useState<any[]>([]);
+  const [universityRequests, setUniversityRequests] = useState<any[]>([]);
   const [isLoadingScholarships, setIsLoadingScholarships] = useState(true);
   const [cvDownloads, setCvDownloads] = useState<any[]>([]);
   const [isLoadingCvDownloads, setIsLoadingCvDownloads] = useState(true);
@@ -99,7 +100,11 @@ const Profile = () => {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
-    if (!error && data) setScholarshipRequests(data);
+    if (!error && data) {
+      // Separate scholarships from university requests
+      setScholarshipRequests(data.filter((r: any) => r.publications?.category !== "university"));
+      setUniversityRequests(data.filter((r: any) => r.publications?.category === "university"));
+    }
     setIsLoadingScholarships(false);
   };
 
@@ -259,6 +264,10 @@ const Profile = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm"><GraduationCap className="h-4 w-4 text-primary" /><span>Bolsas Solicitadas</span></div>
                     <span className="font-semibold">{scholarshipRequests.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm"><School className="h-4 w-4 text-primary" /><span>Universidades</span></div>
+                    <span className="font-semibold">{universityRequests.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm"><Heart className="h-4 w-4 text-destructive" /><span>Favoritos</span></div>
@@ -431,7 +440,54 @@ const Profile = () => {
             </CardContent>
           </Card>
 
-          {/* CV Downloads History */}
+          {/* University Requests Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><School className="h-5 w-5 text-primary" />Universidades Solicitadas</CardTitle>
+              <CardDescription>Universidades privadas que você solicitou informações</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {universityRequests.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <School className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                  <p>Você ainda não solicitou informações sobre nenhuma universidade</p>
+                  <Button variant="outline" className="mt-4" onClick={() => navigate("/universities")}>Explorar Universidades</Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {universityRequests.map((request: any) => (
+                    <div
+                      key={request.id}
+                      className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/publication/${request.publication_id}`)}
+                    >
+                      {request.publications?.image_url && (
+                        <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground line-clamp-1">{request.publications?.title}</h3>
+                        <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                          {request.publications?.country && (
+                            <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
+                          )}
+                          <Badge
+                            variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"}
+                            className="text-xs"
+                          >
+                            {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
+                          </Badge>
+                          <span className="text-xs">
+                            Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" />Histórico de CVs Baixados</CardTitle>

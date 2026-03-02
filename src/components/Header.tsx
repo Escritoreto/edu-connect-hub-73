@@ -43,6 +43,7 @@ const Header = () => {
             Bolsas de Estudo
           </Link>
           <Link to="/courses" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">Cursos</Link>
+          <Link to="/universities" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">Universidades</Link>
           <Link to="/cv-builder" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Criar CV
           </Link>
@@ -111,6 +112,9 @@ const Header = () => {
             </Link>
             <Link to="/courses" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
               Cursos Online
+            </Link>
+            <Link to="/universities" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+              Universidades
             </Link>
             <Link to="/cv-builder" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
               Criar CV
