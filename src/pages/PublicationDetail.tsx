@@ -435,7 +435,7 @@ const PublicationDetail = () => {
               </div>}
 
             {/* Scholarship Orientation Request Form */}
-            {publication.category === 'scholarship' && <div className="mt-8">
+            {(publication.category === 'scholarship' || publication.category === 'university') && <div className="mt-8">
                 <Separator className="my-8" />
                 <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
                   <GraduationCap className="h-7 w-7 text-primary" />
@@ -484,7 +484,7 @@ const PublicationDetail = () => {
               </div>}
 
             {/* CTA Footer for Scholarships with external link */}
-            {publication.category === 'scholarship' && publication.external_link && <Card className="bg-gradient-primary text-primary-foreground mt-8">
+            {(publication.category === 'scholarship' || publication.category === 'university') && publication.external_link && <Card className="bg-gradient-primary text-primary-foreground mt-8">
                 <CardContent className="p-8 text-center">
                   <h3 className="text-2xl font-bold mb-4">
                     Pronto para Candidatar-se Diretamente?

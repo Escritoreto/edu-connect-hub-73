@@ -44,6 +44,8 @@ const getCategoryIcon = (category: string) => {
       return <Briefcase className="h-4 w-4" />;
     case "course":
       return <BookOpen className="h-4 w-4" />;
+    case "university":
+      return <GraduationCap className="h-4 w-4" />;
     default:
       return null;
   }
@@ -56,6 +58,8 @@ const getCategoryLabel = (category: string) => {
       return "Emprego";
     case "course":
       return "Curso";
+    case "university":
+      return "Universidade";
     default:
       return category;
   }

@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Star, Quote, School } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState, useCallback } from "react";
@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 
 const Index = () => {
   const [featuredScholarships, setFeaturedScholarships] = useState<any[]>([]);
+  const [featuredUniversities, setFeaturedUniversities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +29,19 @@ const Index = () => {
       if (!error && data) setFeaturedScholarships(data);
       setLoading(false);
     };
+
+    const fetchFeaturedUniversities = async () => {
+      const { data, error } = await supabase
+        .from("publications")
+        .select("*")
+        .eq("category", "university")
+        .order("created_at", { ascending: false })
+        .limit(6);
+      if (!error && data) setFeaturedUniversities(data);
+    };
+
     fetchFeaturedScholarships();
+    fetchFeaturedUniversities();
   }, []);
 
   return (
@@ -85,7 +98,73 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Testimonials */}
+        {/* Featured Universities */}
+        {featuredUniversities.length > 0 && (
+          <section className="py-20 bg-background">
+            <div className="container">
+              <motion.div
+                className="flex justify-between items-center mb-12"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <div>
+                  <h2 className="text-lg sm:text-3xl lg:text-4xl font-bold mb-2">Universidades Privadas</h2>
+                  <p className="text-muted-foreground text-sm sm:text-base">Explore as melhores universidades sem necessidade de bolsa</p>
+                </div>
+                <Button variant="outline" asChild className="hidden sm:flex">
+                  <Link to="/universities">
+                    Ver Todas <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </motion.div>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
+                {featuredUniversities.map((uni, i) => (
+                  <motion.div
+                    key={uni.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <Link
+                      to={`/publication/${uni.id}`}
+                      className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-elegant transition-all duration-300 group block h-full"
+                    >
+                      <div className="relative h-36 sm:h-48 overflow-hidden">
+                        <img
+                          src={uni.image_url || "/placeholder.svg"}
+                          alt={uni.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute top-2 left-2 px-2 py-1 bg-accent text-accent-foreground rounded-full text-xs font-medium shadow-sm flex items-center gap-1">
+                          <School className="h-3 w-3" /> Universidade
+                        </div>
+                      </div>
+                      <div className="p-3 sm:p-4">
+                        <h3 className="text-xs sm:text-base font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2">
+                          {uni.title}
+                        </h3>
+                        {uni.country && (
+                          <p className="text-muted-foreground text-xs">{uni.country}</p>
+                        )}
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="flex justify-center mt-6 sm:hidden">
+                <Button variant="outline" asChild>
+                  <Link to="/universities">Ver Todas as Universidades <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
+
         <section className="py-20 bg-background">
           <div className="container">
             <motion.div

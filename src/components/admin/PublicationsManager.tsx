@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 interface Publication {
   id: string;
   title: string;
-  category: "scholarship" | "job" | "course";
+  category: "scholarship" | "job" | "course" | "university";
   country: string | null;
   status: string | null;
   views_count: number | null;

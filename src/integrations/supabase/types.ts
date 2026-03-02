@@ -362,6 +362,27 @@ export type Database = {
           },
         ]
       }
+      site_settings: {
+        Row: {
+          id: string
+          setting_key: string
+          setting_value: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          setting_key: string
+          setting_value?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          setting_key?: string
+          setting_value?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_favorites: {
         Row: {
           created_at: string
@@ -430,7 +451,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
-      publication_category: "scholarship" | "job" | "course"
+      publication_category: "scholarship" | "job" | "course" | "university"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -559,7 +580,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
-      publication_category: ["scholarship", "job", "course"],
+      publication_category: ["scholarship", "job", "course", "university"],
     },
   },
 } as const
