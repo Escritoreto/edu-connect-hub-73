@@ -38,6 +38,13 @@ export const NotificationBell = ({ userId, className }: { userId: string; classN
   }, [userId]);
 
   const fetchNotifications = async () => {
+    // Cleanup notifications older than 7 days
+    await supabase
+      .from("notifications")
+      .delete()
+      .eq("user_id", userId)
+      .lt("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+
     const { data } = await supabase
       .from("notifications")
       .select("*")

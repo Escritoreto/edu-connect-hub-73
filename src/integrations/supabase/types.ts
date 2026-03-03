@@ -173,6 +173,8 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          phone: string | null
+          profile_edit_allowed: boolean
           updated_at: string
         }
         Insert: {
@@ -181,6 +183,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          phone?: string | null
+          profile_edit_allowed?: boolean
           updated_at?: string
         }
         Update: {
@@ -189,6 +193,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          phone?: string | null
+          profile_edit_allowed?: boolean
           updated_at?: string
         }
         Relationships: []
@@ -640,6 +646,7 @@ export type Database = {
     }
     Functions: {
       cleanup_old_messages: { Args: never; Returns: undefined }
+      cleanup_old_notifications: { Args: never; Returns: undefined }
       cleanup_old_requests: { Args: never; Returns: undefined }
       get_registered_users_count: { Args: never; Returns: number }
       has_role: {
