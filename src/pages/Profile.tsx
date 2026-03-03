@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 const Profile = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { favorites } = useFavorites();
 
@@ -275,7 +276,7 @@ const Profile = () => {
           </div>
 
           {/* Tabs */}
-          <Tabs defaultValue="profile" className="w-full">
+          <Tabs defaultValue={searchParams.get("tab") || "profile"} className="w-full">
             <TabsList className="w-full flex flex-wrap h-auto gap-1 bg-muted p-1 rounded-lg">
               <TabsTrigger value="profile" className="flex-1 min-w-[100px] text-xs sm:text-sm"><User className="h-4 w-4 mr-1" />Perfil</TabsTrigger>
               <TabsTrigger value="courses" className="flex-1 min-w-[100px] text-xs sm:text-sm"><BookOpen className="h-4 w-4 mr-1" />Cursos</TabsTrigger>

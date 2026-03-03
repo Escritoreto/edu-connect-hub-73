@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,7 @@ import ReviewsManager from "@/components/admin/ReviewsManager";
 const Admin = () => {
   const { user, loading: authLoading, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stats, setStats] = useState({ users: 0, totalViews: 0, cvDownloads: 0 });
@@ -85,10 +86,10 @@ const Admin = () => {
     if (!user) return;
     const { data } = await supabase
       .from("notifications")
-      .select("title")
+      .select("title, link")
       .eq("user_id", user.id)
       .eq("is_read", false)
-      .eq("link", "/admin");
+      .like("link", "/admin%");
     if (data) {
       const counts: Record<string, number> = {};
       data.forEach((n) => {
@@ -96,6 +97,8 @@ const Admin = () => {
         else if (n.title.includes("candidatura a bolsa")) counts.scholarships = (counts.scholarships || 0) + 1;
         else if (n.title.includes("usuário registrado")) counts.users = (counts.users || 0) + 1;
         else if (n.title.includes("mensagem")) counts.messages = (counts.messages || 0) + 1;
+        else if (n.title.includes("avaliação")) counts.reviews = (counts.reviews || 0) + 1;
+        else if (n.title.includes("projeto")) counts.projects = (counts.projects || 0) + 1;
       });
       setTabBadges(counts);
     }
@@ -388,7 +391,7 @@ const Admin = () => {
           </div>
 
           {/* Main Tabs */}
-          <Tabs defaultValue="manage" className="space-y-6">
+          <Tabs defaultValue={searchParams.get("tab") || "manage"} className="space-y-6">
             <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
               <TabsList className="inline-flex w-auto min-w-full md:grid md:w-full md:grid-cols-10 bg-slate-800/50">
                 <TabsTrigger value="manage" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
@@ -423,17 +426,19 @@ const Admin = () => {
                   <Banknote className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Pagamento</span>
                 </TabsTrigger>
-                <TabsTrigger value="projects" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <TabsTrigger value="projects" className="relative flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <Lightbulb className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Projetos</span>
+                  {tabBadges.projects > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold">{tabBadges.projects > 9 ? "9+" : tabBadges.projects}</span>}
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <Settings className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Definições</span>
                 </TabsTrigger>
-                <TabsTrigger value="reviews" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <TabsTrigger value="reviews" className="relative flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <Star className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Avaliações</span>
+                  {tabBadges.reviews > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold">{tabBadges.reviews > 9 ? "9+" : tabBadges.reviews}</span>}
                 </TabsTrigger>
               </TabsList>
             </div>
