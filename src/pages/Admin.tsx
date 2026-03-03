@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home, GraduationCap, MessageSquare, Download, Banknote, Settings, Lightbulb } from "lucide-react";
+import { Loader2, Users, Eye, BookOpen, FileText, Shield, LogOut, Home, GraduationCap, MessageSquare, Download, Banknote, Settings, Lightbulb, Star } from "lucide-react";
 import EnrollmentsManager from "@/components/admin/EnrollmentsManager";
 import PublicationsManager from "@/components/admin/PublicationsManager";
 import ScholarshipRequestsManager from "@/components/admin/ScholarshipRequestsManager";
@@ -21,6 +21,7 @@ import { NotificationBell } from "@/components/NotificationBell";
 import PaymentSettingsManager from "@/components/admin/PaymentSettingsManager";
 import SiteSettingsManager from "@/components/admin/SiteSettingsManager";
 import { ProjectsManager } from "@/components/admin/ProjectsManager";
+import ReviewsManager from "@/components/admin/ReviewsManager";
 
 const Admin = () => {
   const { user, loading: authLoading, isAdmin, signOut } = useAuth();
@@ -367,7 +368,7 @@ const Admin = () => {
           {/* Main Tabs */}
           <Tabs defaultValue="manage" className="space-y-6">
             <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
-              <TabsList className="inline-flex w-auto min-w-full md:grid md:w-full md:grid-cols-9 bg-slate-800/50">
+              <TabsList className="inline-flex w-auto min-w-full md:grid md:w-full md:grid-cols-10 bg-slate-800/50">
                 <TabsTrigger value="manage" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <FileText className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Gerenciar</span>
@@ -403,6 +404,10 @@ const Admin = () => {
                 <TabsTrigger value="settings" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <Settings className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Definições</span>
+                </TabsTrigger>
+                <TabsTrigger value="reviews" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                  <Star className="h-4 w-4 shrink-0" />
+                  <span className="hidden sm:inline">Avaliações</span>
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -799,6 +804,10 @@ const Admin = () => {
 
             <TabsContent value="settings">
               <SiteSettingsManager />
+            </TabsContent>
+
+            <TabsContent value="reviews">
+              <ReviewsManager />
             </TabsContent>
           </Tabs>
         </div>

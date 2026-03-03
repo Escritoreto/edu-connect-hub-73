@@ -17,20 +17,23 @@ const Index = () => {
   const [featuredUniversities, setFeaturedUniversities] = useState<any[]>([]);
   const [featuredCourses, setFeaturedCourses] = useState<any[]>([]);
   const [featuredProjects, setFeaturedProjects] = useState<any[]>([]);
+  const [approvedReviews, setApprovedReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [scholarships, universities, courses, projects] = await Promise.all([
+      const [scholarships, universities, courses, projects, reviews] = await Promise.all([
         supabase.from("publications").select("*").eq("category", "scholarship").eq("is_featured", true).order("created_at", { ascending: false }).limit(6),
         supabase.from("publications").select("*").eq("category", "university").order("created_at", { ascending: false }).limit(6),
         supabase.from("publications").select("*").eq("category", "course").order("created_at", { ascending: false }).limit(6),
         supabase.from("projects").select("*").eq("status", "active").order("created_at", { ascending: false }).limit(6),
+        supabase.from("site_reviews").select("*, profiles:user_id (full_name)").eq("status", "approved").order("created_at", { ascending: false }).limit(6),
       ]);
       if (scholarships.data) setFeaturedScholarships(scholarships.data);
       if (universities.data) setFeaturedUniversities(universities.data);
       if (courses.data) setFeaturedCourses(courses.data);
       if (projects.data) setFeaturedProjects(projects.data);
+      if (reviews.data) setApprovedReviews(reviews.data);
       setLoading(false);
     };
     fetchData();
@@ -138,30 +141,34 @@ const Index = () => {
           )}
         />
 
-        {/* Testimonials */}
-        <section className="py-20 bg-muted/30">
-          <div className="container">
-            <motion.div className="text-center mb-14" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold mb-3">O que dizem nossos estudantes</h2>
-              <p className="text-muted-foreground text-sm sm:text-base">Histórias reais de quem transformou seu futuro</p>
-            </motion.div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {testimonials.map((t, i) => (
-                <motion.div key={i} className="bg-card border border-border rounded-2xl p-6 relative" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                  <Quote className="h-8 w-8 text-primary/20 absolute top-4 right-4" />
-                  <div className="flex gap-1 mb-3">
-                    {Array.from({ length: 5 }).map((_, j) => <Star key={j} className="h-4 w-4 fill-secondary text-secondary" />)}
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed italic">"{t.text}"</p>
-                  <div>
-                    <p className="font-semibold text-sm">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.role}</p>
-                  </div>
-                </motion.div>
-              ))}
+        {/* Testimonials / Reviews */}
+        {(approvedReviews.length > 0 || testimonials.length > 0) && (
+          <section className="py-20 bg-muted/30">
+            <div className="container">
+              <motion.div className="text-center mb-14" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold mb-3">O que dizem nossos estudantes</h2>
+                <p className="text-muted-foreground text-sm sm:text-base">Histórias reais de quem transformou seu futuro</p>
+              </motion.div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(approvedReviews.length > 0 ? approvedReviews : testimonials).map((t: any, i: number) => (
+                  <motion.div key={t.id || i} className="bg-card border border-border rounded-2xl p-6 relative" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                    <Quote className="h-8 w-8 text-primary/20 absolute top-4 right-4" />
+                    <div className="flex gap-1 mb-3">
+                      {Array.from({ length: 5 }).map((_, j) => (
+                        <Star key={j} className={`h-4 w-4 ${j < (t.rating || 5) ? "fill-secondary text-secondary" : "text-muted-foreground/30"}`} />
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed italic">"{t.text}"</p>
+                    <div>
+                      <p className="font-semibold text-sm">{t.profiles?.full_name || t.name || "Estudante"}</p>
+                      {t.role && <p className="text-xs text-muted-foreground">{t.role}</p>}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* CTA Section */}
         <section className="py-20 bg-gradient-primary text-primary-foreground relative overflow-hidden">

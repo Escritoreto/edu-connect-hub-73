@@ -13,13 +13,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb, User, MessageSquare } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb, User, MessageSquare, Star } from "lucide-react";
 import { PaymentInfoCard } from "@/components/PaymentInfoCard";
 import { MyProjectsSection } from "@/components/profile/MyProjectsSection";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
 import { MessagesPanel } from "@/components/MessagesPanel";
+import { Textarea } from "@/components/ui/textarea";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const { user, loading } = useAuth();
@@ -41,6 +43,12 @@ const Profile = () => {
   const [cvDownloads, setCvDownloads] = useState<any[]>([]);
   const [isLoadingCvDownloads, setIsLoadingCvDownloads] = useState(true);
   const [markingPaidId, setMarkingPaidId] = useState<string | null>(null);
+  const [myReview, setMyReview] = useState<any>(null);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [favoritePublications, setFavoritePublications] = useState<any[]>([]);
+  const [isLoadingFavorites, setIsLoadingFavorites] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -61,6 +69,8 @@ const Profile = () => {
         fetchEnrolledCourses();
         fetchScholarshipRequests();
         fetchCvDownloads();
+        fetchMyReview();
+        fetchFavoritePublications();
       };
       init();
     }
@@ -99,6 +109,47 @@ const Profile = () => {
     const { data, error } = await supabase.from("cv_downloads").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
     if (!error && data) setCvDownloads(data);
     setIsLoadingCvDownloads(false);
+  };
+
+  const fetchMyReview = async () => {
+    if (!user) return;
+    const { data } = await supabase.from("site_reviews").select("*").eq("user_id", user.id).maybeSingle();
+    if (data) {
+      setMyReview(data);
+      setReviewText(data.text);
+      setReviewRating(data.rating);
+    }
+  };
+
+  const fetchFavoritePublications = async () => {
+    if (!user) return;
+    setIsLoadingFavorites(true);
+    const { data: favs } = await supabase.from("user_favorites").select("publication_id").eq("user_id", user.id);
+    if (favs && favs.length > 0) {
+      const ids = favs.map((f: any) => f.publication_id);
+      const { data: pubs } = await supabase.from("publications").select("*").in("id", ids);
+      if (pubs) setFavoritePublications(pubs);
+    }
+    setIsLoadingFavorites(false);
+  };
+
+  const submitReview = async () => {
+    if (!user || !reviewText.trim()) return;
+    setIsSubmittingReview(true);
+    if (myReview) {
+      const { error } = await supabase.from("site_reviews").update({ text: reviewText, rating: reviewRating }).eq("id", myReview.id);
+      if (!error) {
+        toast({ title: "Avaliação atualizada!" });
+        fetchMyReview();
+      }
+    } else {
+      const { error } = await supabase.from("site_reviews").insert({ user_id: user.id, text: reviewText, rating: reviewRating });
+      if (!error) {
+        toast({ title: "Avaliação enviada!", description: "Será exibida após aprovação do administrador." });
+        fetchMyReview();
+      }
+    }
+    setIsSubmittingReview(false);
   };
 
   const fetchProfile = async () => {
@@ -232,6 +283,8 @@ const Profile = () => {
               <TabsTrigger value="universities" className="flex-1 min-w-[100px] text-xs sm:text-sm"><School className="h-4 w-4 mr-1" />Universidades</TabsTrigger>
               <TabsTrigger value="cvs" className="flex-1 min-w-[100px] text-xs sm:text-sm"><FileText className="h-4 w-4 mr-1" />CVs</TabsTrigger>
               <TabsTrigger value="projects" className="flex-1 min-w-[100px] text-xs sm:text-sm"><Lightbulb className="h-4 w-4 mr-1" />Projetos</TabsTrigger>
+              <TabsTrigger value="favorites" className="flex-1 min-w-[100px] text-xs sm:text-sm"><Heart className="h-4 w-4 mr-1" />Favoritos</TabsTrigger>
+              <TabsTrigger value="review" className="flex-1 min-w-[100px] text-xs sm:text-sm"><Star className="h-4 w-4 mr-1" />Avaliação</TabsTrigger>
               <TabsTrigger value="messages" className="flex-1 min-w-[100px] text-xs sm:text-sm"><MessageSquare className="h-4 w-4 mr-1" />Mensagens</TabsTrigger>
             </TabsList>
 
@@ -475,6 +528,79 @@ const Profile = () => {
             {/* Projects Tab */}
             <TabsContent value="projects">
               {user && <MyProjectsSection userId={user.id} />}
+            </TabsContent>
+
+            {/* Favorites Tab */}
+            <TabsContent value="favorites">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Heart className="h-5 w-5 text-destructive" />Meus Favoritos</CardTitle>
+                  <CardDescription>Publicações que você salvou como favoritas</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {isLoadingFavorites ? (
+                    <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
+                  ) : favoritePublications.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Heart className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                      <p>Você ainda não tem favoritos</p>
+                      <Button variant="outline" className="mt-4" onClick={() => navigate("/scholarships")}>Explorar Bolsas</Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {favoritePublications.map((pub: any) => (
+                        <div key={pub.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${pub.id}`)}>
+                          {pub.image_url && <img src={pub.image_url} alt={pub.title} className="w-16 h-16 object-cover rounded" />}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-foreground line-clamp-1">{pub.title}</h3>
+                            <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-muted-foreground">
+                              <Badge variant="secondary" className="text-xs capitalize">{pub.category}</Badge>
+                              {pub.country && <span className="text-xs">{pub.country}</span>}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Review Tab */}
+            <TabsContent value="review">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Star className="h-5 w-5 text-secondary" />Avaliar o UpMentor</CardTitle>
+                  <CardDescription>
+                    Partilhe a sua experiência com a plataforma. Após aprovação, será exibida na página inicial.
+                    {myReview && (
+                      <Badge variant={myReview.status === "approved" ? "default" : myReview.status === "pending" ? "secondary" : "destructive"} className="ml-2">
+                        {myReview.status === "approved" ? "Aprovada" : myReview.status === "pending" ? "Pendente" : "Rejeitada"}
+                      </Badge>
+                    )}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Classificação</Label>
+                    <div className="flex gap-1 mt-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button key={star} type="button" onClick={() => setReviewRating(star)}>
+                          <Star className={`h-6 w-6 cursor-pointer transition-colors ${star <= reviewRating ? "fill-secondary text-secondary" : "text-muted-foreground/30"}`} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Sua avaliação</Label>
+                    <Textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)} placeholder="Conte como a UpMentor ajudou na sua jornada..." className="mt-2" rows={4} />
+                  </div>
+                  <Button onClick={submitReview} disabled={isSubmittingReview || !reviewText.trim()}>
+                    {isSubmittingReview ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                    {myReview ? "Atualizar Avaliação" : "Enviar Avaliação"}
+                  </Button>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* Messages Tab */}
