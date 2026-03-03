@@ -165,11 +165,13 @@ const Blog = () => {
                     className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-elegant transition-all group animate-fade-in cursor-pointer h-full"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="relative overflow-hidden h-48">
+                    <div className="relative overflow-hidden h-48 bg-muted">
                       <img
                         src={article.image}
                         alt={article.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                        onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                       />
                       <div className="absolute top-4 left-4">
                         <Badge className="bg-primary text-primary-foreground">
