@@ -220,7 +220,7 @@ const Index = () => {
               Junte-se a milhares de estudantes que estão conquistando o mundo com o UpMentor.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" variant="secondary" asChild className="text-sm sm:text-base font-semibold shadow-lg">
+              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20 font-semibold shadow-lg">
                 <Link to="/auth?tab=signup">
                   Registrar-se <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

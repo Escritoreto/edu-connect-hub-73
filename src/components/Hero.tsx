@@ -69,7 +69,7 @@ const Hero = () => {
 
             <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl text-primary-foreground leading-tight font-bold text-center lg:text-left">
               Onde seus sonhos começam,{" "}
-              <span className="text-secondary">a UpMentor</span> está presente
+              <span className="text-primary-foreground">a UpMentor</span> está presente
             </h1>
 
             <div className="h-20 sm:h-24 flex items-center">
@@ -88,7 +88,7 @@ const Hero = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <Button size="lg" variant="secondary" asChild className="text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl transition-shadow">
+              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20 font-semibold shadow-lg">
                 <Link to="/scholarships">Bolsas disponíveis</Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="text-sm sm:text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20">
