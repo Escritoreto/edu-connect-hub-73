@@ -18,6 +18,7 @@ import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
 import Universities from "./pages/Universities";
+import MotivationLetter from "./pages/MotivationLetter";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import { ChatWidget } from "./components/ChatWidget";
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/publication/:id" element={<PublicationDetail />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/universities" element={<Universities />} />
+          <Route path="/motivation-letter" element={<MotivationLetter />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

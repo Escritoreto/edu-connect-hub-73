@@ -47,6 +47,9 @@ const Header = () => {
           <Link to="/cv-builder" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Criar CV
           </Link>
+          <Link to="/motivation-letter" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+            Carta de Motivação
+          </Link>
           <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Blog
           </Link>
@@ -118,6 +121,9 @@ const Header = () => {
             </Link>
             <Link to="/cv-builder" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
               Criar CV
+            </Link>
+            <Link to="/motivation-letter" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+              Carta de Motivação
             </Link>
             <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
               Blog
