@@ -12,8 +12,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb } from "lucide-react";
 import { PaymentInfoCard } from "@/components/PaymentInfoCard";
+import { MyProjectsSection } from "@/components/profile/MyProjectsSection";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
@@ -520,6 +521,9 @@ const Profile = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Projects Section */}
+          {user && <MyProjectsSection userId={user.id} />}
 
           {/* Messages Section */}
           {user && <MessagesPanel currentUserId={user.id} />}
