@@ -122,8 +122,9 @@ const Footer = () => {
         <div className="mt-10 pt-8 border-t border-background/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-background/40">
           <p>&copy; {new Date().getFullYear()} {siteName}. Todos os direitos reservados.</p>
           <div className="flex space-x-6">
-            <Link to="/about" className="hover:text-secondary transition-colors">Política de Privacidade</Link>
-            <Link to="/about" className="hover:text-secondary transition-colors">Termos de Uso</Link>
+            <Link to="/privacy" className="hover:text-secondary transition-colors">Política de Privacidade</Link>
+            <Link to="/terms" className="hover:text-secondary transition-colors">Termos de Uso</Link>
+            <Link to="/security" className="hover:text-secondary transition-colors">Segurança</Link>
           </div>
         </div>
       </div>
