@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -6,8 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { FileText, Download, ArrowLeft, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { FileText, Download, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { MotivationLetterData, MotivationLetterTemplate } from "@/types/motivationLetter";
 import { languageOptions } from "@/lib/cvTranslations";
 import { getLetterSuggestions } from "@/lib/motivationLetterSuggestions";
@@ -25,6 +27,8 @@ const templates: MotivationLetterTemplate[] = [
 ];
 
 const MotivationLetter = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [letterData, setLetterData] = useState<MotivationLetterData>({
     fullName: "",
@@ -102,6 +106,33 @@ const MotivationLetter = () => {
     { value: "internship", label: labels.purposeInternship },
     { value: "general", label: labels.purposeGeneral },
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center px-4">
+          <Card className="max-w-md w-full p-8 text-center space-y-4">
+            <FileText className="h-12 w-12 mx-auto text-primary" />
+            <h2 className="text-xl font-bold text-foreground">Crie sua conta para continuar</h2>
+            <p className="text-muted-foreground text-sm">Para criar sua carta de motivação, é necessário ter uma conta. Faça login ou crie uma conta gratuita.</p>
+            <div className="flex gap-3 justify-center">
+              <Button onClick={() => navigate("/auth")}>Criar Conta / Login</Button>
+            </div>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

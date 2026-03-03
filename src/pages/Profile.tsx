@@ -32,6 +32,8 @@ const Profile = () => {
 
   const [profile, setProfile] = useState<any>(null);
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [profileEditAllowed, setProfileEditAllowed] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
@@ -162,6 +164,8 @@ const Profile = () => {
     } else {
       setProfile(data);
       setFullName(data.full_name || "");
+      setPhone((data as any).phone || "");
+      setProfileEditAllowed((data as any).profile_edit_allowed || false);
       setAvatarPreview(data.avatar_url || "");
     }
     setIsLoadingProfile(false);
@@ -196,7 +200,13 @@ const Profile = () => {
     try {
       let avatarUrl = profile?.avatar_url;
       if (avatarFile) avatarUrl = await uploadAvatar();
-      const { error } = await supabase.from("profiles").update({ full_name: fullName, avatar_url: avatarUrl }).eq("id", user.id);
+      const updateData: any = { avatar_url: avatarUrl };
+      if (profileEditAllowed) {
+        updateData.full_name = fullName;
+        updateData.phone = phone;
+        updateData.profile_edit_allowed = false; // Reset after edit
+      }
+      const { error } = await supabase.from("profiles").update(updateData).eq("id", user.id);
       if (error) throw error;
       toast({ title: "Perfil atualizado!", description: "Suas informações foram salvas com sucesso." });
       fetchProfile();
@@ -316,7 +326,17 @@ const Profile = () => {
                     <Separator />
                     <div className="space-y-2">
                       <Label htmlFor="fullName">Nome Completo</Label>
-                      <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Digite seu nome completo" />
+                      <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Digite seu nome completo" disabled={!profileEditAllowed} className={!profileEditAllowed ? "bg-muted" : ""} />
+                      {!profileEditAllowed && fullName && (
+                        <p className="text-xs text-muted-foreground">Para alterar o nome, solicite ao administrador via mensagens.</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Número de Celular</Label>
+                      <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Digite seu número de celular" disabled={!profileEditAllowed} className={!profileEditAllowed ? "bg-muted" : ""} />
+                      {!profileEditAllowed && phone && (
+                        <p className="text-xs text-muted-foreground">Para alterar o número, solicite ao administrador via mensagens.</p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>

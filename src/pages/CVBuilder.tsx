@@ -1,3 +1,6 @@
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,8 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileText, Download, Eye, Upload, X, ArrowLeft, ArrowRight, Plus, Trash2 } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { FileText, Download, Eye, Upload, X, ArrowLeft, ArrowRight, Plus, Trash2, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CVData, CVTemplate, Education, Experience, Language, Certification, Project } from "@/types/cv";
@@ -33,6 +35,8 @@ import { PDFMinimalistTemplate4 } from "@/components/cv/PDFMinimalistTemplate4";
 import { toast } from "sonner";
 
 const CVBuilder = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const templateGalleryRef = useRef<HTMLDivElement>(null);
   const previewButtonRef = useRef<HTMLDivElement>(null);
@@ -536,6 +540,33 @@ const CVBuilder = () => {
       toast.error(`Erro ao gerar PDF: ${message}`, { id: "pdf-loading" });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center px-4">
+          <Card className="max-w-md w-full p-8 text-center space-y-4">
+            <FileText className="h-12 w-12 mx-auto text-primary" />
+            <h2 className="text-xl font-bold text-foreground">Crie sua conta para continuar</h2>
+            <p className="text-muted-foreground text-sm">Para criar seu CV, é necessário ter uma conta. Faça login ou crie uma conta gratuita.</p>
+            <div className="flex gap-3 justify-center">
+              <Button onClick={() => navigate("/auth")}>Criar Conta / Login</Button>
+            </div>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
