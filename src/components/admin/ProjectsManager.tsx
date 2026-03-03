@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Check, X, Eye, Banknote, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { Loader2, Check, X, Eye, Banknote, CheckCircle2, Clock, AlertCircle, FileImage, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -206,6 +206,14 @@ export const ProjectsManager = () => {
                         <p className="text-xs text-muted-foreground">{sCoverage}% da meta</p>
                       </div>
                     </div>
+                    {s.receipt_url && (
+                      <div className="flex items-center gap-2">
+                        <FileImage className="h-4 w-4 text-primary" />
+                        <a href={s.receipt_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+                          Ver Comprovativo <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="text-xs">

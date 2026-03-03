@@ -15,7 +15,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { GraduationCap, Send, LogIn, UserPlus } from "lucide-react";
+import { GraduationCap, Send, LogIn, UserPlus, Upload, FileImage } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const formSchema = z.object({
@@ -42,6 +42,7 @@ const mozambiqueCities = [
 const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: ScholarshipRequestFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOtherCity, setIsOtherCity] = useState(false);
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const { user } = useAuth();
 
   const form = useForm<FormData>({
@@ -102,9 +103,24 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
     );
   }
 
+  const uploadReceipt = async (file: File): Promise<string | null> => {
+    if (!user) return null;
+    const ext = file.name.split('.').pop();
+    const filePath = `${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("payment-receipts").upload(filePath, file);
+    if (error) return null;
+    const { data: urlData } = supabase.storage.from("payment-receipts").getPublicUrl(filePath);
+    return urlData?.publicUrl || null;
+  };
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
+      let receiptUrl: string | null = null;
+      if (receiptFile) {
+        receiptUrl = await uploadReceipt(receiptFile);
+      }
+
       const { error } = await supabase
         .from("scholarship_requests")
         .insert({
@@ -116,6 +132,7 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
           city: data.city,
           message: data.message || null,
           status: "pending",
+          receipt_url: receiptUrl,
         });
 
       if (error) throw error;
@@ -126,6 +143,7 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
       });
       
       form.reset();
+      setReceiptFile(null);
     } catch (error: any) {
       toast({
         title: "Erro ao enviar solicitação",
@@ -221,6 +239,24 @@ const ScholarshipRequestForm = ({ scholarshipTitle, scholarshipId }: Scholarship
                 <FormMessage />
               </FormItem>
             )} />
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Comprovativo de Pagamento (opcional)</label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+                  className="text-sm bg-background"
+                />
+                {receiptFile && (
+                  <span className="text-xs text-primary flex items-center gap-1 shrink-0">
+                    <FileImage className="h-3 w-3" />{receiptFile.name.slice(0, 15)}...
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">Carregue o recibo de pagamento (imagem ou PDF)</p>
+            </div>
 
             <Button type="submit" className="w-full mt-6" size="lg" disabled={isSubmitting}>
               {isSubmitting ? "A enviar..." : (<><Send className="h-4 w-4 mr-2" />Solicitar Orientação</>)}

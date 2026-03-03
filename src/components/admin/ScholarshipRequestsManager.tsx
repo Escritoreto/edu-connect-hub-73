@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, CheckCircle, XCircle, Clock, GraduationCap, Mail, Phone, MapPin, MessageSquare, Trash2, Banknote } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Clock, GraduationCap, Mail, Phone, MapPin, MessageSquare, Trash2, Banknote, FileImage, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -236,18 +236,25 @@ const ScholarshipRequestsManager = () => {
                       <TableCell><span className="text-sm text-muted-foreground">{format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}</span></TableCell>
                       <TableCell>{getStatusBadge(request.status)}</TableCell>
                       <TableCell>
-                        {request.payment_status === "confirmed" ? (
-                          <Badge className="bg-green-500/10 text-green-600 border-green-500/20"><CheckCircle className="h-3 w-3 mr-1" />Confirmado</Badge>
-                        ) : request.payment_status === "paid" ? (
-                          <div className="flex items-center gap-2">
-                            <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20"><Banknote className="h-3 w-3 mr-1" />Pago</Badge>
-                            <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 text-xs h-7" onClick={() => approvePayment(request.id)} disabled={updatingId === request.id}>
-                              {updatingId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <>Aprovar</>}
-                            </Button>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">-</span>
-                        )}
+                        <div className="space-y-1">
+                          {(request as any).receipt_url && (
+                            <a href={(request as any).receipt_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+                              <FileImage className="h-3 w-3" />Ver Recibo <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                          {request.payment_status === "confirmed" ? (
+                            <Badge className="bg-green-500/10 text-green-600 border-green-500/20"><CheckCircle className="h-3 w-3 mr-1" />Confirmado</Badge>
+                          ) : request.payment_status === "paid" ? (
+                            <div className="flex items-center gap-2">
+                              <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20"><Banknote className="h-3 w-3 mr-1" />Pago</Badge>
+                              <Button size="sm" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 text-xs h-7" onClick={() => approvePayment(request.id)} disabled={updatingId === request.id}>
+                                {updatingId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <>Aprovar</>}
+                              </Button>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">-</span>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
