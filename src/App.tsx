@@ -22,6 +22,9 @@ import MotivationLetter from "./pages/MotivationLetter";
 import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProjectNew from "./pages/ProjectNew";
+import TermsOfUse from "./pages/TermsOfUse";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Security from "./pages/Security";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import { ChatWidget } from "./components/ChatWidget";
@@ -55,6 +58,9 @@ const App = () => (
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/new" element={<ProjectNew />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
+          <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/security" element={<Security />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
