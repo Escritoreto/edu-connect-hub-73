@@ -29,6 +29,7 @@ const Admin = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stats, setStats] = useState({ users: 0, totalViews: 0, cvDownloads: 0 });
+  const [tabBadges, setTabBadges] = useState<Record<string, number>>({});
 
   // Basic Form state
   const [title, setTitle] = useState("");
@@ -76,8 +77,29 @@ const Admin = () => {
   useEffect(() => {
     if (isAdmin) {
       fetchStats();
+      fetchTabBadges();
     }
   }, [isAdmin]);
+
+  const fetchTabBadges = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("notifications")
+      .select("title")
+      .eq("user_id", user.id)
+      .eq("is_read", false)
+      .eq("link", "/admin");
+    if (data) {
+      const counts: Record<string, number> = {};
+      data.forEach((n) => {
+        if (n.title.includes("inscrição em curso")) counts.enrollments = (counts.enrollments || 0) + 1;
+        else if (n.title.includes("candidatura a bolsa")) counts.scholarships = (counts.scholarships || 0) + 1;
+        else if (n.title.includes("usuário registrado")) counts.users = (counts.users || 0) + 1;
+        else if (n.title.includes("mensagem")) counts.messages = (counts.messages || 0) + 1;
+      });
+      setTabBadges(counts);
+    }
+  };
 
   const fetchStats = async () => {
     const { data: usersCount } = await supabase.rpc("get_registered_users_count");
@@ -305,7 +327,7 @@ const Admin = () => {
             <span className="text-lg font-bold text-white">Painel Admin</span>
           </div>
           <div className="flex items-center gap-3">
-            {user && <NotificationBell userId={user.id} />}
+            {user && <NotificationBell userId={user.id} className="text-slate-200 hover:text-white hover:bg-slate-700" />}
             <Link to="/">
               <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-700">
                 <Home className="h-4 w-4 mr-2" />
@@ -377,21 +399,25 @@ const Admin = () => {
                   <span className="hidden sm:inline">Nova Publicação</span>
                   <span className="sm:hidden">Novo</span>
                 </TabsTrigger>
-                <TabsTrigger value="enrollments" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <TabsTrigger value="enrollments" className="relative flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <BookOpen className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Cursos</span>
+                  {tabBadges.enrollments > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold">{tabBadges.enrollments > 9 ? "9+" : tabBadges.enrollments}</span>}
                 </TabsTrigger>
-                <TabsTrigger value="scholarships" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <TabsTrigger value="scholarships" className="relative flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <GraduationCap className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Bolsas</span>
+                  {tabBadges.scholarships > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold">{tabBadges.scholarships > 9 ? "9+" : tabBadges.scholarships}</span>}
                 </TabsTrigger>
-                <TabsTrigger value="users" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <TabsTrigger value="users" className="relative flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <Users className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Usuários</span>
+                  {tabBadges.users > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold">{tabBadges.users > 9 ? "9+" : tabBadges.users}</span>}
                 </TabsTrigger>
-                <TabsTrigger value="messages" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
+                <TabsTrigger value="messages" className="relative flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <MessageSquare className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Mensagens</span>
+                  {tabBadges.messages > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center font-bold">{tabBadges.messages > 9 ? "9+" : tabBadges.messages}</span>}
                 </TabsTrigger>
                 <TabsTrigger value="payment" className="flex items-center gap-1.5 text-xs md:text-sm whitespace-nowrap data-[state=active]:bg-amber-500 data-[state=active]:text-slate-900">
                   <Banknote className="h-4 w-4 shrink-0" />
