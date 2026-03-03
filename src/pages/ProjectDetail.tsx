@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, ArrowLeft, Target, Users, Calendar, Star, Heart, TrendingUp, Banknote, MessageSquare, Image, Copy, CheckCircle2 } from "lucide-react";
+import { Loader2, ArrowLeft, Target, Users, Calendar, Star, Heart, TrendingUp, Banknote, MessageSquare, Image, Copy, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -31,6 +31,7 @@ const ProjectDetail = () => {
   const [updates, setUpdates] = useState<any[]>([]);
   const [ratings, setRatings] = useState<any[]>([]);
   const [supports, setSupports] = useState<any[]>([]);
+  const [mySupports, setMySupports] = useState<any[]>([]);
   const [paymentSettings, setPaymentSettings] = useState<any>(null);
   const [showPaymentInfo, setShowPaymentInfo] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
@@ -56,6 +57,12 @@ const ProjectDetail = () => {
       fetchPaymentSettings();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (user && supports.length > 0) {
+      setMySupports(supports.filter(s => s.supporter_id === user.id));
+    }
+  }, [user, supports]);
 
   const fetchPaymentSettings = async () => {
     const { data } = await supabase.from("payment_settings").select("setting_key, setting_value");
@@ -108,15 +115,16 @@ const ProjectDetail = () => {
     if (!user) { navigate("/auth"); return; }
     const minAmt = Number(project?.min_support_amount || 0);
     const maxAmt = Number(project?.max_support_amount || 0);
-    if (!amount || Number(amount) <= 0) {
+    const amtVal = Number(amount);
+    if (!amount || amtVal <= 0) {
       toast({ title: "Valor inválido", variant: "destructive" });
       return;
     }
-    if (minAmt > 0 && Number(amount) < minAmt) {
+    if (minAmt > 0 && amtVal < minAmt) {
       toast({ title: "Valor abaixo do mínimo", description: `O mínimo é ${formatMoney(minAmt)}`, variant: "destructive" });
       return;
     }
-    if (maxAmt > 0 && Number(amount) > maxAmt) {
+    if (maxAmt > 0 && amtVal > maxAmt) {
       toast({ title: "Valor acima do máximo", description: `O máximo é ${formatMoney(maxAmt)}`, variant: "destructive" });
       return;
     }
@@ -125,15 +133,16 @@ const ProjectDetail = () => {
     const { error } = await supabase.from("project_supports").insert({
       project_id: id!,
       supporter_id: user.id,
-      amount: Number(amount),
+      amount: amtVal,
       support_type: supportType,
       partnership_percent: supportType === "partnership" ? Number(partnershipPercent) : 0,
+      payment_status: "pending",
     });
 
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Apoio registado!", description: "Agora faça o pagamento usando os dados abaixo." });
+      toast({ title: "Apoio registado!", description: "Faça o pagamento e aguarde a confirmação do administrador." });
       setShowSupportDialog(false);
       setShowPaymentInfo(true);
       setAmount("");
@@ -168,7 +177,6 @@ const ProjectDetail = () => {
 
     if (error) {
       if (error.message.includes("duplicate") || error.message.includes("unique")) {
-        // Update existing
         await supabase.from("project_ratings").update({ rating: myRating, comment: myComment || null })
           .eq("project_id", id!).eq("user_id", user.id);
         toast({ title: "Avaliação atualizada!" });
@@ -192,6 +200,21 @@ const ProjectDetail = () => {
   const availablePartnership = project
     ? Number(project.max_partnership_percent || 0) - Number(project.allocated_partnership_percent || 0)
     : 0;
+
+  const coveragePercent = project && Number(project.financial_goal) > 0
+    ? ((Number(project.current_amount) / Number(project.financial_goal)) * 100).toFixed(1)
+    : "0";
+
+  const getPaymentStatusBadge = (status: string) => {
+    switch (status) {
+      case "confirmed":
+        return <Badge className="bg-green-500/10 text-green-600 border-green-500/30"><CheckCircle2 className="h-3 w-3 mr-1" />Confirmado</Badge>;
+      case "pending":
+        return <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/30"><Clock className="h-3 w-3 mr-1" />Aguardando</Badge>;
+      default:
+        return <Badge variant="destructive"><AlertCircle className="h-3 w-3 mr-1" />Rejeitado</Badge>;
+    }
+  };
 
   if (loading) {
     return (
@@ -253,6 +276,52 @@ const ProjectDetail = () => {
 
             <Separator />
             <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">{project.description}</div>
+
+            {/* My Supports Status */}
+            {user && mySupports.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Banknote className="h-5 w-5 text-primary" />Meus Apoios
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {mySupports.map((s) => {
+                      const supportCoverage = Number(project.financial_goal) > 0
+                        ? ((Number(s.amount) / Number(project.financial_goal)) * 100).toFixed(1)
+                        : "0";
+                      return (
+                        <div key={s.id} className="p-3 border border-border rounded-lg space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-foreground">{formatMoney(Number(s.amount))}</span>
+                            {getPaymentStatusBadge(s.payment_status)}
+                          </div>
+                          <div className="flex items-center justify-between text-sm text-muted-foreground">
+                            <span>{s.support_type === "donation" ? "Doação" : `Participação: ${s.partnership_percent}%`}</span>
+                            <span>{format(new Date(s.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                          </div>
+                          {s.payment_status === "confirmed" && (
+                            <div className="bg-green-500/10 border border-green-500/20 rounded-md p-2">
+                              <p className="text-xs text-green-700 font-medium">
+                                ✅ Pagamento confirmado — Cobriu {supportCoverage}% da meta do projeto
+                              </p>
+                            </div>
+                          )}
+                          {s.payment_status === "pending" && (
+                            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-md p-2">
+                              <p className="text-xs text-yellow-700">
+                                ⏳ Aguardando confirmação do administrador
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Updates */}
             <Card>
@@ -346,12 +415,15 @@ const ProjectDetail = () => {
                     <span className="font-bold text-primary">{formatMoney(Number(project.current_amount))}</span>
                   </div>
                   <Progress value={getProgress(Number(project.current_amount), Number(project.financial_goal))} className="h-3" />
-                  <p className="text-xs text-muted-foreground text-right">Meta: {formatMoney(Number(project.financial_goal))}</p>
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{coveragePercent}% coberto</span>
+                    <span>Meta: {formatMoney(Number(project.financial_goal))}</span>
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Apoiadores</span>
-                  <span className="font-semibold">{supports.length}</span>
+                  <span className="font-semibold">{supports.filter(s => s.payment_status === "confirmed").length}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Avaliação Média</span>
@@ -396,14 +468,14 @@ const ProjectDetail = () => {
                       )}
 
                       <div className="space-y-2">
-                        <Label>Valor (MZN)</Label>
+                        <Label>Montante (MZN)</Label>
                         <Input
                           type="number"
                           min={Number(project.min_support_amount || 1)}
                           max={project.max_support_amount ? Number(project.max_support_amount) : undefined}
                           value={amount}
                           onChange={(e) => setAmount(e.target.value)}
-                          placeholder={`Ex: ${Number(project.min_support_amount || 5000)}`}
+                          placeholder={`Insira o montante`}
                         />
                         <p className="text-xs text-muted-foreground">
                           {project.min_support_amount && `Mín: ${formatMoney(Number(project.min_support_amount))}`}
@@ -429,8 +501,11 @@ const ProjectDetail = () => {
 
                       <Button onClick={handleSupport} disabled={submittingSupport} className="w-full">
                         {submittingSupport ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Banknote className="h-4 w-4 mr-2" />}
-                        Confirmar Apoio
+                        Pagar Agora
                       </Button>
+                      <p className="text-xs text-muted-foreground text-center">
+                        Ao clicar em "Pagar Agora", os dados de pagamento serão exibidos. O pagamento será confirmado pelo administrador.
+                      </p>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -446,9 +521,12 @@ const ProjectDetail = () => {
                     </DialogHeader>
                     {paymentSettings && (
                       <div className="space-y-4">
-                        <p className="text-sm text-muted-foreground">
-                          Apoio registado com sucesso! Faça o pagamento usando um dos métodos abaixo:
-                        </p>
+                        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-md p-3">
+                          <p className="text-sm text-yellow-700 font-medium flex items-center gap-2">
+                            <Clock className="h-4 w-4" />
+                            Aguardando pagamento — Transfira o valor e aguarde a confirmação do admin
+                          </p>
+                        </div>
 
                         <div className="rounded-lg border border-border p-3 space-y-2">
                           <p className="text-sm font-semibold">Transferência Bancária (IBAN)</p>
@@ -457,7 +535,7 @@ const ProjectDetail = () => {
                               <p className="text-sm text-muted-foreground">Nome: {paymentSettings.iban_name}</p>
                               <p className="text-sm font-mono">{paymentSettings.iban}</p>
                             </div>
-                            <Button variant="ghost" size="sm" onClick={() => handleCopy(paymentSettings.iban, "IBAN")}>
+                            <Button variant="ghost" size="sm" onClick={() => handleCopy(paymentSettings.iban || "", "IBAN")}>
                               {copied === "IBAN" ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                             </Button>
                           </div>
@@ -470,7 +548,7 @@ const ProjectDetail = () => {
                               <p className="text-sm text-muted-foreground">Nome: {paymentSettings.mpesa_name}</p>
                               <p className="text-sm font-mono">{paymentSettings.mpesa_number}</p>
                             </div>
-                            <Button variant="ghost" size="sm" onClick={() => handleCopy(paymentSettings.mpesa_number, "M-Pesa")}>
+                            <Button variant="ghost" size="sm" onClick={() => handleCopy(paymentSettings.mpesa_number || "", "M-Pesa")}>
                               {copied === "M-Pesa" ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                             </Button>
                           </div>
@@ -494,21 +572,29 @@ const ProjectDetail = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {supports.length === 0 ? (
+                {supports.filter(s => s.payment_status === "confirmed").length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center py-4">Seja o primeiro a apoiar!</p>
                 ) : (
                   <div className="space-y-3">
-                    {supports.slice(0, 10).map((s) => (
-                      <div key={s.id} className="flex items-center justify-between text-sm">
-                        <span className="text-foreground">{(s.profiles as any)?.full_name || "Anónimo"}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-primary">{formatMoney(Number(s.amount))}</span>
-                          <Badge variant="outline" className="text-xs">
-                            {s.support_type === "donation" ? "Doação" : `${s.partnership_percent}%`}
-                          </Badge>
+                    {supports.filter(s => s.payment_status === "confirmed").slice(0, 10).map((s) => {
+                      const sCoverage = Number(project.financial_goal) > 0
+                        ? ((Number(s.amount) / Number(project.financial_goal)) * 100).toFixed(1)
+                        : "0";
+                      return (
+                        <div key={s.id} className="flex items-center justify-between text-sm">
+                          <div>
+                            <span className="text-foreground">{(s.profiles as any)?.full_name || "Anónimo"}</span>
+                            <p className="text-xs text-muted-foreground">{sCoverage}% da meta</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-primary">{formatMoney(Number(s.amount))}</span>
+                            <Badge variant="outline" className="text-xs">
+                              {s.support_type === "donation" ? "Doação" : `${s.partnership_percent}%`}
+                            </Badge>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
