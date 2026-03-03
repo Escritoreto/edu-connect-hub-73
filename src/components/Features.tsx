@@ -9,7 +9,7 @@ const features = [
     title: "Bolsas de Estudo Globais",
     description: "Acesse milhares de oportunidades de bolsas em universidades de todo o mundo. Filtros avançados por país, área e nível.",
     link: "/scholarships",
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c476?w=600&q=80",
+    image: "/images/scholarship-canada.jpg",
   },
   {
     icon: BookOpen,
