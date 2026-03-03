@@ -40,12 +40,24 @@ const SiteSettingsManager = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const promises = Object.entries(settings).map(([key, value]) =>
-        supabase
+      const promises = Object.entries(settings).map(async ([key, value]) => {
+        const { data } = await supabase
           .from("site_settings")
-          .update({ setting_value: value, updated_at: new Date().toISOString() })
+          .select("id")
           .eq("setting_key", key)
-      );
+          .maybeSingle();
+
+        if (data) {
+          return supabase
+            .from("site_settings")
+            .update({ setting_value: value, updated_at: new Date().toISOString() })
+            .eq("setting_key", key);
+        } else {
+          return supabase
+            .from("site_settings")
+            .insert({ setting_key: key, setting_value: value });
+        }
+      });
       await Promise.all(promises);
       toast({ title: "Definições salvas!", description: "As definições do site foram atualizadas." });
     } catch (error: any) {
@@ -173,11 +185,19 @@ const SiteSettingsManager = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-slate-300">Twitter / X</Label>
+              <Label className="text-slate-300">YouTube</Label>
               <Input
-                value={settings.twitter || ""}
-                onChange={(e) => updateSetting("twitter", e.target.value)}
-                placeholder="https://x.com/upmentor"
+                value={settings.youtube || ""}
+                onChange={(e) => updateSetting("youtube", e.target.value)}
+                placeholder="https://youtube.com/@upmentor"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-slate-300">TikTok</Label>
+              <Input
+                value={settings.tiktok || ""}
+                onChange={(e) => updateSetting("tiktok", e.target.value)}
+                placeholder="https://tiktok.com/@upmentor"
               />
             </div>
           </TabsContent>
