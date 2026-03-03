@@ -183,7 +183,7 @@ const articles = [
     category: "Finanças",
     date: "10 de Janeiro, 2025",
     readTime: "10 min",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+    image: "/assets/blog-financial-education.jpg",
     content: `
       <h2>Por Que Educação Financeira é Essencial</h2>
       <p>Gerenciar bem suas finanças durante os estudos pode fazer a diferença.</p>
@@ -198,7 +198,7 @@ const articles = [
     category: "Idiomas",
     date: "8 de Janeiro, 2025",
     readTime: "12 min",
-    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800",
+    image: "/assets/blog-english-flags.jpg",
     content: `
       <h2>IELTS vs TOEFL: Qual Escolher?</h2>
       <p>Entenda as diferenças entre os dois exames mais populares de proficiência em inglês.</p>
