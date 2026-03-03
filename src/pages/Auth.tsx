@@ -44,11 +44,15 @@ const Auth = () => {
     setIsLoading(false);
   };
 
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     const { error } = await signUp(signupEmail, signupPassword, signupName);
-    if (!error) navigate("/");
+    if (!error) {
+      setShowVerificationMessage(true);
+    }
     setIsLoading(false);
   };
 
