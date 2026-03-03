@@ -1,4 +1,4 @@
-import { CVLanguage } from "./cvTranslations";
+import type { CVLanguage } from "./cvTranslations";
 
 type SuggestionsSet = {
   professionalSummaries: string[];
