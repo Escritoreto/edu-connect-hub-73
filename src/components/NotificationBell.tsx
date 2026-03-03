@@ -17,7 +17,7 @@ interface Notification {
   created_at: string;
 }
 
-export const NotificationBell = ({ userId }: { userId: string }) => {
+export const NotificationBell = ({ userId, className }: { userId: string; className?: string }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
@@ -75,7 +75,7 @@ export const NotificationBell = ({ userId }: { userId: string }) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
+        <Button variant="ghost" size="icon" className={`relative ${className || ""}`}>
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
