@@ -50,6 +50,9 @@ const Header = () => {
           <Link to="/motivation-letter" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Carta de Motivação
           </Link>
+          <Link to="/projects" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
+            Projetos
+          </Link>
           <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Blog
           </Link>
@@ -124,6 +127,9 @@ const Header = () => {
             </Link>
             <Link to="/motivation-letter" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
               Carta de Motivação
+            </Link>
+            <Link to="/projects" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
+              Projetos
             </Link>
             <Link to="/blog" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2" onClick={() => setIsMenuOpen(false)}>
               Blog
