@@ -326,6 +326,8 @@ export type Database = {
           image_url: string | null
           last_update_at: string | null
           max_partnership_percent: number | null
+          max_support_amount: number | null
+          min_support_amount: number | null
           short_description: string | null
           status: string
           support_type: string
@@ -344,6 +346,8 @@ export type Database = {
           image_url?: string | null
           last_update_at?: string | null
           max_partnership_percent?: number | null
+          max_support_amount?: number | null
+          min_support_amount?: number | null
           short_description?: string | null
           status?: string
           support_type?: string
@@ -362,6 +366,8 @@ export type Database = {
           image_url?: string | null
           last_update_at?: string | null
           max_partnership_percent?: number | null
+          max_support_amount?: number | null
+          min_support_amount?: number | null
           short_description?: string | null
           status?: string
           support_type?: string

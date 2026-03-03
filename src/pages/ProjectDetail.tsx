@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, ArrowLeft, Target, Users, Calendar, Star, Heart, TrendingUp, Banknote, MessageSquare, Image } from "lucide-react";
+import { Loader2, ArrowLeft, Target, Users, Calendar, Star, Heart, TrendingUp, Banknote, MessageSquare, Image, Copy, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -31,6 +31,9 @@ const ProjectDetail = () => {
   const [updates, setUpdates] = useState<any[]>([]);
   const [ratings, setRatings] = useState<any[]>([]);
   const [supports, setSupports] = useState<any[]>([]);
+  const [paymentSettings, setPaymentSettings] = useState<any>(null);
+  const [showPaymentInfo, setShowPaymentInfo] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   // Support form
   const [showSupportDialog, setShowSupportDialog] = useState(false);
@@ -50,8 +53,18 @@ const ProjectDetail = () => {
       fetchUpdates();
       fetchRatings();
       fetchSupports();
+      fetchPaymentSettings();
     }
   }, [id]);
+
+  const fetchPaymentSettings = async () => {
+    const { data } = await supabase.from("payment_settings").select("setting_key, setting_value");
+    if (data) {
+      const s: any = {};
+      data.forEach((row: any) => { s[row.setting_key] = row.setting_value; });
+      setPaymentSettings(s);
+    }
+  };
 
   const fetchProject = async () => {
     setLoading(true);
@@ -93,8 +106,18 @@ const ProjectDetail = () => {
 
   const handleSupport = async () => {
     if (!user) { navigate("/auth"); return; }
+    const minAmt = Number(project?.min_support_amount || 0);
+    const maxAmt = Number(project?.max_support_amount || 0);
     if (!amount || Number(amount) <= 0) {
       toast({ title: "Valor inválido", variant: "destructive" });
+      return;
+    }
+    if (minAmt > 0 && Number(amount) < minAmt) {
+      toast({ title: "Valor abaixo do mínimo", description: `O mínimo é ${formatMoney(minAmt)}`, variant: "destructive" });
+      return;
+    }
+    if (maxAmt > 0 && Number(amount) > maxAmt) {
+      toast({ title: "Valor acima do máximo", description: `O máximo é ${formatMoney(maxAmt)}`, variant: "destructive" });
       return;
     }
 
@@ -110,14 +133,22 @@ const ProjectDetail = () => {
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Apoio registado!", description: "O criador do projeto será notificado." });
+      toast({ title: "Apoio registado!", description: "Agora faça o pagamento usando os dados abaixo." });
       setShowSupportDialog(false);
+      setShowPaymentInfo(true);
       setAmount("");
       setPartnershipPercent("");
       fetchSupports();
       fetchProject();
     }
     setSubmittingSupport(false);
+  };
+
+  const handleCopy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(label);
+    toast({ title: "Copiado!", description: `${label} copiado para a área de transferência` });
+    setTimeout(() => setCopied(null), 2000);
   };
 
   const handleRating = async () => {
@@ -366,7 +397,19 @@ const ProjectDetail = () => {
 
                       <div className="space-y-2">
                         <Label>Valor (MZN)</Label>
-                        <Input type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Ex: 5000" />
+                        <Input
+                          type="number"
+                          min={Number(project.min_support_amount || 1)}
+                          max={project.max_support_amount ? Number(project.max_support_amount) : undefined}
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                          placeholder={`Ex: ${Number(project.min_support_amount || 5000)}`}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {project.min_support_amount && `Mín: ${formatMoney(Number(project.min_support_amount))}`}
+                          {project.min_support_amount && project.max_support_amount && " • "}
+                          {project.max_support_amount && `Máx: ${formatMoney(Number(project.max_support_amount))}`}
+                        </p>
                       </div>
 
                       {supportType === "partnership" && (
@@ -389,6 +432,55 @@ const ProjectDetail = () => {
                         Confirmar Apoio
                       </Button>
                     </div>
+                  </DialogContent>
+                </Dialog>
+
+                {/* Payment Info Dialog */}
+                <Dialog open={showPaymentInfo} onOpenChange={setShowPaymentInfo}>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <Banknote className="h-5 w-5 text-primary" />
+                        Dados de Pagamento
+                      </DialogTitle>
+                    </DialogHeader>
+                    {paymentSettings && (
+                      <div className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                          Apoio registado com sucesso! Faça o pagamento usando um dos métodos abaixo:
+                        </p>
+
+                        <div className="rounded-lg border border-border p-3 space-y-2">
+                          <p className="text-sm font-semibold">Transferência Bancária (IBAN)</p>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-muted-foreground">Nome: {paymentSettings.iban_name}</p>
+                              <p className="text-sm font-mono">{paymentSettings.iban}</p>
+                            </div>
+                            <Button variant="ghost" size="sm" onClick={() => handleCopy(paymentSettings.iban, "IBAN")}>
+                              {copied === "IBAN" ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="rounded-lg border border-border p-3 space-y-2">
+                          <p className="text-sm font-semibold">M-Pesa</p>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-muted-foreground">Nome: {paymentSettings.mpesa_name}</p>
+                              <p className="text-sm font-mono">{paymentSettings.mpesa_number}</p>
+                            </div>
+                            <Button variant="ghost" size="sm" onClick={() => handleCopy(paymentSettings.mpesa_number, "M-Pesa")}>
+                              {copied === "M-Pesa" ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                            </Button>
+                          </div>
+                        </div>
+
+                        {paymentSettings.payment_note && (
+                          <p className="text-xs text-muted-foreground italic">{paymentSettings.payment_note}</p>
+                        )}
+                      </div>
+                    )}
                   </DialogContent>
                 </Dialog>
               </CardContent>

@@ -27,7 +27,7 @@ const Index = () => {
         supabase.from("publications").select("*").eq("category", "scholarship").eq("is_featured", true).order("created_at", { ascending: false }).limit(6),
         supabase.from("publications").select("*").eq("category", "university").order("created_at", { ascending: false }).limit(6),
         supabase.from("publications").select("*").eq("category", "course").order("created_at", { ascending: false }).limit(6),
-        supabase.from("projects").select("*").eq("status", "active").order("created_at", { ascending: false }).limit(6),
+        supabase.from("projects").select("*").eq("status", "approved").order("created_at", { ascending: false }).limit(6),
         supabase.from("site_reviews").select("*, profiles:user_id (full_name)").eq("status", "approved").order("created_at", { ascending: false }).limit(6),
       ]);
       if (scholarships.data) setFeaturedScholarships(scholarships.data);

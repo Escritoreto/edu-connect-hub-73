@@ -27,6 +27,8 @@ const ProjectNew = () => {
   const [financialGoal, setFinancialGoal] = useState("");
   const [supportType, setSupportType] = useState("both");
   const [maxPartnership, setMaxPartnership] = useState("");
+  const [minAmount, setMinAmount] = useState("");
+  const [maxAmount, setMaxAmount] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -76,6 +78,8 @@ const ProjectNew = () => {
         financial_goal: Number(financialGoal),
         support_type: supportType,
         max_partnership_percent: supportType !== "donation" ? Number(maxPartnership) || 0 : 0,
+        min_support_amount: minAmount ? Number(minAmount) : 100,
+        max_support_amount: maxAmount ? Number(maxAmount) : null,
         image_url: imageUrl,
       });
 
@@ -138,6 +142,19 @@ const ProjectNew = () => {
                 <div className="space-y-2">
                   <Label htmlFor="goal">Meta Financeira (MZN) *</Label>
                   <Input id="goal" type="number" min="1" value={financialGoal} onChange={(e) => setFinancialGoal(e.target.value)} placeholder="Ex: 50000" />
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="minAmount">Apoio Mínimo (MZN)</Label>
+                  <Input id="minAmount" type="number" min="1" value={minAmount} onChange={(e) => setMinAmount(e.target.value)} placeholder="Ex: 500" />
+                  <p className="text-xs text-muted-foreground">Valor mínimo que cada apoiador pode contribuir</p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="maxAmount">Apoio Máximo (MZN)</Label>
+                  <Input id="maxAmount" type="number" min="1" value={maxAmount} onChange={(e) => setMaxAmount(e.target.value)} placeholder="Ex: 100000" />
+                  <p className="text-xs text-muted-foreground">Valor máximo que cada apoiador pode contribuir</p>
                 </div>
               </div>
 
