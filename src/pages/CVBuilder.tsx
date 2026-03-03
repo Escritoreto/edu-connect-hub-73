@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CVData, CVTemplate, Education, Experience, Language, Certification, Project } from "@/types/cv";
 import { languageOptions } from "@/lib/cvTranslations";
+import { cvFormTranslations } from "@/lib/cvFormTranslations";
 import { TemplateGallery } from "@/components/cv/TemplateGallery";
 import { CVPreview } from "@/components/cv/CVPreview";
 import { PDFPreview } from "@/components/cv/PDFPreview";
@@ -61,10 +62,12 @@ const CVBuilder = () => {
     fontSize: "medium"
   });
   
+  const t = cvFormTranslations[cvData.cvLanguage];
+
   const steps = [
-    { number: 1, title: "Dados Pessoais", description: "Informações básicas" },
-    { number: 2, title: "Escolher Modelo", description: "Selecione o design" },
-    { number: 3, title: "Visualizar e Baixar", description: "Finalize seu CV" }
+    { number: 1, title: t.personalData, description: t.basicInfo },
+    { number: 2, title: t.chooseTemplate, description: t.selectDesign },
+    { number: 3, title: t.previewDownload, description: t.reviewAndDownload }
   ];
 
   const availableTemplates: CVTemplate[] = [
@@ -209,70 +212,11 @@ const CVBuilder = () => {
     { code: "+84", country: "Vietnã", flag: "🇻🇳" },
   ];
 
-  const professionalSummaries = [
-    "Profissional dedicado com sólida experiência em [sua área], buscando contribuir com habilidades analíticas e criativas para alcançar resultados excepcionais.",
-    "Especialista em [área de atuação] com histórico comprovado de sucesso em projetos desafiadores e trabalho em equipe.",
-    "Motivado(a) e orientado(a) a resultados, com forte capacidade de adaptação e aprendizado rápido em ambientes dinâmicos.",
-    "Profissional experiente com foco em inovação, eficiência e excelência no atendimento ao cliente.",
-    "Recém-formado(a) entusiasmado(a) em aplicar conhecimentos acadêmicos em um ambiente profissional desafiador."
-  ];
-
-  const academicDegrees = [
-    "Ensino Médio Completo",
-    "Técnico em",
-    "Tecnólogo em",
-    "Bacharelado em",
-    "Licenciatura em",
-    "MBA em",
-    "Mestrado em",
-    "Doutorado em",
-    "Pós-Doutorado em"
-  ];
-
-  const jobTitles = [
-    "Analista",
-    "Assistente",
-    "Coordenador(a)",
-    "Gerente",
-    "Supervisor(a)",
-    "Desenvolvedor(a)",
-    "Designer",
-    "Consultor(a)",
-    "Especialista",
-    "Estagiário(a)",
-    "Trainee"
-  ];
-
-  const responsibilities = [
-    "Gerenciamento de projetos e equipes multidisciplinares",
-    "Análise de dados e elaboração de relatórios gerenciais",
-    "Desenvolvimento e implementação de estratégias de marketing",
-    "Atendimento e relacionamento com clientes",
-    "Controle de qualidade e processos operacionais",
-    "Planejamento financeiro e orçamentário",
-    "Criação de conteúdo e gestão de redes sociais",
-    "Suporte técnico e resolução de problemas",
-    "Treinamento e desenvolvimento de equipes",
-    "Pesquisa e desenvolvimento de novos produtos"
-  ];
-
-  const skillsSuggestions = [
-    "Excel Avançado",
-    "Power BI",
-    "Python",
-    "JavaScript",
-    "Marketing Digital",
-    "SEO/SEM",
-    "Gestão de Projetos",
-    "Photoshop",
-    "AutoCAD",
-    "Inglês Fluente",
-    "Espanhol Intermediário",
-    "Comunicação Efetiva",
-    "Liderança",
-    "Trabalho em Equipe",
-    "Resolução de Problemas"
-  ];
+  const professionalSummaries = t.professionalSummaries;
+  const academicDegrees = t.academicDegrees;
+  const jobTitles = t.jobTitles;
+  const responsibilities = t.responsibilities;
+  const skillsSuggestions = t.skillSuggestions;
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -608,7 +552,7 @@ const CVBuilder = () => {
                   <Card className="p-8 shadow-lg">
                     <div className="flex items-center gap-3 mb-8">
                       <FileText className="h-8 w-8 text-primary" />
-                      <h2 className="text-3xl font-bold">Dados Pessoais</h2>
+                      <h2 className="text-3xl font-bold">{t.personalData}</h2>
                     </div>
 
                     <div className="space-y-8">
@@ -631,7 +575,7 @@ const CVBuilder = () => {
                         ) : (
                           <label className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-border rounded-full cursor-pointer hover:border-primary transition-colors">
                             <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                            <span className="text-xs text-muted-foreground">Adicionar Foto</span>
+                            <span className="text-xs text-muted-foreground">{t.addPhoto}</span>
                             <input
                               type="file"
                               accept="image/*"
@@ -645,35 +589,35 @@ const CVBuilder = () => {
                       {/* Basic Info */}
                       <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <Label htmlFor="firstName">Nome *</Label>
+                          <Label htmlFor="firstName">{t.firstName} *</Label>
                           <Input 
                             id="firstName" 
-                            placeholder="Seu nome" 
+                            placeholder={t.firstNamePlaceholder}
                             value={cvData.firstName}
                             onChange={(e) => updateField('firstName', e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="lastName">Sobrenome *</Label>
+                          <Label htmlFor="lastName">{t.lastName} *</Label>
                           <Input 
                             id="lastName" 
-                            placeholder="Seu sobrenome" 
+                            placeholder={t.lastNamePlaceholder}
                             value={cvData.lastName}
                             onChange={(e) => updateField('lastName', e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="email">E-mail</Label>
+                          <Label htmlFor="email">{t.emailLabel}</Label>
                           <Input 
                             id="email" 
                             type="email" 
-                            placeholder="seu@email.com" 
+                            placeholder={t.emailPlaceholder}
                             value={cvData.email}
                             onChange={(e) => updateField('email', e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="phone">Telefone</Label>
+                          <Label htmlFor="phone">{t.phoneLabel}</Label>
                           <div className="flex gap-2">
                             <Select value={cvData.countryCode} onValueChange={(val) => updateField('countryCode', val)}>
                               <SelectTrigger className="w-[140px]">
@@ -687,26 +631,20 @@ const CVBuilder = () => {
                                 ))}
                               </SelectContent>
                             </Select>
-                            <Input 
-                              id="phone" 
-                              placeholder="(11) 99999-9999" 
-                              className="flex-1" 
-                              value={cvData.phone}
-                              onChange={(e) => updateField('phone', e.target.value)}
-                            />
+                            <Input id="phone" placeholder={t.phonePlaceholder} className="flex-1" value={cvData.phone} onChange={(e) => updateField('phone', e.target.value)} />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="location">Localização</Label>
+                          <Label htmlFor="location">{t.locationLabel}</Label>
                           <Input 
                             id="location" 
-                            placeholder="Cidade, Estado, País" 
+                            placeholder={t.locationPlaceholder}
                             value={cvData.location}
                             onChange={(e) => updateField('location', e.target.value)}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="cvLanguage">Idioma do CV</Label>
+                          <Label htmlFor="cvLanguage">{t.cvLanguageLabel}</Label>
                           <Select value={cvData.cvLanguage} onValueChange={(val: "pt" | "en" | "fr" | "zh") => updateField('cvLanguage', val)}>
                             <SelectTrigger>
                               <SelectValue />
@@ -721,15 +659,15 @@ const CVBuilder = () => {
                           </Select>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="fontSize">Tamanho da Fonte</Label>
+                          <Label htmlFor="fontSize">{t.fontSizeLabel}</Label>
                           <Select value={cvData.fontSize} onValueChange={(val: "small" | "medium" | "large") => updateField('fontSize', val)}>
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="small">Pequeno</SelectItem>
-                              <SelectItem value="medium">Médio</SelectItem>
-                              <SelectItem value="large">Grande</SelectItem>
+                              <SelectItem value="small">{t.fontSmall}</SelectItem>
+                              <SelectItem value="medium">{t.fontMedium}</SelectItem>
+                              <SelectItem value="large">{t.fontLarge}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -737,10 +675,10 @@ const CVBuilder = () => {
 
                       {/* Professional Summary */}
                       <div className="space-y-2">
-                        <Label htmlFor="summary">Resumo Profissional</Label>
+                        <Label htmlFor="summary">{t.professionalSummary}</Label>
                         <Select onValueChange={(val) => updateField('summary', val)}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Selecione uma sugestão ou escreva o seu" />
+                            <SelectValue placeholder={t.selectSuggestionOrWrite} />
                           </SelectTrigger>
                           <SelectContent>
                             {professionalSummaries.map((summary, idx) => (
@@ -752,7 +690,7 @@ const CVBuilder = () => {
                         </Select>
                         <Textarea 
                           id="summary" 
-                          placeholder="Ou escreva seu próprio resumo profissional..."
+                          placeholder={t.writeOwnSummary}
                           rows={4}
                           value={cvData.summary}
                           onChange={(e) => updateField('summary', e.target.value)}
@@ -762,17 +700,17 @@ const CVBuilder = () => {
                       {/* Education */}
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Formação Acadêmica</h3>
+                          <h3 className="text-lg font-semibold">{t.academicEducation}</h3>
                           <Button type="button" onClick={addEducation} size="sm" variant="outline">
                             <Plus className="h-4 w-4 mr-2" />
-                            Adicionar
+                            {t.add}
                           </Button>
                         </div>
                         
                         {cvData.education.map((edu, index) => (
                           <Card key={edu.id} className="p-4 border-2">
                             <div className="flex items-center justify-between mb-3">
-                              <h4 className="font-semibold text-sm">Formação {index + 1}</h4>
+                              <h4 className="font-semibold text-sm">{t.formation} {index + 1}</h4>
                               {cvData.education.length > 1 && (
                                 <Button 
                                   type="button" 
@@ -787,10 +725,10 @@ const CVBuilder = () => {
                             </div>
                             <div className="grid md:grid-cols-2 gap-4">
                               <div className="space-y-2">
-                                <Label>Grau</Label>
+                                <Label>{t.degree}</Label>
                                 <Select onValueChange={(val) => updateEducation(edu.id, 'degree', val)}>
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Selecione o grau" />
+                                    <SelectValue placeholder={t.selectDegree} />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {academicDegrees.map((degree, idx) => (
@@ -801,15 +739,15 @@ const CVBuilder = () => {
                                   </SelectContent>
                                 </Select>
                                 <Input 
-                                  placeholder="Ou digite o grau acadêmico" 
+                                  placeholder={t.typeDegree} 
                                   value={edu.degree}
                                   onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
                                 />
                               </div>
                               <div className="space-y-2">
-                                <Label>Instituição</Label>
+                                <Label>{t.institution}</Label>
                                 <Input 
-                                  placeholder="Nome da universidade" 
+                                  placeholder={t.universityName} 
                                   value={edu.institution}
                                   onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)}
                                 />
@@ -823,7 +761,7 @@ const CVBuilder = () => {
                                 />
                               </div>
                               <div className="space-y-2">
-                                <Label>Data de Conclusão</Label>
+                                <Label>{t.endDate}</Label>
                                 <Input 
                                   type="month" 
                                   value={edu.endDate}
@@ -836,7 +774,7 @@ const CVBuilder = () => {
                         
                         {cvData.education.length === 0 && (
                           <div className="text-center py-8 text-muted-foreground">
-                            <p>Nenhuma formação adicionada. Clique em "Adicionar" para começar.</p>
+                            <p>{t.noEducation}</p>
                           </div>
                         )}
                       </div>
@@ -844,10 +782,10 @@ const CVBuilder = () => {
                       {/* Experience */}
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Experiência Profissional</h3>
+                          <h3 className="text-lg font-semibold">{t.professionalExperience}</h3>
                           <Button type="button" onClick={addExperience} size="sm" variant="outline">
                             <Plus className="h-4 w-4 mr-2" />
-                            Adicionar
+                            {t.add}
                           </Button>
                         </div>
                         
@@ -897,7 +835,7 @@ const CVBuilder = () => {
                                 />
                               </div>
                               <div className="space-y-2">
-                                <Label>Data de Início</Label>
+                                <Label>{t.startDate}</Label>
                                 <Input 
                                   type="month" 
                                   value={exp.startDate}
@@ -905,7 +843,7 @@ const CVBuilder = () => {
                                 />
                               </div>
                               <div className="space-y-2">
-                                <Label>Data de Término</Label>
+                                <Label>{t.endDate}</Label>
                                 <Input 
                                   type="month" 
                                   value={exp.endDate}
@@ -913,10 +851,10 @@ const CVBuilder = () => {
                                 />
                               </div>
                               <div className="space-y-2 md:col-span-2">
-                                <Label>Responsabilidades</Label>
+                                <Label>{t.responsibilitiesLabel}</Label>
                                 <Select onValueChange={(val) => updateExperience(exp.id, 'responsibilities', val)}>
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Selecione uma sugestão" />
+                                    <SelectValue placeholder={t.selectSuggestion} />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {responsibilities.map((resp, idx) => (
@@ -927,7 +865,7 @@ const CVBuilder = () => {
                                   </SelectContent>
                                 </Select>
                                 <Textarea 
-                                  placeholder="Ou descreva suas responsabilidades..."
+                                  placeholder={t.writeResponsibilities}
                                   rows={3}
                                   value={exp.responsibilities}
                                   onChange={(e) => updateExperience(exp.id, 'responsibilities', e.target.value)}
@@ -939,7 +877,7 @@ const CVBuilder = () => {
                         
                         {cvData.experience.length === 0 && (
                           <div className="text-center py-8 text-muted-foreground">
-                            <p>Nenhuma experiência adicionada. Clique em "Adicionar" para começar.</p>
+                            <p>{t.noExperience}</p>
                           </div>
                         )}
                       </div>
@@ -1112,52 +1050,33 @@ const CVBuilder = () => {
                       {/* Projects */}
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold">Projetos (opcional)</h3>
+                          <h3 className="text-lg font-semibold">{t.projectsTitle} ({t.optional})</h3>
                           <Button type="button" onClick={addProject} size="sm" variant="outline">
                             <Plus className="h-4 w-4 mr-2" />
-                            Adicionar
+                            {t.add}
                           </Button>
                         </div>
                         
                         {cvData.projects.map((proj, index) => (
                           <Card key={proj.id} className="p-4 border-2">
                             <div className="flex items-center justify-between mb-3">
-                              <h4 className="font-semibold text-sm">Projeto {index + 1}</h4>
-                              <Button 
-                                type="button" 
-                                onClick={() => removeProject(proj.id)} 
-                                size="sm" 
-                                variant="ghost"
-                                className="text-destructive"
-                              >
+                              <h4 className="font-semibold text-sm">{t.project} {index + 1}</h4>
+                              <Button type="button" onClick={() => removeProject(proj.id)} size="sm" variant="ghost" className="text-destructive">
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
                             <div className="grid md:grid-cols-2 gap-4">
                               <div className="space-y-2">
-                                <Label>Nome do Projeto</Label>
-                                <Input 
-                                  placeholder="Ex: App de Gestão Financeira" 
-                                  value={proj.name}
-                                  onChange={(e) => updateProject(proj.id, 'name', e.target.value)}
-                                />
+                                <Label>{t.projectName}</Label>
+                                <Input placeholder={t.projectNameExample} value={proj.name} onChange={(e) => updateProject(proj.id, 'name', e.target.value)} />
                               </div>
                               <div className="space-y-2">
-                                <Label>Link (opcional)</Label>
-                                <Input 
-                                  placeholder="Ex: github.com/user/project" 
-                                  value={proj.link || ''}
-                                  onChange={(e) => updateProject(proj.id, 'link', e.target.value)}
-                                />
+                                <Label>{t.projectLink} ({t.optional})</Label>
+                                <Input placeholder={t.projectLinkExample} value={proj.link || ''} onChange={(e) => updateProject(proj.id, 'link', e.target.value)} />
                               </div>
                               <div className="space-y-2 md:col-span-2">
-                                <Label>Descrição</Label>
-                                <Textarea 
-                                  placeholder="Descreva o projeto brevemente..."
-                                  rows={2}
-                                  value={proj.description}
-                                  onChange={(e) => updateProject(proj.id, 'description', e.target.value)}
-                                />
+                                <Label>{t.projectDescription}</Label>
+                                <Textarea placeholder={t.projectDescExample} rows={2} value={proj.description} onChange={(e) => updateProject(proj.id, 'description', e.target.value)} />
                               </div>
                             </div>
                           </Card>
@@ -1165,7 +1084,7 @@ const CVBuilder = () => {
                         
                         {cvData.projects.length === 0 && (
                           <div className="text-center py-6 text-muted-foreground text-sm">
-                            <p>Nenhum projeto adicionado.</p>
+                            <p>{t.noProjects}</p>
                           </div>
                         )}
                       </div>
@@ -1173,7 +1092,7 @@ const CVBuilder = () => {
 
                     <div className="flex justify-end mt-8">
                       <Button onClick={handleNextStep} size="lg">
-                        Próximo: Escolher Modelo
+                        {t.nextChooseTemplate}
                         <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                     </div>
@@ -1190,8 +1109,8 @@ const CVBuilder = () => {
                   exit={{ opacity: 0, x: -20 }}
                 >
                   <div className="mb-8 text-center" ref={templateGalleryRef}>
-                    <h2 className="text-3xl font-bold mb-3">Escolha o Modelo do seu CV</h2>
-                    <p className="text-muted-foreground">Selecione o design que melhor representa você</p>
+                    <h2 className="text-3xl font-bold mb-3">{t.chooseTemplateTitle}</h2>
+                    <p className="text-muted-foreground">{t.selectDesign}</p>
                   </div>
 
                   <TemplateGallery 
@@ -1203,10 +1122,10 @@ const CVBuilder = () => {
                   <div className="flex justify-between mt-12" ref={previewButtonRef}>
                     <Button onClick={handlePreviousStep} variant="outline" size="lg">
                       <ArrowLeft className="mr-2 h-5 w-5" />
-                      Voltar
+                      {t.back}
                     </Button>
                     <Button onClick={handleNextStep} size="lg" disabled={!cvData.selectedTemplate}>
-                      Visualizar CV
+                      {t.previewCV}
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </div>
@@ -1222,8 +1141,8 @@ const CVBuilder = () => {
                   exit={{ opacity: 0, x: -20 }}
                 >
                   <div className="mb-8 text-center">
-                    <h2 className="text-3xl font-bold mb-3">Seu Currículo está Pronto!</h2>
-                    <p className="text-muted-foreground">Revise e baixe em PDF</p>
+                    <h2 className="text-3xl font-bold mb-3">{t.cvReady}</h2>
+                    <p className="text-muted-foreground">{t.reviewAndDownload}</p>
                   </div>
 
                   <div className="mb-8">
@@ -1233,16 +1152,16 @@ const CVBuilder = () => {
                   <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <Button onClick={handlePreviousStep} variant="outline" size="lg">
                       <ArrowLeft className="mr-2 h-5 w-5" />
-                      Voltar
+                      {t.back}
                     </Button>
                     <div className="flex gap-4">
                       <Button onClick={() => setCurrentStep(1)} variant="outline" size="lg">
                         <Eye className="mr-2 h-5 w-5" />
-                        Editar Dados
+                        {t.editData}
                       </Button>
                       <Button onClick={handleDownloadPDF} size="lg" className="bg-primary">
                         <Download className="mr-2 h-5 w-5" />
-                        Baixar PDF
+                        {t.downloadPDF}
                       </Button>
                     </div>
                   </div>
