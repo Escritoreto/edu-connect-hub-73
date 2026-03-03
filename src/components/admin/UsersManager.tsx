@@ -82,7 +82,7 @@ export const UsersManager = ({ adminId }: { adminId: string }) => {
       user_id: messageUserId,
       title: "Nova mensagem do Admin",
       message: quickMessage.trim().slice(0, 100),
-      link: "/profile",
+      link: "/profile?tab=messages",
     });
     toast({ title: "Mensagem enviada!" });
     setQuickMessage("");

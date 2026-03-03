@@ -79,7 +79,7 @@ const EnrollmentsManager = () => {
           user_id: enrollment.user_id,
           title: `Inscrição ${statusText}!`,
           message: `A sua inscrição no curso "${courseName}" foi ${statusText}.`,
-          link: "/profile",
+          link: "/profile?tab=courses",
         });
       }
       toast({ title: "Status atualizado!" });
@@ -100,7 +100,7 @@ const EnrollmentsManager = () => {
           user_id: enrollment.user_id,
           title: "Pagamento confirmado!",
           message: `O pagamento do curso "${enrollment.publications?.title}" foi confirmado.`,
-          link: "/profile",
+          link: "/profile?tab=courses",
         });
       }
       toast({ title: "Pagamento aprovado!" });

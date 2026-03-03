@@ -83,7 +83,7 @@ const ScholarshipRequestsManager = () => {
           user_id: request.user_id,
           title: `Solicitação ${statusText}!`,
           message: `A sua solicitação de orientação para "${scholarshipName}" foi ${statusText}.`,
-          link: "/profile",
+          link: "/profile?tab=scholarships",
         });
       }
       toast({ title: "Status atualizado!" });
@@ -104,7 +104,7 @@ const ScholarshipRequestsManager = () => {
           user_id: request.user_id,
           title: "Pagamento confirmado!",
           message: `O pagamento da bolsa "${request.publications?.title}" foi confirmado.`,
-          link: "/profile",
+          link: "/profile?tab=scholarships",
         });
       }
       toast({ title: "Pagamento aprovado!" });
