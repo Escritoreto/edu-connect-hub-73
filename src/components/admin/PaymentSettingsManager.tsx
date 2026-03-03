@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, CreditCard } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const PaymentSettingsManager = () => {
   const { toast } = useToast();
@@ -20,6 +21,7 @@ const PaymentSettingsManager = () => {
     scholarship_price: "",
     currency: "MT",
     payment_note: "",
+    credit_card_enabled: "false",
   });
 
   useEffect(() => {
@@ -48,12 +50,22 @@ const PaymentSettingsManager = () => {
     setIsSaving(true);
     try {
       for (const [key, value] of Object.entries(settings)) {
-        const { error } = await supabase
+        const { data } = await supabase
           .from("payment_settings")
-          .update({ setting_value: value, updated_at: new Date().toISOString() })
-          .eq("setting_key", key);
+          .select("id")
+          .eq("setting_key", key)
+          .maybeSingle();
 
-        if (error) throw error;
+        if (data) {
+          await supabase
+            .from("payment_settings")
+            .update({ setting_value: value, updated_at: new Date().toISOString() })
+            .eq("setting_key", key);
+        } else {
+          await supabase
+            .from("payment_settings")
+            .insert({ setting_key: key, setting_value: value });
+        }
       }
 
       toast({
@@ -87,6 +99,29 @@ const PaymentSettingsManager = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Credit Card Toggle */}
+        <div className="rounded-lg border border-slate-600 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <CreditCard className="h-5 w-5 text-amber-400" />
+              <div>
+                <p className="text-sm font-medium text-white">Pagamento por Cartão de Crédito/Visa</p>
+                <p className="text-xs text-slate-400">
+                  {settings.credit_card_enabled === "true" 
+                    ? "Ativado — os usuários podem ver a opção de cartão" 
+                    : "Desativado — será mostrado como indisponível aos usuários"}
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={settings.credit_card_enabled === "true"}
+              onCheckedChange={(checked) =>
+                setSettings({ ...settings, credit_card_enabled: checked ? "true" : "false" })
+              }
+            />
+          </div>
+        </div>
+
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-slate-300">Nome do titular (IBAN)</Label>
