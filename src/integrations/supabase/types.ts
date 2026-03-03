@@ -24,6 +24,7 @@ export type Database = {
           payment_status: string | null
           phone: string
           publication_id: string
+          receipt_url: string | null
           status: string
           updated_at: string
           user_id: string | null
@@ -37,6 +38,7 @@ export type Database = {
           payment_status?: string | null
           phone: string
           publication_id: string
+          receipt_url?: string | null
           status?: string
           updated_at?: string
           user_id?: string | null
@@ -50,6 +52,7 @@ export type Database = {
           payment_status?: string | null
           phone?: string
           publication_id?: string
+          receipt_url?: string | null
           status?: string
           updated_at?: string
           user_id?: string | null
@@ -242,6 +245,7 @@ export type Database = {
           partnership_percent: number | null
           payment_status: string
           project_id: string
+          receipt_url: string | null
           support_type: string
           supporter_id: string
           updated_at: string
@@ -253,6 +257,7 @@ export type Database = {
           partnership_percent?: number | null
           payment_status?: string
           project_id: string
+          receipt_url?: string | null
           support_type: string
           supporter_id: string
           updated_at?: string
@@ -264,6 +269,7 @@ export type Database = {
           partnership_percent?: number | null
           payment_status?: string
           project_id?: string
+          receipt_url?: string | null
           support_type?: string
           supporter_id?: string
           updated_at?: string
@@ -503,6 +509,7 @@ export type Database = {
           payment_status: string | null
           phone: string
           publication_id: string
+          receipt_url: string | null
           status: string
           updated_at: string
           user_id: string | null
@@ -517,6 +524,7 @@ export type Database = {
           payment_status?: string | null
           phone: string
           publication_id: string
+          receipt_url?: string | null
           status?: string
           updated_at?: string
           user_id?: string | null
@@ -531,6 +539,7 @@ export type Database = {
           payment_status?: string | null
           phone?: string
           publication_id?: string
+          receipt_url?: string | null
           status?: string
           updated_at?: string
           user_id?: string | null

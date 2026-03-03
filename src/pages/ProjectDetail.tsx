@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, ArrowLeft, Target, Users, Calendar, Star, Heart, TrendingUp, Banknote, MessageSquare, Image, Copy, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { Loader2, ArrowLeft, Target, Users, Calendar, Star, Heart, TrendingUp, Banknote, MessageSquare, Image, Copy, CheckCircle2, Clock, AlertCircle, Upload, FileImage } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -42,6 +42,8 @@ const ProjectDetail = () => {
   const [amount, setAmount] = useState("");
   const [partnershipPercent, setPartnershipPercent] = useState("");
   const [submittingSupport, setSubmittingSupport] = useState(false);
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [uploadingReceipt, setUploadingReceipt] = useState(false);
 
   // Rating form
   const [myRating, setMyRating] = useState(0);
@@ -111,6 +113,16 @@ const ProjectDetail = () => {
     if (data) setSupports(data);
   };
 
+  const uploadReceipt = async (file: File): Promise<string | null> => {
+    if (!user) return null;
+    const ext = file.name.split('.').pop();
+    const filePath = `${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("payment-receipts").upload(filePath, file);
+    if (error) return null;
+    const { data: urlData } = supabase.storage.from("payment-receipts").getPublicUrl(filePath);
+    return urlData?.publicUrl || null;
+  };
+
   const handleSupport = async () => {
     if (!user) { navigate("/auth"); return; }
     const minAmt = Number(project?.min_support_amount || 0);
@@ -130,6 +142,14 @@ const ProjectDetail = () => {
     }
 
     setSubmittingSupport(true);
+
+    let receiptUrl: string | null = null;
+    if (receiptFile) {
+      setUploadingReceipt(true);
+      receiptUrl = await uploadReceipt(receiptFile);
+      setUploadingReceipt(false);
+    }
+
     const { error } = await supabase.from("project_supports").insert({
       project_id: id!,
       supporter_id: user.id,
@@ -137,16 +157,18 @@ const ProjectDetail = () => {
       support_type: supportType,
       partnership_percent: supportType === "partnership" ? Number(partnershipPercent) : 0,
       payment_status: "pending",
+      receipt_url: receiptUrl,
     });
 
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Apoio registado!", description: "Faça o pagamento e aguarde a confirmação do administrador." });
+      toast({ title: "Apoio registado!", description: "Aguarde a confirmação do administrador." });
       setShowSupportDialog(false);
       setShowPaymentInfo(true);
       setAmount("");
       setPartnershipPercent("");
+      setReceiptFile(null);
       fetchSupports();
       fetchProject();
     }
@@ -499,12 +521,30 @@ const ProjectDetail = () => {
                         </div>
                       )}
 
-                      <Button onClick={handleSupport} disabled={submittingSupport} className="w-full">
-                        {submittingSupport ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Banknote className="h-4 w-4 mr-2" />}
-                        Pagar Agora
+                      <div className="space-y-2">
+                        <Label>Comprovativo de Pagamento (opcional)</Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="file"
+                            accept="image/*,.pdf"
+                            onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+                            className="text-sm"
+                          />
+                          {receiptFile && (
+                            <Badge variant="secondary" className="text-xs shrink-0">
+                              <FileImage className="h-3 w-3 mr-1" />{receiptFile.name.slice(0, 15)}...
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">Carregue o recibo de pagamento (imagem ou PDF)</p>
+                      </div>
+
+                      <Button onClick={handleSupport} disabled={submittingSupport || uploadingReceipt} className="w-full">
+                        {submittingSupport ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
+                        Enviar Apoio
                       </Button>
                       <p className="text-xs text-muted-foreground text-center">
-                        Ao clicar em "Pagar Agora", os dados de pagamento serão exibidos. O pagamento será confirmado pelo administrador.
+                        O pagamento será confirmado pelo administrador após verificação do comprovativo.
                       </p>
                     </div>
                   </DialogContent>
