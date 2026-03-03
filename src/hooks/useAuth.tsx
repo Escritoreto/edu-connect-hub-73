@@ -99,11 +99,6 @@ export function useAuth() {
       return { error };
     }
 
-    toast({
-      title: "Conta criada!",
-      description: "Bem-vindo ao UpMentor!",
-    });
-
     return { error: null };
   };
 
