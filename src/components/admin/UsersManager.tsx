@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Trash2, Search, MessageSquare, Send } from "lucide-react";
+import { Loader2, Trash2, Search, MessageSquare, Send, UserCheck } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -90,6 +90,22 @@ export const UsersManager = ({ adminId }: { adminId: string }) => {
     setSendingMessage(false);
   };
 
+  const allowProfileEdit = async (userId: string) => {
+    const { error } = await supabase.from("profiles").update({ profile_edit_allowed: true } as any).eq("id", userId);
+    if (error) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } else {
+      // Notify user
+      await supabase.from("notifications").insert({
+        user_id: userId,
+        title: "Edição de perfil liberada",
+        message: "O administrador liberou a edição do seu nome e número de celular. Acesse seu perfil para atualizar.",
+        link: "/profile?tab=profile",
+      });
+      toast({ title: "Edição liberada!", description: "O usuário pode agora editar nome e celular." });
+    }
+  };
+
   const filtered = users.filter((u) =>
     (u.full_name || "").toLowerCase().includes(search.toLowerCase()) ||
     (u.email || "").toLowerCase().includes(search.toLowerCase())
@@ -123,6 +139,15 @@ export const UsersManager = ({ adminId }: { adminId: string }) => {
                 <p className="text-sm text-slate-400">{user.email}</p>
               </div>
               <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-900/20"
+                  onClick={() => allowProfileEdit(user.id)}
+                  title="Liberar edição de perfil"
+                >
+                  <UserCheck className="h-4 w-4" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
