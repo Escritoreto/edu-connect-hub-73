@@ -75,7 +75,7 @@ const articles = [
     category: "Finanças",
     date: "10 de Janeiro, 2025",
     readTime: "10 min",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+    image: "/assets/blog-financial-education.jpg",
   },
   {
     id: 4,
@@ -84,7 +84,7 @@ const articles = [
     category: "Idiomas",
     date: "8 de Janeiro, 2025",
     readTime: "12 min",
-    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800",
+    image: "/assets/blog-english-flags.jpg",
   },
   {
     id: 5,
