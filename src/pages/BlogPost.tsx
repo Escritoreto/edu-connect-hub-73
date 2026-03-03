@@ -333,6 +333,8 @@ const BlogPost = () => {
               src={article.image}
               alt={article.title}
               className="w-full h-full object-cover"
+              loading="lazy"
+              onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-8">
@@ -379,11 +381,13 @@ const BlogPost = () => {
                     className="block group"
                   >
                     <article className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-elegant transition-all h-full">
-                      <div className="relative overflow-hidden h-48">
+                      <div className="relative overflow-hidden h-48 bg-muted">
                         <img
                           src={related.image}
                           alt={related.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          loading="lazy"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                         />
                       </div>
 
