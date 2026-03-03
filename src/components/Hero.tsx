@@ -37,8 +37,8 @@ const useCountUp = (end: number, duration = 2000) => {
 const Hero = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const rotatingTexts = [
-  "Encontre bolsas, empregos e cursos de inglês e mais em um só lugar. Prepare-se para estudar ou trabalhar no país e no exterior — e crie seu currículo gratuito em segundos.",
-  "Ajudamos você a organizar a sua jornada de estudo ou trabalho na Europa, Ásia, América e África. Se você concluiu ensino médio ou ainda está cursando, nós ajudamos!"];
+  "Encontre bolsas, cursos de inglês e mais em um só lugar. Prepare-se para estudar ou trabalhar no país e no exterior — e crie seu currículo gratuito em segundos.",
+  "Ajudamos você a organizar a sua jornada de estudo na Europa, Ásia, América e África. Se você concluiu ensino médio ou ainda está cursando, nós ajudamos!"];
 
 
   useEffect(() => {

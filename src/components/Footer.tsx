@@ -80,7 +80,7 @@ const Footer = () => {
               <li><Link to="/scholarships" className="text-background/60 hover:text-secondary transition-colors">Bolsas de Estudo</Link></li>
               <li><Link to="/universities" className="text-background/60 hover:text-secondary transition-colors">Universidades</Link></li>
               <li><Link to="/courses" className="text-background/60 hover:text-secondary transition-colors">Cursos Online</Link></li>
-              <li><Link to="/jobs" className="text-background/60 hover:text-secondary transition-colors">Empregos</Link></li>
+              
               <li><Link to="/cv-builder" className="text-background/60 hover:text-secondary transition-colors">Criar Currículo</Link></li>
               <li><Link to="/projects" className="text-background/60 hover:text-secondary transition-colors">Projetos</Link></li>
               <li><Link to="/blog" className="text-background/60 hover:text-secondary transition-colors">Blog</Link></li>
