@@ -3,7 +3,6 @@ import { MessageCircle, X, Send, Loader2, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
 
 type Message = {
   role: "user" | "assistant";
@@ -12,40 +11,9 @@ type Message = {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-support`;
 
-// Notify admin about a new visitor (once per session)
-const notifyAdminVisitor = async () => {
-  const sessionKey = "upmentor_visitor_notified";
-  if (sessionStorage.getItem(sessionKey)) return;
-  sessionStorage.setItem(sessionKey, "1");
-
-  try {
-    // Get admin user ids
-    const { data: admins } = await supabase
-      .from("user_roles")
-      .select("user_id")
-      .eq("role", "admin");
-
-    if (!admins || admins.length === 0) return;
-
-    const now = new Date();
-    const timeStr = now.toLocaleString("pt-MZ", { dateStyle: "short", timeStyle: "short" });
-    const page = window.location.pathname;
-
-    for (const admin of admins) {
-      await supabase.from("notifications").insert({
-        user_id: admin.user_id,
-        title: "Novo visitante no site",
-        message: `Um dispositivo acessou o site em ${timeStr} na página ${page}`,
-        link: "/admin",
-      });
-    }
-  } catch (e) {
-    console.error("Visitor notification error:", e);
-  }
-};
-
 export const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{
     role: "assistant",
     content: "Olá! 👋 Precisa de ajuda? Posso responder sobre bolsas de estudo, cursos, ou como usar nosso site."
@@ -59,13 +27,23 @@ export const ChatWidget = () => {
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number } | null>(null);
 
-  // Initialize position (bottom-right) and send visitor notification
+  // Initialize position and show hint after delay
   useEffect(() => {
     setPosition({
       x: window.innerWidth - 80,
       y: window.innerHeight - 80,
     });
-    notifyAdminVisitor();
+
+    const hintKey = "upmentor_hint_shown";
+    if (!sessionStorage.getItem(hintKey)) {
+      const timer = setTimeout(() => {
+        setShowHint(true);
+        sessionStorage.setItem(hintKey, "1");
+        // Auto-hide after 8 seconds
+        setTimeout(() => setShowHint(false), 8000);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
@@ -95,6 +73,7 @@ export const ChatWidget = () => {
     setIsDragging(false);
     if (dx < 5 && dy < 5 && !isOpen) {
       setIsOpen(true);
+      setShowHint(false);
     }
     dragRef.current = null;
   }, [isOpen]);
@@ -194,6 +173,29 @@ export const ChatWidget = () => {
   };
 
   return <>
+    {/* Hint bubble */}
+    {showHint && !isOpen && (
+      <div
+        className="fixed z-50 animate-in fade-in slide-in-from-bottom-2 duration-500"
+        style={{ left: position.x - 240, top: position.y - 60 }}
+      >
+        <div className="bg-card border border-border rounded-xl shadow-lg px-4 py-3 max-w-[220px] relative">
+          <button
+            onClick={() => setShowHint(false)}
+            className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors text-xs"
+          >
+            ✕
+          </button>
+          <p className="text-sm text-foreground font-medium">👋 Olá! Sou o assistente UpMentor</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Pergunte-me qualquer coisa sobre bolsas, cursos ou como usar a plataforma!
+          </p>
+          {/* Arrow pointing to button */}
+          <div className="absolute -bottom-2 right-4 w-4 h-4 bg-card border-b border-r border-border rotate-45" />
+        </div>
+      </div>
+    )}
+
     {/* Draggable Chat Button */}
     <div
       className={`fixed z-50 touch-none select-none ${isOpen ? "hidden" : ""}`}
@@ -202,8 +204,11 @@ export const ChatWidget = () => {
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
-      <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform flex items-center justify-center cursor-grab active:cursor-grabbing">
+      <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform flex items-center justify-center cursor-grab active:cursor-grabbing relative">
         <MessageCircle className="w-6 h-6" />
+        {showHint && (
+          <span className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full animate-pulse" />
+        )}
       </div>
     </div>
 
