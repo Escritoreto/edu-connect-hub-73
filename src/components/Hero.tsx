@@ -69,10 +69,10 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <Button size="lg" asChild className="text-sm sm:text-base font-semibold shadow-elegant">
+              <Button size="default" asChild className="text-sm font-semibold shadow-elegant">
                 <Link to="/scholarships">Bolsas disponíveis</Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base border-white text-white hover:bg-white/10">
+              <Button size="default" variant="ghost" asChild className="text-sm border border-white/50 text-white hover:bg-white/10 bg-transparent">
                 <Link to="/courses">Cursos disponíveis</Link>
               </Button>
             </div>

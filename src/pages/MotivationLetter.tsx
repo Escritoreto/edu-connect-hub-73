@@ -138,14 +138,11 @@ const MotivationLetter = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="bg-gradient-primary py-12 text-primary-foreground">
-          <div className="container">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4">Gerador de Carta de Motivação</h1>
-            <p className="text-lg opacity-90 max-w-2xl">
-              Crie uma carta de motivação profissional em minutos. Modelos elegantes e download gratuito em PDF.
-            </p>
-          </div>
-        </section>
+        <PageHeader
+          title="Gerador de Carta de Motivação"
+          description="Crie uma carta de motivação profissional em minutos. Modelos elegantes e download gratuito em PDF."
+          backgroundImage={headerCV}
+        />
 
         <section className="py-8 bg-muted/30">
           <div className="container">
