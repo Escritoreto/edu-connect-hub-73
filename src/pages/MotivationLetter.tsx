@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import PageHeader from "@/components/PageHeader";
-import headerCV from "@/assets/header-cv.jpg";
+import headerMotivation from "@/assets/header-motivation.jpg";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/Header";
