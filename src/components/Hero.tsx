@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Users, GraduationCap, FileText, Globe } from "lucide-react";
-import heroImage from "@/assets/hero-image.jpg";
+import headerHero from "@/assets/header-hero.jpg";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
@@ -43,8 +43,15 @@ const Hero = () => {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-hero py-12 lg:py-20">
-      <div className="container relative">
+    <section className="relative overflow-hidden py-16 lg:py-24">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${headerHero})` }}
+      />
+      <div className="absolute inset-0 bg-foreground/60" />
+
+      <div className="container relative z-10">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           <motion.div
             className="space-y-5"
@@ -52,12 +59,12 @@ const Hero = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-foreground leading-tight font-bold text-center lg:text-left">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white leading-tight font-bold text-center lg:text-left">
               Onde seus sonhos começam,{" "}
-              <span className="text-primary">a UpMentor</span> está presente
+              <span className="text-secondary">a UpMentor</span> está presente
             </h1>
 
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-center lg:text-left max-w-lg">
+            <p className="text-sm sm:text-base text-white/80 leading-relaxed text-center lg:text-left max-w-lg">
               Encontre bolsas, cursos e oportunidades globais. Crie seu currículo profissional em segundos.
             </p>
 
@@ -65,24 +72,20 @@ const Hero = () => {
               <Button size="lg" asChild className="text-sm sm:text-base font-semibold shadow-elegant">
                 <Link to="/scholarships">Bolsas disponíveis</Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base border-primary text-primary hover:bg-primary/5">
+              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base border-white text-white hover:bg-white/10">
                 <Link to="/courses">Cursos disponíveis</Link>
               </Button>
             </div>
           </motion.div>
 
           <motion.div
-            className="relative hidden lg:block"
+            className="relative hidden lg:flex justify-end"
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            <div className="relative rounded-2xl overflow-hidden shadow-elegant">
-              <img src={heroImage} alt="Students celebrating success" className="w-full h-auto object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
-            </div>
             <motion.div
-              className="absolute -top-4 -right-4 bg-background rounded-xl p-4 shadow-card border border-border"
+              className="bg-background rounded-xl p-4 shadow-card border border-border"
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             >
@@ -90,7 +93,7 @@ const Hero = () => {
               <div className="text-xs text-muted-foreground">Taxa de Sucesso</div>
             </motion.div>
             <motion.div
-              className="absolute -bottom-4 -left-4 bg-background rounded-xl p-4 shadow-card border border-border"
+              className="absolute -bottom-12 -left-8 bg-background rounded-xl p-4 shadow-card border border-border"
               animate={{ y: [0, -8, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
             >
@@ -108,7 +111,7 @@ const Hero = () => {
               <motion.div
                 key={i}
                 ref={ref}
-                className="bg-background rounded-xl p-4 text-center border border-border shadow-card"
+                className="bg-background/90 backdrop-blur-sm rounded-xl p-4 text-center border border-border shadow-card"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}

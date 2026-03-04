@@ -1,8 +1,10 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, GraduationCap, Calendar } from "lucide-react";
+import headerScholarships from "@/assets/header-scholarships.jpg";
 const scholarships = [{
   id: 1,
   title: "Bolsa Fulbright - EUA",
@@ -36,31 +38,26 @@ const Scholarships = () => {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-page-header py-12">
-          <div className="container">
-            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground">Bolsas de Estudo</h1>
-            <p className="text-muted-foreground mb-6 max-w-2xl text-sm sm:text-base">
-              Encontre a bolsa perfeita para seus estudos. Milhares de oportunidades em universidades do mundo todo.
-            </p>
-
-            {/* Search Bar */}
-            <div className="bg-background rounded-xl p-6 shadow-card border border-border max-w-4xl">
-              <div className="grid md:grid-cols-4 gap-4">
-                <div className="md:col-span-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Buscar por curso, universidade..." className="pl-10" />
-                  </div>
+        <PageHeader
+          title="Bolsas de Estudo"
+          description="Encontre a bolsa perfeita para seus estudos. Milhares de oportunidades em universidades do mundo todo."
+          backgroundImage={headerScholarships}
+        >
+          <div className="bg-background/90 backdrop-blur-sm rounded-xl p-6 shadow-card border border-border max-w-4xl">
+            <div className="grid md:grid-cols-4 gap-4">
+              <div className="md:col-span-2">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="Buscar por curso, universidade..." className="pl-10" />
                 </div>
-                <Input placeholder="País" />
-                <Button variant="hero" className="w-full">
-                  Buscar Bolsas
-                </Button>
               </div>
+              <Input placeholder="País" />
+              <Button variant="hero" className="w-full">
+                Buscar Bolsas
+              </Button>
             </div>
           </div>
-        </section>
+        </PageHeader>
 
         {/* Filters & Results */}
         <section className="py-12">

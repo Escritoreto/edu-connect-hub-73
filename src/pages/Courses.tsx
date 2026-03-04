@@ -1,8 +1,10 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Star } from "lucide-react";
+import headerCourses from "@/assets/header-courses.jpg";
 
 const courses = [
   {
@@ -49,17 +51,11 @@ const Courses = () => {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-page-header py-12">
-          <div className="container">
-            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground">
-              Cursos Online Certificados
-            </h1>
-            <p className="text-muted-foreground max-w-2xl text-sm sm:text-base">
-              Aprenda no seu ritmo com cursos criados por especialistas. Certificados reconhecidos internacionalmente.
-            </p>
-          </div>
-        </section>
+        <PageHeader
+          title="Cursos Online Certificados"
+          description="Aprenda no seu ritmo com cursos criados por especialistas. Certificados reconhecidos internacionalmente."
+          backgroundImage={headerCourses}
+        />
 
         {/* Course Grid */}
         <section className="py-12">

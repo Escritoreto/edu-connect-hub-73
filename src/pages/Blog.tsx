@@ -1,8 +1,10 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import headerBlog from "@/assets/header-blog.jpg";
 
 const articles = [
   {
@@ -139,17 +141,11 @@ const Blog = () => {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-page-header py-12">
-          <div className="container">
-            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground">
-              Blog & Recursos
-            </h1>
-            <p className="text-muted-foreground max-w-2xl text-sm sm:text-base">
-              Artigos, dicas e guias para acelerar sua jornada acadêmica e profissional.
-            </p>
-          </div>
-        </section>
+        <PageHeader
+          title="Blog & Recursos"
+          description="Artigos, dicas e guias para acelerar sua jornada acadêmica e profissional."
+          backgroundImage={headerBlog}
+        />
 
         {/* Articles Grid */}
         <section className="py-12">
