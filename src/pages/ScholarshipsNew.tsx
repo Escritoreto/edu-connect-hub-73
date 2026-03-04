@@ -63,10 +63,10 @@ const ScholarshipsNew = () => {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-primary py-16 text-primary-foreground">
+        <section className="bg-gradient-page-header py-12">
           <div className="container">
-            <h1 className="lg:text-5xl font-bold mb-4 text-2xl">Bolsas de Estudo</h1>
-            <p className="opacity-90 mb-8 max-w-2xl text-base">
+            <h1 className="lg:text-4xl font-bold mb-3 text-2xl text-foreground">Bolsas de Estudo</h1>
+            <p className="text-muted-foreground mb-6 max-w-2xl text-sm sm:text-base">
               Encontre a bolsa perfeita para seus estudos. Milhares de oportunidades em universidades do mundo todo.
             </p>
 

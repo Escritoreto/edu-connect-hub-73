@@ -60,6 +60,7 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "section-alt": "hsl(var(--section-alt))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -121,6 +122,7 @@ export default {
         "gradient-primary": "var(--gradient-primary)",
         "gradient-hero": "var(--gradient-hero)",
         "gradient-card": "var(--gradient-card)",
+        "gradient-page-header": "var(--gradient-page-header)",
       },
       boxShadow: {
         "elegant": "var(--shadow-elegant)",
