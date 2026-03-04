@@ -143,7 +143,7 @@ const MotivationLetter = () => {
         <PageHeader
           title="Gerador de Carta de Motivação"
           description="Crie uma carta de motivação profissional em minutos. Modelos elegantes e download gratuito em PDF."
-          backgroundImage={headerCV}
+          backgroundImage={headerMotivation}
         />
 
         <section className="py-8 bg-muted/30">
