@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import PublicationCard from "@/components/PublicationCard";
 import PublicationFilters from "@/components/PublicationFilters";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import headerCourses from "@/assets/header-courses.jpg";
 
 const CoursesNew = () => {
   const [publications, setPublications] = useState<any[]>([]);
@@ -62,33 +64,28 @@ const CoursesNew = () => {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-page-header py-12">
-          <div className="container">
-            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground">Cursos Online</h1>
-            <p className="text-muted-foreground mb-6 max-w-2xl text-sm sm:text-base">
-              Aprenda novas habilidades com cursos de qualidade de instituições renomadas.
-            </p>
+        <PageHeader
+          title="Cursos Online"
+          description="Aprenda novas habilidades com cursos de qualidade de instituições renomadas."
+          backgroundImage={headerCourses}
+        >
+          <PublicationFilters
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            countryFilter={countryFilter}
+            setCountryFilter={setCountryFilter}
+            areaFilter={areaFilter}
+            setAreaFilter={setAreaFilter}
+            scholarshipTypeFilter=""
+            setScholarshipTypeFilter={() => {}}
+            studyLevelFilter=""
+            setStudyLevelFilter={() => {}}
+            statusFilter=""
+            setStatusFilter={() => {}}
+            onSearch={handleSearch}
+          />
+        </PageHeader>
 
-            <PublicationFilters
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              countryFilter={countryFilter}
-              setCountryFilter={setCountryFilter}
-              areaFilter={areaFilter}
-              setAreaFilter={setAreaFilter}
-              scholarshipTypeFilter=""
-              setScholarshipTypeFilter={() => {}}
-              studyLevelFilter=""
-              setStudyLevelFilter={() => {}}
-              statusFilter=""
-              setStatusFilter={() => {}}
-              onSearch={handleSearch}
-            />
-          </div>
-        </section>
-
-        {/* Results */}
         <section className="py-12">
           <div className="container">
             <div className="flex justify-between items-center mb-8">

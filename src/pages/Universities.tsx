@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import PublicationCard from "@/components/PublicationCard";
 import PublicationFilters from "@/components/PublicationFilters";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import headerUniversities from "@/assets/header-universities.jpg";
 
 const Universities = () => {
   const [publications, setPublications] = useState<any[]>([]);
@@ -57,29 +59,27 @@ const Universities = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="bg-gradient-page-header py-12">
-          <div className="container">
-            <h1 className="lg:text-4xl font-bold mb-3 text-2xl text-foreground">Universidades Privadas</h1>
-            <p className="text-muted-foreground mb-6 max-w-2xl text-sm sm:text-base">
-              Explore universidades privadas de todo o mundo. Encontre a instituição ideal para os seus estudos sem necessidade de bolsa.
-            </p>
-            <PublicationFilters
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              countryFilter={countryFilter}
-              setCountryFilter={setCountryFilter}
-              areaFilter={areaFilter}
-              setAreaFilter={setAreaFilter}
-              scholarshipTypeFilter=""
-              setScholarshipTypeFilter={() => {}}
-              studyLevelFilter=""
-              setStudyLevelFilter={() => {}}
-              statusFilter=""
-              setStatusFilter={() => {}}
-              onSearch={handleSearch}
-            />
-          </div>
-        </section>
+        <PageHeader
+          title="Universidades Privadas"
+          description="Explore universidades privadas de todo o mundo. Encontre a instituição ideal para os seus estudos sem necessidade de bolsa."
+          backgroundImage={headerUniversities}
+        >
+          <PublicationFilters
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            countryFilter={countryFilter}
+            setCountryFilter={setCountryFilter}
+            areaFilter={areaFilter}
+            setAreaFilter={setAreaFilter}
+            scholarshipTypeFilter=""
+            setScholarshipTypeFilter={() => {}}
+            studyLevelFilter=""
+            setStudyLevelFilter={() => {}}
+            statusFilter=""
+            setStatusFilter={() => {}}
+            onSearch={handleSearch}
+          />
+        </PageHeader>
 
         <section className="py-12">
           <div className="container">
@@ -89,7 +89,6 @@ const Universities = () => {
                 {filteredPublications.length} resultados encontrados
               </p>
             </div>
-
             {loading ? (
               <div className="space-y-6">
                 {[1, 2, 3].map((i) => (

@@ -1,12 +1,13 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Briefcase, MapPin, Clock, DollarSign, Search, Building2 } from "lucide-react";
-
+import headerJobs from "@/assets/header-jobs.jpg";
 const Jobs = () => {
   const jobs = [
     {
@@ -82,17 +83,11 @@ const Jobs = () => {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-page-header py-12">
-          <div className="container">
-            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground">
-              Oportunidades de Emprego
-            </h1>
-            <p className="text-muted-foreground max-w-2xl text-sm sm:text-base">
-              Encontre vagas de emprego, estágios e oportunidades freelance em todo o mundo.
-            </p>
-          </div>
-        </section>
+        <PageHeader
+          title="Oportunidades de Emprego"
+          description="Encontre vagas de emprego, estágios e oportunidades freelance em todo o mundo."
+          backgroundImage={headerJobs}
+        />
 
         {/* Search and Filters */}
         <section className="py-8 border-b border-border">

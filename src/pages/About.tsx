@@ -1,21 +1,20 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import { Target, Users, Award, Heart } from "lucide-react";
+import headerAbout from "@/assets/header-about.jpg";
+
 const About = () => {
-  return <div className="min-h-screen flex flex-col">
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-page-header py-12">
-          <div className="container">
-            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground text-left">
-              Sobre o UpMentor
-            </h1>
-            <p className="text-muted-foreground max-w-2xl text-sm sm:text-base text-justify">Sabemos o quanto é desafiador para muitos jovens identificarem seus verdadeiros objetivos e sonhos antes e depois do ensino médio. Por isso, criamos uma plataforma que conecta estudantes a oportunidades reais desde bolsas de estudo, até cursos de capacitação e formação internacional. Nosso propósito é orientar, inspirar e preparar os jovens para o futuro, oferecendo caminhos concretos para transformar sonhos em conquistas.
-            </p>
-          </div>
-        </section>
+        <PageHeader
+          title="Sobre o UpMentor"
+          description="Sabemos o quanto é desafiador para muitos jovens identificarem seus verdadeiros objetivos e sonhos antes e depois do ensino médio. Por isso, criamos uma plataforma que conecta estudantes a oportunidades reais desde bolsas de estudo, até cursos de capacitação e formação internacional. Nosso propósito é orientar, inspirar e preparar os jovens para o futuro, oferecendo caminhos concretos para transformar sonhos em conquistas."
+          backgroundImage={headerAbout}
+        />
 
         {/* Mission & Vision */}
         <section className="py-16">
@@ -29,31 +28,24 @@ const About = () => {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[{
-                icon: Target,
-                title: "Foco no Aluno",
-                description: "Cada recurso é pensado para facilitar sua jornada"
-              }, {
-                icon: Users,
-                title: "Comunidade Global",
-                description: "Mais de 100 mil estudantes em 150 países"
-              }, {
-                icon: Award,
-                title: "Qualidade Garantida",
-                description: "Conteúdos verificados e certificados"
-              }, {
-                icon: Heart,
-                title: "Paixão por Educar",
-                description: "Comprometidos com seu sucesso"
-              }].map((value, index) => <div key={index} className="bg-card border border-border rounded-xl p-6 text-center space-y-3 hover:shadow-card transition-all animate-fade-in" style={{
-                animationDelay: `${index * 100}ms`
-              }}>
+                {[
+                  { icon: Target, title: "Foco no Aluno", description: "Cada recurso é pensado para facilitar sua jornada" },
+                  { icon: Users, title: "Comunidade Global", description: "Mais de 100 mil estudantes em 150 países" },
+                  { icon: Award, title: "Qualidade Garantida", description: "Conteúdos verificados e certificados" },
+                  { icon: Heart, title: "Paixão por Educar", description: "Comprometidos com seu sucesso" },
+                ].map((value, index) => (
+                  <div
+                    key={index}
+                    className="bg-card border border-border rounded-xl p-6 text-center space-y-3 hover:shadow-card transition-all animate-fade-in"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
                     <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mx-auto">
                       <value.icon className="h-7 w-7" />
                     </div>
                     <h3 className="font-semibold">{value.title}</h3>
                     <p className="text-sm text-muted-foreground">{value.description}</p>
-                  </div>)}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -76,6 +68,8 @@ const About = () => {
       </main>
 
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default About;
