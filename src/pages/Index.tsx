@@ -56,7 +56,7 @@ const Index = () => {
           loading={loading}
           items={featuredScholarships}
           emptyMessage="Nenhuma bolsa em destaque no momento"
-          bg="bg-muted/30"
+          bg="bg-section-alt"
           renderItem={(s) => (
             <Link to={`/publication/${s.id}`} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-elegant transition-all duration-300 group block h-full">
               <div className="relative h-36 sm:h-48 overflow-hidden">
@@ -103,7 +103,7 @@ const Index = () => {
           linkTo="/courses"
           linkLabel="Ver Todos os Cursos"
           items={featuredCourses}
-          bg="bg-muted/30"
+          bg="bg-section-alt"
           renderItem={(course) => (
             <Link to={`/publication/${course.id}`} className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-elegant transition-all duration-300 group block h-full">
               <div className="relative h-36 sm:h-48 overflow-hidden">
@@ -144,7 +144,7 @@ const Index = () => {
 
         {/* Testimonials / Reviews */}
         {(approvedReviews.length > 0 || testimonials.length > 0) && (
-          <section className="py-20 bg-muted/30">
+          <section className="py-20 bg-section-alt">
             <div className="container">
               <motion.div className="text-center mb-14" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                 <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold mb-3">O que dizem nossos estudantes</h2>
@@ -195,18 +195,18 @@ const Index = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 bg-gradient-primary text-primary-foreground relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(152_50%_38%/0.3),transparent_70%)]" />
+        <section className="py-20 bg-section-alt relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-page-header opacity-50" />
           <div className="container text-center space-y-6 relative">
-            <motion.h2 className="text-2xl lg:text-5xl font-bold" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
+            <motion.h2 className="text-2xl lg:text-5xl font-bold text-foreground" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
               Pronto para Transformar Seu Futuro?
             </motion.h2>
-            <p className="opacity-90 max-w-2xl mx-auto text-sm sm:text-base">Junte-se a milhares de estudantes que estão conquistando o mundo com o UpMentor.</p>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">Junte-se a milhares de estudantes que estão conquistando o mundo com o UpMentor.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20 font-semibold shadow-lg">
+              <Button size="lg" asChild className="text-sm sm:text-base font-semibold shadow-elegant">
                 <Link to="/auth?tab=signup">Registrar-se <ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base bg-background/10 backdrop-blur-sm border-primary-foreground/30 text-primary-foreground hover:bg-background/20">
+              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base border-primary text-primary hover:bg-primary/5">
                 <Link to="/scholarships">Buscar Bolsas</Link>
               </Button>
             </div>

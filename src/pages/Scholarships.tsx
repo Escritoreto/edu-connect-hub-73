@@ -37,15 +37,15 @@ const Scholarships = () => {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-primary py-16 text-primary-foreground">
+        <section className="bg-gradient-page-header py-12">
           <div className="container">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4">Bolsas de Estudo</h1>
-            <p className="text-lg opacity-90 mb-8 max-w-2xl">
+            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground">Bolsas de Estudo</h1>
+            <p className="text-muted-foreground mb-6 max-w-2xl text-sm sm:text-base">
               Encontre a bolsa perfeita para seus estudos. Milhares de oportunidades em universidades do mundo todo.
             </p>
 
             {/* Search Bar */}
-            <div className="bg-background rounded-xl p-6 shadow-elegant max-w-4xl">
+            <div className="bg-background rounded-xl p-6 shadow-card border border-border max-w-4xl">
               <div className="grid md:grid-cols-4 gap-4">
                 <div className="md:col-span-2">
                   <div className="relative">

@@ -39,10 +39,13 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
     
+    --section-alt: 210 20% 97%;
+    
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(152 60% 28%) 0%, hsl(152 50% 38%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(152 60% 28%) 0%, hsl(152 50% 38%) 50%, hsl(152 40% 48%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(152 60% 96%) 0%, hsl(152 40% 92%) 50%, hsl(210 20% 97%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
+    --gradient-page-header: linear-gradient(135deg, hsl(152 60% 96%) 0%, hsl(152 40% 93%) 100%);
     
     /* Shadows */
     --shadow-elegant: 0 10px 30px -10px hsl(152 60% 28% / 0.3);
@@ -100,10 +103,13 @@ All colors MUST be HSL.
     --input: 217 33% 17%;
     --ring: 152 60% 28%;
     
+    --section-alt: 217 33% 14%;
+    
     /* Dark mode gradients */
     --gradient-primary: linear-gradient(135deg, hsl(152 60% 28%) 0%, hsl(152 50% 38%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(152 60% 22%) 0%, hsl(152 50% 32%) 50%, hsl(152 40% 42%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(152 60% 15%) 0%, hsl(152 50% 18%) 50%, hsl(217 33% 14%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(217 33% 17%) 0%, hsl(217 33% 15%) 100%);
+    --gradient-page-header: linear-gradient(135deg, hsl(152 60% 15%) 0%, hsl(152 40% 18%) 100%);
     
     --shadow-elegant: 0 10px 30px -10px hsl(152 60% 28% / 0.5);
     --shadow-glow: 0 0 40px hsl(152 50% 38% / 0.3);

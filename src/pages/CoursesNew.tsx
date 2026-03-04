@@ -63,10 +63,10 @@ const CoursesNew = () => {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-primary py-16 text-primary-foreground">
+        <section className="bg-gradient-page-header py-12">
           <div className="container">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4">Cursos Online</h1>
-            <p className="text-lg opacity-90 mb-8 max-w-2xl">
+            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground">Cursos Online</h1>
+            <p className="text-muted-foreground mb-6 max-w-2xl text-sm sm:text-base">
               Aprenda novas habilidades com cursos de qualidade de instituições renomadas.
             </p>
 

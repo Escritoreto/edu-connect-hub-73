@@ -7,14 +7,13 @@ const About = () => {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-primary py-16 text-primary-foreground">
+        <section className="bg-gradient-page-header py-12">
           <div className="container">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-left">
+            <h1 className="text-2xl lg:text-4xl font-bold mb-3 text-foreground text-left">
               Sobre o UpMentor
             </h1>
-            <p className="text-lg opacity-90 max-w-2xl text-justify font-serif font-medium">Sabemos o quanto é desafiador para muitos jovens identificarem seus verdadeiros objetivos e sonhos antes e depois do ensino médio. Por isso, criamos uma plataforma que conecta estudantes a oportunidades reais desde bolsas de estudo, até cursos de capacitação e formação internacional. Nosso propósito é orientar, inspirar e preparar os jovens para o futuro, oferecendo caminhos concretos para transformar sonhos em conquistas.
-
-          </p>
+            <p className="text-muted-foreground max-w-2xl text-sm sm:text-base text-justify">Sabemos o quanto é desafiador para muitos jovens identificarem seus verdadeiros objetivos e sonhos antes e depois do ensino médio. Por isso, criamos uma plataforma que conecta estudantes a oportunidades reais desde bolsas de estudo, até cursos de capacitação e formação internacional. Nosso propósito é orientar, inspirar e preparar os jovens para o futuro, oferecendo caminhos concretos para transformar sonhos em conquistas.
+            </p>
           </div>
         </section>
 
