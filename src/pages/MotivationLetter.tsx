@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import PageHeader from "@/components/PageHeader";
-import headerMotivation from "@/assets/header-motivation.jpg";
+import headerCV from "@/assets/header-cv.jpg";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/Header";
@@ -143,7 +143,7 @@ const MotivationLetter = () => {
         <PageHeader
           title="Gerador de Carta de Motivação"
           description="Crie uma carta de motivação profissional em minutos. Modelos elegantes e download gratuito em PDF."
-          backgroundImage={headerMotivation}
+          backgroundImage={headerCV}
         />
 
         <section className="py-8 bg-muted/30">
