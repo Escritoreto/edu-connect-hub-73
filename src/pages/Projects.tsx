@@ -11,6 +11,8 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Plus, Search, Target, Users, TrendingUp, Lightbulb } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
+import headerProjectsImg from "@/assets/header-projects.jpg";
 
 const Projects = () => {
   const { user } = useAuth();
@@ -55,22 +57,15 @@ const Projects = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="py-16 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-          <div className="container mx-auto px-4 text-center">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Lightbulb className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground">Ideias de Inovação & Negócio</h1>
-            </div>
-            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-              Apoie projetos inovadores ou submeta sua própria ideia para conseguir apoio financeiro. 
-              Contribua com doação ou participe como sócio.
-            </p>
-            <Button onClick={() => user ? navigate("/projects/new") : navigate("/auth")} size="lg">
-              <Plus className="h-4 w-4 mr-2" />Submeter Minha Ideia
-            </Button>
-          </div>
-        </section>
+        <PageHeader
+          title="Ideias de Inovação & Negócio"
+          description="Apoie projetos inovadores ou submeta sua própria ideia para conseguir apoio financeiro. Contribua com doação ou participe como sócio."
+          backgroundImage={headerProjectsImg}
+        >
+          <Button onClick={() => user ? navigate("/projects/new") : navigate("/auth")} size="lg" className="bg-primary text-primary-foreground">
+            <Plus className="h-4 w-4 mr-2" />Submeter Minha Ideia
+          </Button>
+        </PageHeader>
 
         {/* Filters */}
         <div className="container mx-auto px-4 py-6">
