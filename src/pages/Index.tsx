@@ -12,6 +12,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { motion } from "framer-motion";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import ctaBgImg from "@/assets/header-cta.jpg";
 
 const Index = () => {
   const [featuredScholarships, setFeaturedScholarships] = useState<any[]>([]);
@@ -195,18 +196,22 @@ const Index = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20 bg-section-alt relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-page-header opacity-50" />
-          <div className="container text-center space-y-6 relative">
-            <motion.h2 className="text-2xl lg:text-5xl font-bold text-foreground" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
+        <section className="py-20 relative overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${ctaBgImg})` }}
+          />
+          <div className="absolute inset-0 bg-foreground/60" />
+          <div className="container text-center space-y-6 relative z-10">
+            <motion.h2 className="text-2xl lg:text-5xl font-bold text-white" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
               Pronto para Transformar Seu Futuro?
             </motion.h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">Junte-se a milhares de estudantes que estão conquistando o mundo com o UpMentor.</p>
+            <p className="text-white/80 max-w-2xl mx-auto text-sm sm:text-base">Junte-se a milhares de estudantes que estão conquistando o mundo com o UpMentor.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button size="lg" asChild className="text-sm sm:text-base font-semibold shadow-elegant">
+              <Button size="lg" asChild className="text-sm sm:text-base font-semibold bg-primary text-primary-foreground shadow-elegant">
                 <Link to="/auth?tab=signup">Registrar-se <ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="text-sm sm:text-base border-primary text-primary hover:bg-primary/5">
+              <Button size="lg" variant="ghost" asChild className="text-sm sm:text-base border border-white/50 text-white bg-transparent hover:bg-white/10">
                 <Link to="/scholarships">Buscar Bolsas</Link>
               </Button>
             </div>
