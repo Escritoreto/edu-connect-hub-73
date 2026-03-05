@@ -115,9 +115,30 @@ const PaymentSettingsManager = () => {
             </div>
             <Switch
               checked={settings.credit_card_enabled === "true"}
-              onCheckedChange={(checked) =>
-                setSettings({ ...settings, credit_card_enabled: checked ? "true" : "false" })
-              }
+              onCheckedChange={async (checked) => {
+                const newValue = checked ? "true" : "false";
+                setSettings({ ...settings, credit_card_enabled: newValue });
+                // Auto-save toggle immediately
+                const { data } = await supabase
+                  .from("payment_settings")
+                  .select("id")
+                  .eq("setting_key", "credit_card_enabled")
+                  .maybeSingle();
+                if (data) {
+                  await supabase
+                    .from("payment_settings")
+                    .update({ setting_value: newValue, updated_at: new Date().toISOString() })
+                    .eq("setting_key", "credit_card_enabled");
+                } else {
+                  await supabase
+                    .from("payment_settings")
+                    .insert({ setting_key: "credit_card_enabled", setting_value: newValue });
+                }
+                toast({
+                  title: checked ? "Cartão ativado" : "Cartão desativado",
+                  description: "Alteração salva automaticamente.",
+                });
+              }}
             />
           </div>
         </div>

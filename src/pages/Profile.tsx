@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb, User, MessageSquare, Star } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb, User, MessageSquare, Star, FileImage } from "lucide-react";
 import { PaymentInfoCard } from "@/components/PaymentInfoCard";
 import { MyProjectsSection } from "@/components/profile/MyProjectsSection";
 import { format } from "date-fns";
@@ -46,6 +46,7 @@ const Profile = () => {
   const [cvDownloads, setCvDownloads] = useState<any[]>([]);
   const [isLoadingCvDownloads, setIsLoadingCvDownloads] = useState(true);
   const [markingPaidId, setMarkingPaidId] = useState<string | null>(null);
+  const [uploadingReceiptId, setUploadingReceiptId] = useState<string | null>(null);
   const [myReview, setMyReview] = useState<any>(null);
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
@@ -231,6 +232,30 @@ const Profile = () => {
     setMarkingPaidId(null);
   };
 
+  const uploadReceipt = async (id: string, type: "course" | "scholarship", file: File) => {
+    if (!user) return;
+    setUploadingReceiptId(id);
+    try {
+      const ext = file.name.split('.').pop();
+      const filePath = `${user.id}/${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("payment-receipts").upload(filePath, file);
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from("payment-receipts").getPublicUrl(filePath);
+      const receiptUrl = urlData?.publicUrl || null;
+
+      const table = type === "course" ? "course_enrollments" : "scholarship_requests";
+      const { error } = await supabase.from(table).update({ receipt_url: receiptUrl, payment_status: "paid" } as any).eq("id", id);
+      if (error) throw error;
+
+      toast({ title: "Comprovativo enviado!", description: "O administrador será notificado para confirmar o pagamento." });
+      if (type === "course") fetchEnrolledCourses();
+      else fetchScholarshipRequests();
+    } catch (error: any) {
+      toast({ title: "Erro ao enviar comprovativo", description: error.message, variant: "destructive" });
+    }
+    setUploadingReceiptId(null);
+  };
+
   if (loading || isLoadingProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -389,9 +414,17 @@ const Profile = () => {
                                   ) : enrollment.payment_status === "paid" ? (
                                     <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs"><Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação</Badge>
                                   ) : (
-                                    <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => { e.stopPropagation(); markAsPaid(enrollment.id, "course"); }} disabled={markingPaidId === enrollment.id}>
-                                      {markingPaidId === enrollment.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
-                                    </Button>
+                                    <div className="flex items-center gap-2">
+                                      <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => { e.stopPropagation(); markAsPaid(enrollment.id, "course"); }} disabled={markingPaidId === enrollment.id}>
+                                        {markingPaidId === enrollment.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
+                                      </Button>
+                                      <label className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                                        <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadReceipt(enrollment.id, "course", f); }} />
+                                        <span className="inline-flex items-center gap-1 text-xs h-7 px-2 rounded border border-primary/30 text-primary hover:bg-primary/5 cursor-pointer">
+                                          {uploadingReceiptId === enrollment.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Upload className="h-3 w-3" />Enviar Recibo</>}
+                                        </span>
+                                      </label>
+                                    </div>
                                   )}
                                 </>
                               )}
@@ -451,9 +484,17 @@ const Profile = () => {
                                     ) : request.payment_status === "paid" ? (
                                       <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs"><Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação</Badge>
                                     ) : (
-                                      <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => { e.stopPropagation(); markAsPaid(request.id, "scholarship"); }} disabled={markingPaidId === request.id}>
-                                        {markingPaidId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
-                                      </Button>
+                                      <div className="flex items-center gap-2">
+                                        <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => { e.stopPropagation(); markAsPaid(request.id, "scholarship"); }} disabled={markingPaidId === request.id}>
+                                          {markingPaidId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
+                                        </Button>
+                                        <label className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
+                                          <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadReceipt(request.id, "scholarship", f); }} />
+                                          <span className="inline-flex items-center gap-1 text-xs h-7 px-2 rounded border border-primary/30 text-primary hover:bg-primary/5 cursor-pointer">
+                                            {uploadingReceiptId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Upload className="h-3 w-3" />Enviar Recibo</>}
+                                          </span>
+                                        </label>
+                                      </div>
                                     )}
                                   </>
                                 );

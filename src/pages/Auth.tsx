@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Eye, EyeOff } from "lucide-react";
 import { lovable } from "@/integrations/lovable/index";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,11 +24,16 @@ const Auth = () => {
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   // Signup form state
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
+  const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
   const [signupName, setSignupName] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showSignupConfirmPassword, setShowSignupConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (user && !loading) {
@@ -48,9 +53,27 @@ const Auth = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (signupPassword !== signupConfirmPassword) {
+      toast({
+        title: "Senhas não coincidem",
+        description: "A senha e a confirmação devem ser iguais.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (signupPassword.length < 6) {
+      toast({
+        title: "Senha muito curta",
+        description: "A senha deve ter pelo menos 6 caracteres.",
+        variant: "destructive",
+      });
+      return;
+    }
     setIsLoading(true);
-    const { error } = await signUp(signupEmail, signupPassword, signupName);
+    const { error } = await signUp(signupEmail, signupPassword, signupName, signupPhone);
     if (!error) {
+      // Save phone to profile after signup via metadata
+      // Phone will be saved when profile is created by trigger
       setShowVerificationMessage(true);
     }
     setIsLoading(false);
@@ -169,14 +192,23 @@ const Auth = () => {
                           Esqueceu a senha?
                         </button>
                       </div>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        required
-                      />
+                      <div className="relative">
+                        <Input
+                          id="login-password"
+                          type={showLoginPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        >
+                          {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
                     </div>
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? "Entrando..." : "Entrar"}
@@ -208,11 +240,25 @@ const Auth = () => {
                         <Input
                           id="signup-name"
                           type="text"
-                          placeholder="Seu nome"
+                          placeholder="Seu nome completo"
                           value={signupName}
                           onChange={(e) => setSignupName(e.target.value)}
                           required
                         />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-phone">Número de Celular</Label>
+                        <div className="flex gap-2">
+                          <span className="flex items-center px-3 bg-muted rounded-md text-sm text-muted-foreground border border-input">+258</span>
+                          <Input
+                            id="signup-phone"
+                            type="tel"
+                            placeholder="84 123 4567"
+                            value={signupPhone}
+                            onChange={(e) => setSignupPhone(e.target.value)}
+                            required
+                          />
+                        </div>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="signup-email">Email</Label>
@@ -227,15 +273,47 @@ const Auth = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="signup-password">Senha</Label>
-                        <Input
-                          id="signup-password"
-                          type="password"
-                          placeholder="••••••••"
-                          value={signupPassword}
-                          onChange={(e) => setSignupPassword(e.target.value)}
-                          required
-                          minLength={6}
-                        />
+                        <div className="relative">
+                          <Input
+                            id="signup-password"
+                            type={showSignupPassword ? "text" : "password"}
+                            placeholder="Mínimo 6 caracteres"
+                            value={signupPassword}
+                            onChange={(e) => setSignupPassword(e.target.value)}
+                            required
+                            minLength={6}
+                          />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                            onClick={() => setShowSignupPassword(!showSignupPassword)}
+                          >
+                            {showSignupPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-confirm-password">Confirmar Senha</Label>
+                        <div className="relative">
+                          <Input
+                            id="signup-confirm-password"
+                            type={showSignupConfirmPassword ? "text" : "password"}
+                            placeholder="Repita a senha"
+                            value={signupConfirmPassword}
+                            onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                            required
+                          />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                            onClick={() => setShowSignupConfirmPassword(!showSignupConfirmPassword)}
+                          >
+                            {showSignupConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+                        </div>
+                        {signupConfirmPassword && signupPassword !== signupConfirmPassword && (
+                          <p className="text-xs text-destructive">As senhas não coincidem</p>
+                        )}
                       </div>
                       <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? "Criando conta..." : "Criar Conta"}
