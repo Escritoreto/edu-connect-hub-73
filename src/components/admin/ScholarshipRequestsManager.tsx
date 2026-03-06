@@ -53,6 +53,12 @@ const ScholarshipRequestsManager = () => {
     await supabase.rpc("cleanup_old_requests");
   };
 
+  const getSignedReceiptUrl = async (path: string): Promise<string> => {
+    if (path.startsWith("http")) return path;
+    const { data } = await supabase.storage.from("payment-receipts").createSignedUrl(path, 3600);
+    return data?.signedUrl || path;
+  };
+
   const fetchRequests = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -64,6 +70,13 @@ const ScholarshipRequestsManager = () => {
       toast({ title: "Erro ao carregar solicitações", description: error.message, variant: "destructive" });
     } else {
       setRequests(data || []);
+      const urls: Record<string, string> = {};
+      for (const r of (data || [])) {
+        if ((r as any).receipt_url) {
+          urls[r.id] = await getSignedReceiptUrl((r as any).receipt_url);
+        }
+      }
+      setReceiptUrls(urls);
     }
     setLoading(false);
   };
