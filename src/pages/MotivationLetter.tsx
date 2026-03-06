@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import PageHeader from "@/components/PageHeader";
 import headerCV from "@/assets/header-cv.jpg";
 import { useNavigate } from "react-router-dom";
