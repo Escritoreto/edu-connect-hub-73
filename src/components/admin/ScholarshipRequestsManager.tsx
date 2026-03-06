@@ -251,8 +251,8 @@ const ScholarshipRequestsManager = () => {
                       <TableCell>{getStatusBadge(request.status)}</TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          {(request as any).receipt_url && (
-                            <a href={(request as any).receipt_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+                          {receiptUrls[request.id] && (
+                            <a href={receiptUrls[request.id]} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                               <FileImage className="h-3 w-3" />Ver Recibo <ExternalLink className="h-3 w-3" />
                             </a>
                           )}
