@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowLeft, Upload } from "lucide-react";
-import { useEffect } from "react";
 
 const ProjectNew = () => {
   const { user, loading: authLoading } = useAuth();
@@ -32,6 +31,12 @@ const ProjectNew = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // New fields
+  const [targetAudience, setTargetAudience] = useState("");
+  const [problemSolved, setProblemSolved] = useState("");
+  const [timeline, setTimeline] = useState("");
+  const [location, setLocation] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -69,23 +74,31 @@ const ProjectNew = () => {
         imageUrl = publicUrl;
       }
 
+      // Build full description with extra fields
+      let fullDescription = description.trim();
+      if (problemSolved.trim()) fullDescription += `\n\n**Problema que resolve:** ${problemSolved.trim()}`;
+      if (targetAudience.trim()) fullDescription += `\n\n**Público-alvo:** ${targetAudience.trim()}`;
+      if (timeline.trim()) fullDescription += `\n\n**Prazo de execução:** ${timeline.trim()}`;
+      if (location.trim()) fullDescription += `\n\n**Localização:** ${location.trim()}`;
+
       const { error } = await supabase.from("projects").insert({
         creator_id: user.id,
         title: title.trim(),
         short_description: shortDesc.trim() || null,
-        description: description.trim(),
+        description: fullDescription,
         category,
         financial_goal: Number(financialGoal),
         support_type: supportType,
         max_partnership_percent: supportType !== "donation" ? Number(maxPartnership) || 0 : 0,
         min_support_amount: minAmount ? Number(minAmount) : 100,
-        max_support_amount: maxAmount ? Number(maxAmount) : null,
+        max_support_amount: maxAmount ? Number(maxAmount) : 1000000,
         image_url: imageUrl,
+        status: "pending",
       });
 
       if (error) throw error;
       toast({ title: "Projeto submetido!", description: "Aguarde a aprovação do administrador." });
-      navigate("/profile");
+      navigate("/profile?tab=projects");
     } catch (err: any) {
       toast({ title: "Erro", description: err.message, variant: "destructive" });
     } finally {
@@ -120,7 +133,28 @@ const ProjectNew = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="description">Descrição Completa *</Label>
-                <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Explique sua ideia em detalhe, o problema que resolve, público-alvo, etc." rows={8} />
+                <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Explique sua ideia em detalhe..." rows={6} />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="problemSolved">Que problema resolve? *</Label>
+                <Textarea id="problemSolved" value={problemSolved} onChange={(e) => setProblemSolved(e.target.value)} placeholder="Descreva o problema que seu projeto resolve..." rows={3} />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="targetAudience">Público-alvo</Label>
+                <Input id="targetAudience" value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} placeholder="Ex: Jovens universitários, pequenos empresários..." />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="location">Localização do Projeto</Label>
+                  <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Ex: Maputo, Moçambique" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="timeline">Prazo de Execução</Label>
+                  <Input id="timeline" value={timeline} onChange={(e) => setTimeline(e.target.value)} placeholder="Ex: 6 meses, 1 ano" />
+                </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -138,7 +172,6 @@ const ProjectNew = () => {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="goal">Meta Financeira (MZN) *</Label>
                   <Input id="goal" type="number" min="1" value={financialGoal} onChange={(e) => setFinancialGoal(e.target.value)} placeholder="Ex: 50000" />
@@ -149,12 +182,12 @@ const ProjectNew = () => {
                 <div className="space-y-2">
                   <Label htmlFor="minAmount">Apoio Mínimo (MZN)</Label>
                   <Input id="minAmount" type="number" min="1" value={minAmount} onChange={(e) => setMinAmount(e.target.value)} placeholder="Ex: 500" />
-                  <p className="text-xs text-muted-foreground">Valor mínimo que cada apoiador pode contribuir</p>
+                  <p className="text-xs text-muted-foreground">Valor mínimo por apoiador</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="maxAmount">Apoio Máximo (MZN)</Label>
                   <Input id="maxAmount" type="number" min="1" value={maxAmount} onChange={(e) => setMaxAmount(e.target.value)} placeholder="Ex: 100000" />
-                  <p className="text-xs text-muted-foreground">Valor máximo que cada apoiador pode contribuir</p>
+                  <p className="text-xs text-muted-foreground">Valor máximo por apoiador</p>
                 </div>
               </div>
 
@@ -180,7 +213,6 @@ const ProjectNew = () => {
                 <div className="space-y-2">
                   <Label htmlFor="maxPartnership">Percentagem Máxima de Participação (%)</Label>
                   <Input id="maxPartnership" type="number" min="1" max="100" value={maxPartnership} onChange={(e) => setMaxPartnership(e.target.value)} placeholder="Ex: 49" />
-                  <p className="text-xs text-muted-foreground">Máx. de participação que pretende disponibilizar para investidores</p>
                 </div>
               )}
 

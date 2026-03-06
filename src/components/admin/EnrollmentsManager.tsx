@@ -24,6 +24,7 @@ interface Enrollment {
   city: string;
   status: string;
   payment_status: string | null;
+  receipt_url: string | null;
   created_at: string;
   publications: {
     id: string;
@@ -37,16 +38,24 @@ const EnrollmentsManager = () => {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [receiptUrls, setReceiptUrls] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   useEffect(() => {
     fetchEnrollments();
-    // Run cleanup on load
     cleanupOldRecords();
   }, []);
 
   const cleanupOldRecords = async () => {
     await supabase.rpc("cleanup_old_requests");
+  };
+
+  const getSignedReceiptUrl = async (path: string): Promise<string> => {
+    // If it's already a full URL, return it
+    if (path.startsWith("http")) return path;
+    // Otherwise get a signed URL for private bucket
+    const { data } = await supabase.storage.from("payment-receipts").createSignedUrl(path, 3600);
+    return data?.signedUrl || path;
   };
 
   const fetchEnrollments = async () => {
@@ -59,7 +68,16 @@ const EnrollmentsManager = () => {
     if (error) {
       toast({ title: "Erro ao carregar inscrições", description: error.message, variant: "destructive" });
     } else {
-      setEnrollments(data || []);
+      const items = (data || []) as Enrollment[];
+      setEnrollments(items);
+      // Pre-fetch signed URLs for receipts
+      const urls: Record<string, string> = {};
+      for (const e of items) {
+        if (e.receipt_url) {
+          urls[e.id] = await getSignedReceiptUrl(e.receipt_url);
+        }
+      }
+      setReceiptUrls(urls);
     }
     setLoading(false);
   };
@@ -183,10 +201,10 @@ const EnrollmentsManager = () => {
                     <TableHead>Aluno</TableHead>
                     <TableHead>Curso</TableHead>
                     <TableHead>Contacto</TableHead>
-                     <TableHead>Data</TableHead>
-                     <TableHead>Status</TableHead>
-                     <TableHead>Pagamento</TableHead>
-                     <TableHead className="text-right">Ações</TableHead>
+                    <TableHead>Data</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Pagamento</TableHead>
+                    <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -214,8 +232,8 @@ const EnrollmentsManager = () => {
                       <TableCell>{getStatusBadge(enrollment.status)}</TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          {(enrollment as any).receipt_url && (
-                            <a href={(enrollment as any).receipt_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+                          {receiptUrls[enrollment.id] && (
+                            <a href={receiptUrls[enrollment.id]} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                               <FileImage className="h-3 w-3" />Ver Recibo <ExternalLink className="h-3 w-3" />
                             </a>
                           )}
