@@ -41,6 +41,7 @@ const ScholarshipRequestsManager = () => {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [receiptUrls, setReceiptUrls] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   useEffect(() => {
