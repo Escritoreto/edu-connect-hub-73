@@ -67,9 +67,9 @@ const Footer = () => {
                   <TikTokIcon className="h-4 w-4" />
                 </a>
               }
-              <a href={`mailto:${contactEmail}`} className="w-9 h-9 rounded-full bg-background/10 flex items-center justify-center hover:bg-primary transition-colors" aria-label="Email">
-                
-              </a>
+              
+
+              
             </div>
           </div>
 
