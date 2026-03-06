@@ -13,6 +13,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import CourseRegistrationForm from "@/components/CourseRegistrationForm";
 import ScholarshipRequestForm from "@/components/ScholarshipRequestForm";
+import candidatarBg from "@/assets/header-candidatar.jpg";
+
 interface Publication {
   id: string;
   title: string;
@@ -38,55 +40,43 @@ interface Publication {
   vacancies_by_country?: any;
   country_info?: any;
 }
+
 const PublicationDetail = () => {
-  const {
-    id
-  } = useParams();
-  const {
-    user
-  } = useAuth();
+  const { id } = useParams();
+  const { user } = useAuth();
   const [publication, setPublication] = useState<Publication | null>(null);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (id) {
       fetchPublication();
       trackView();
     }
   }, [id]);
+
   const fetchPublication = async () => {
-    const {
-      data,
-      error
-    } = await supabase.from("publications").select("*").eq("id", id).single();
-    if (!error && data) {
-      setPublication(data);
-    }
+    const { data, error } = await supabase.from("publications").select("*").eq("id", id).single();
+    if (!error && data) setPublication(data);
     setLoading(false);
   };
+
   const trackView = async () => {
     if (!id) return;
-    const {
-      data: currentPub
-    } = await supabase.from("publications").select("views_count").eq("id", id).single();
+    const { data: currentPub } = await supabase.from("publications").select("views_count").eq("id", id).single();
     if (currentPub) {
-      await supabase.from("publications").update({
-        views_count: (currentPub.views_count || 0) + 1
-      }).eq("id", id);
+      await supabase.from("publications").update({ views_count: (currentPub.views_count || 0) + 1 }).eq("id", id);
     }
     if (user) {
-      const {
-        data: existingView
-      } = await supabase.from("publication_views").select("id").eq("publication_id", id).eq("user_id", user.id).maybeSingle();
+      const { data: existingView } = await supabase.from("publication_views").select("id").eq("publication_id", id).eq("user_id", user.id).maybeSingle();
       if (!existingView) {
-        await supabase.from("publication_views").insert({
-          publication_id: id,
-          user_id: user.id
-        });
+        await supabase.from("publication_views").insert({ publication_id: id, user_id: user.id });
       }
     }
   };
+
   if (loading) {
-    return <div className="min-h-screen flex flex-col">
+    return (
+      <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 py-12">
           <div className="container">
@@ -95,62 +85,63 @@ const PublicationDetail = () => {
           </div>
         </main>
         <Footer />
-      </div>;
+      </div>
+    );
   }
+
   if (!publication) {
-    return <div className="min-h-screen flex flex-col">
+    return (
+      <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 py-12">
           <div className="container text-center">
             <h1 className="text-3xl font-bold mb-4">Publicação não encontrada</h1>
-            <Button asChild>
-              <Link to="/">Voltar para Home</Link>
-            </Button>
+            <Button asChild><Link to="/">Voltar para Home</Link></Button>
           </div>
         </main>
         <Footer />
-      </div>;
+      </div>
+    );
   }
+
   const benefits = publication.benefits || [];
   const importantDates = publication.important_dates || {};
   const vacanciesByCountry = publication.vacancies_by_country || {};
   const countryInfo = publication.country_info || {};
-  return <div className="min-h-screen flex flex-col">
+
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
-      
       <main className="flex-1 py-12">
         <div className="container max-w-6xl">
           <Button variant="ghost" asChild className="mb-6">
-            <Link to={publication.category === 'course' ? '/courses' : '/scholarships'}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
+            <Link to={publication.category === 'course' ? '/courses' : publication.category === 'university' ? '/universities' : '/scholarships'}>
+              <ArrowLeft className="h-4 w-4 mr-2" />Voltar
             </Link>
           </Button>
 
           {/* Hero Section */}
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div className="md:col-span-2">
-              {publication.image_url && <div className="rounded-xl overflow-hidden mb-6">
+              {publication.image_url && (
+                <div className="rounded-xl overflow-hidden mb-6">
                   <img src={publication.image_url} alt={publication.title} className="w-full h-96 object-cover" />
-                </div>}
-
+                </div>
+              )}
               <div className="space-y-4">
-                {publication.is_featured && <Badge className="bg-primary flex items-center gap-1 w-fit">
+                {publication.is_featured && (
+                  <Badge className="bg-primary flex items-center gap-1 w-fit">
                     <Star className="h-3 w-3 fill-current" />
                     {publication.category === 'course' ? 'Curso em Destaque' : 'Bolsa em Destaque'}
-                  </Badge>}
-                
-                {publication.category === 'course' && <Badge variant="secondary" className="flex items-center gap-1 w-fit">
-                    <BookOpen className="h-3 w-3" />
-                    Curso
-                  </Badge>}
-
+                  </Badge>
+                )}
+                {publication.category === 'course' && (
+                  <Badge variant="secondary" className="flex items-center gap-1 w-fit">
+                    <BookOpen className="h-3 w-3" />Curso
+                  </Badge>
+                )}
                 <h1 className="text-4xl font-bold">{publication.title}</h1>
-                
-                {publication.short_description && <p className="text-xl text-muted-foreground">
-                    {publication.short_description}
-                  </p>}
-
+                {publication.short_description && <p className="text-xl text-muted-foreground">{publication.short_description}</p>}
                 <div className="flex flex-wrap gap-2">
                   {publication.scholarship_type && <Badge variant="secondary">{publication.scholarship_type}</Badge>}
                   {publication.study_level && <Badge variant="secondary">{publication.study_level}</Badge>}
@@ -159,270 +150,164 @@ const PublicationDetail = () => {
               </div>
             </div>
 
-            {/* Sidebar - Quick Info */}
+            {/* Sidebar */}
             <div className="space-y-4">
-              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              {publication.external_link && <Button size="lg" className="w-full" asChild>
-                  
-                </Button>}
-
-              {publication.university_logo && <div className="bg-muted rounded-lg p-4">
+              {publication.external_link && (
+                <Button size="lg" className="w-full" asChild>
+                  <a href={publication.external_link} target="_blank" rel="noopener noreferrer">
+                    Site Oficial <ExternalLink className="h-4 w-4 ml-2" />
+                  </a>
+                </Button>
+              )}
+              {publication.university_logo && (
+                <div className="bg-muted rounded-lg p-4">
                   <img src={publication.university_logo} alt="Logo da Universidade" className="w-full h-auto" />
-                </div>}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Main Content */}
           <div className="space-y-8">
-            {/* Description */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Descrição Detalhada
-                </CardTitle>
+                <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" />Descrição Detalhada</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-lg leading-relaxed whitespace-pre-wrap">
-                  {publication.description}
-                </p>
+                <p className="text-lg leading-relaxed whitespace-pre-wrap">{publication.description}</p>
               </CardContent>
             </Card>
 
-            {/* Requirements */}
-            {publication.requirements && <Card>
+            {publication.requirements && (
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5" />
-                    Requisitos e Documentos
-                  </CardTitle>
+                  <CardTitle className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5" />Requisitos e Documentos</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="whitespace-pre-wrap leading-relaxed">
-                    {publication.requirements}
-                  </p>
+                  <p className="whitespace-pre-wrap leading-relaxed">{publication.requirements}</p>
                 </CardContent>
-              </Card>}
+              </Card>
+            )}
 
-            {/* Benefits */}
-            {benefits.length > 0 && <Card>
+            {benefits.length > 0 && (
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Gift className="h-5 w-5" />
-                    Benefícios Incluídos
-                  </CardTitle>
+                  <CardTitle className="flex items-center gap-2"><Gift className="h-5 w-5" />Benefícios Incluídos</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
                     {benefits.map((benefit: any, index: number) => {
-                  const isStringBenefit = typeof benefit === 'string';
-                  const benefitTitle = isStringBenefit ? benefit : benefit.type;
-                  const benefitDescription = isStringBenefit ? null : benefit.description;
-                  return <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                      const isStringBenefit = typeof benefit === 'string';
+                      const benefitTitle = isStringBenefit ? benefit : benefit.type;
+                      const benefitDescription = isStringBenefit ? null : benefit.description;
+                      return (
+                        <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                           <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                           <div>
                             <p className="font-semibold">{benefitTitle}</p>
                             {benefitDescription && <p className="text-sm text-muted-foreground">{benefitDescription}</p>}
                           </div>
-                        </div>;
-                })}
+                        </div>
+                      );
+                    })}
                   </div>
                 </CardContent>
-              </Card>}
+              </Card>
+            )}
 
-            {/* Important Dates */}
-            {Object.keys(importantDates).length > 0 && <Card>
-                
-
-
-
-
-
-                
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              </Card>}
-
-            {/* Vacancies by Country */}
-            {Object.keys(vacanciesByCountry).length > 0 && <Card>
+            {Object.keys(importantDates).length > 0 && (
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5" />
-                    Vagas por País
-                  </CardTitle>
+                  <CardTitle className="flex items-center gap-2"><Clock className="h-5 w-5" />Datas Importantes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {Object.entries(importantDates).map(([key, value]) => (
+                      <div key={key} className="p-3 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground capitalize">{key.replace(/_/g, ' ')}</p>
+                        <p className="font-semibold">{value as string}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {Object.keys(vacanciesByCountry).length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5" />Vagas por País</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {Object.entries(vacanciesByCountry).map(([country, vacancies]) => <div key={country} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                    {Object.entries(vacanciesByCountry).map(([country, vacancies]) => (
+                      <div key={country} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                         <span className="font-semibold">{country}</span>
                         <Badge variant="secondary">{vacancies as string} vagas</Badge>
-                      </div>)}
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
-              </Card>}
+              </Card>
+            )}
 
-            {/* Country Information */}
-            {publication.country && Object.keys(countryInfo).length > 0 && <>
+            {publication.country && Object.keys(countryInfo).length > 0 && (
+              <>
                 <Separator className="my-8" />
                 <div>
-                  <h2 className="text-3xl font-bold mb-6">
-                    Sobre Estudar em {publication.country}
-                  </h2>
-                  
+                  <h2 className="text-3xl font-bold mb-6">Sobre Estudar em {publication.country}</h2>
                   <div className="grid md:grid-cols-2 gap-6">
-                    {countryInfo.advantages && <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2 text-lg">
-                            <Globe className="h-5 w-5 text-primary" />
-                            Vantagens de Estudar
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="leading-relaxed">{countryInfo.advantages}</p>
-                        </CardContent>
-                      </Card>}
-
-                    {countryInfo.education && <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2 text-lg">
-                            <GraduationCap className="h-5 w-5 text-primary" />
-                            Qualidade da Educação
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="leading-relaxed">{countryInfo.education}</p>
-                        </CardContent>
-                      </Card>}
-
-                    {countryInfo.culture && <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2 text-lg">
-                            <Landmark className="h-5 w-5 text-primary" />
-                            Cultura e Religião
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="leading-relaxed">{countryInfo.culture}</p>
-                        </CardContent>
-                      </Card>}
-
-                    {countryInfo.gastronomy && <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2 text-lg">
-                            <Utensils className="h-5 w-5 text-primary" />
-                            Gastronomia Típica
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="leading-relaxed">{countryInfo.gastronomy}</p>
-                        </CardContent>
-                      </Card>}
-
-                    {countryInfo.tourism && <Card className="md:col-span-2">
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2 text-lg">
-                            <Camera className="h-5 w-5 text-primary" />
-                            Turismo e Beleza
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="leading-relaxed">{countryInfo.tourism}</p>
-                        </CardContent>
-                      </Card>}
+                    {countryInfo.advantages && (
+                      <Card>
+                        <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Globe className="h-5 w-5 text-primary" />Vantagens de Estudar</CardTitle></CardHeader>
+                        <CardContent><p className="leading-relaxed">{countryInfo.advantages}</p></CardContent>
+                      </Card>
+                    )}
+                    {countryInfo.education && (
+                      <Card>
+                        <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><GraduationCap className="h-5 w-5 text-primary" />Qualidade da Educação</CardTitle></CardHeader>
+                        <CardContent><p className="leading-relaxed">{countryInfo.education}</p></CardContent>
+                      </Card>
+                    )}
+                    {countryInfo.culture && (
+                      <Card>
+                        <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Landmark className="h-5 w-5 text-primary" />Cultura e Religião</CardTitle></CardHeader>
+                        <CardContent><p className="leading-relaxed">{countryInfo.culture}</p></CardContent>
+                      </Card>
+                    )}
+                    {countryInfo.gastronomy && (
+                      <Card>
+                        <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Utensils className="h-5 w-5 text-primary" />Gastronomia Típica</CardTitle></CardHeader>
+                        <CardContent><p className="leading-relaxed">{countryInfo.gastronomy}</p></CardContent>
+                      </Card>
+                    )}
+                    {countryInfo.tourism && (
+                      <Card className="md:col-span-2">
+                        <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><Camera className="h-5 w-5 text-primary" />Turismo e Beleza</CardTitle></CardHeader>
+                        <CardContent><p className="leading-relaxed">{countryInfo.tourism}</p></CardContent>
+                      </Card>
+                    )}
                   </div>
                 </div>
-              </>}
+              </>
+            )}
 
             {/* Course Registration Form */}
-            {publication.category === 'course' && <div className="mt-8">
+            {publication.category === 'course' && (
+              <div className="mt-8">
                 <Separator className="my-8" />
                 <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
-                  <BookOpen className="h-7 w-7 text-primary" />
-                  Inscreva-se Agora
+                  <BookOpen className="h-7 w-7 text-primary" />Inscreva-se Agora
                 </h2>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
                     <Card className="bg-muted/50">
-                      <CardHeader>
-                        <CardTitle className="text-lg">Informações do Curso</CardTitle>
-                      </CardHeader>
+                      <CardHeader><CardTitle className="text-lg">Informações do Curso</CardTitle></CardHeader>
                       <CardContent className="space-y-4">
                         <div className="flex justify-between items-center py-2 border-b border-border">
                           <span className="text-muted-foreground">Preço</span>
-                          <span className="font-bold text-primary text-lg">
-                            {publication.value || 'Consultar'}
-                          </span>
+                          <span className="font-bold text-primary text-lg">{publication.value || 'Consultar'}</span>
                         </div>
-                        {publication.title.includes('Inglesa') && <>
-                            <div className="flex justify-between items-center py-2 border-b border-border">
-                              <span className="text-muted-foreground">Duração</span>
-                              <span className="font-semibold">6 meses</span>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b border-border">
-                              <span className="text-muted-foreground">Pagamento</span>
-                              <span className="font-semibold">Em parcelas</span>
-                            </div>
-                          </>}
-                        {publication.title.includes('Financeira') && <div className="flex justify-between items-center py-2 border-b border-border">
-                            <span className="text-muted-foreground">Horário</span>
-                            <span className="font-semibold">Flexível</span>
-                          </div>}
-                        {publication.title.includes('Turca') && <div className="bg-primary/10 p-3 rounded-lg text-sm">
-                            <p className="text-muted-foreground">
-                              O preço varia conforme a universidade e modalidade escolhida. 
-                              Preencha o formulário para receber informações detalhadas.
-                            </p>
-                          </div>}
                         <div className="flex justify-between items-center py-2">
                           <span className="text-muted-foreground">Modalidade</span>
                           <span className="font-semibold">Online ou Presencial</span>
@@ -432,79 +317,70 @@ const PublicationDetail = () => {
                   </div>
                   <CourseRegistrationForm courseTitle={publication.title} courseId={publication.id} />
                 </div>
-              </div>}
+              </div>
+            )}
 
-            {/* Scholarship Orientation Request Form */}
-            {(publication.category === 'scholarship' || publication.category === 'university') && <div className="mt-8">
+            {/* Scholarship/University Orientation Request Form */}
+            {(publication.category === 'scholarship' || publication.category === 'university') && (
+              <div className="mt-8">
                 <Separator className="my-8" />
                 <h2 className="text-3xl font-bold mb-6 flex items-center gap-2">
-                  <GraduationCap className="h-7 w-7 text-primary" />
-                  Solicitar Orientação
+                  <GraduationCap className="h-7 w-7 text-primary" />Solicitar Orientação
                 </h2>
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
                     <Card className="bg-muted/50">
-                      <CardHeader>
-                        <CardTitle className="text-lg">Por que solicitar orientação?</CardTitle>
-                      </CardHeader>
+                      <CardHeader><CardTitle className="text-lg">Por que solicitar orientação?</CardTitle></CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="flex items-start gap-3 py-2">
-                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Análise do seu perfil</p>
-                            <p className="text-sm text-muted-foreground">Avaliamos suas qualificações e chances</p>
+                        {[
+                          { title: "Análise do seu perfil", desc: "Avaliamos suas qualificações e chances" },
+                          { title: "Orientação personalizada", desc: "Receba dicas específicas para sua candidatura" },
+                          { title: "Suporte na documentação", desc: "Ajudamos com os documentos necessários" },
+                          { title: "Acompanhamento contínuo", desc: "Suporte até a aprovação final" },
+                        ].map((item, i) => (
+                          <div key={i} className="flex items-start gap-3 py-2">
+                            <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-semibold">{item.title}</p>
+                              <p className="text-sm text-muted-foreground">{item.desc}</p>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex items-start gap-3 py-2">
-                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Orientação personalizada</p>
-                            <p className="text-sm text-muted-foreground">Receba dicas específicas para sua candidatura</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-3 py-2">
-                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Suporte na documentação</p>
-                            <p className="text-sm text-muted-foreground">Ajudamos com os documentos necessários</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-3 py-2">
-                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="font-semibold">Acompanhamento contínuo</p>
-                            <p className="text-sm text-muted-foreground">Suporte até a aprovação final</p>
-                          </div>
-                        </div>
+                        ))}
                       </CardContent>
                     </Card>
                   </div>
                   <ScholarshipRequestForm scholarshipTitle={publication.title} scholarshipId={publication.id} />
                 </div>
-              </div>}
+              </div>
+            )}
 
-            {/* CTA Footer for Scholarships with external link */}
-            {(publication.category === 'scholarship' || publication.category === 'university') && publication.external_link && <Card className="bg-gradient-primary text-primary-foreground mt-8">
-                <CardContent className="p-8 text-center">
-                  <h3 className="text-2xl font-bold mb-4">
+            {/* CTA Footer with background image */}
+            {(publication.category === 'scholarship' || publication.category === 'university') && publication.external_link && (
+              <div className="relative rounded-2xl overflow-hidden mt-8">
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${candidatarBg})` }} />
+                <div className="absolute inset-0 bg-foreground/60" />
+                <div className="relative z-10 p-8 md:p-12 text-center">
+                  <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">
                     Pronto para Candidatar-se Diretamente?
                   </h3>
-                  <p className="text-lg mb-6 opacity-90">
+                  <p className="text-lg mb-6 text-white/90 max-w-2xl mx-auto">
                     Se preferir, você também pode se candidatar diretamente no site oficial da bolsa.
                   </p>
-                  <Button size="lg" variant="secondary" asChild>
+                  <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90" asChild>
                     <a href={publication.external_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 mx-auto w-fit">
                       Candidatar-se Oficialmente
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
-                </CardContent>
-              </Card>}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
-
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default PublicationDetail;

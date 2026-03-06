@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import PageHeader from "@/components/PageHeader";
 import headerCV from "@/assets/header-cv.jpg";
 import { useNavigate } from "react-router-dom";
@@ -94,6 +95,15 @@ const MotivationLetter = () => {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      // Track download in cv_downloads table
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.id) {
+        await supabase.from("cv_downloads").insert({
+          user_id: session.user.id,
+          template_name: template?.name || "Carta de Motivação",
+          cv_name: `Carta_Motivacao_${letterData.fullName.replace(/\s+/g, "_")}`,
+        });
+      }
       toast.success("PDF baixado com sucesso!", { id: "pdf-loading" });
     } catch (error) {
       console.error("Error generating PDF:", error);

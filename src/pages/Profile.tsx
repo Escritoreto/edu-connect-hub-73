@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb, User, MessageSquare, Star, FileImage } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb, User, MessageSquare, Star, FileImage, Camera } from "lucide-react";
 import { PaymentInfoCard } from "@/components/PaymentInfoCard";
 import { MyProjectsSection } from "@/components/profile/MyProjectsSection";
 import { format } from "date-fns";
@@ -55,9 +55,7 @@ const Profile = () => {
   const [isLoadingFavorites, setIsLoadingFavorites] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
-    }
+    if (!loading && !user) navigate("/auth");
   }, [user, loading, navigate]);
 
   const linkUnlinkedRecords = async (userId: string, email: string) => {
@@ -151,6 +149,8 @@ const Profile = () => {
       if (!error) {
         toast({ title: "Avaliação enviada!", description: "Será exibida após aprovação do administrador." });
         fetchMyReview();
+      } else {
+        toast({ title: "Erro ao enviar avaliação", description: error.message, variant: "destructive" });
       }
     }
     setIsSubmittingReview(false);
@@ -179,14 +179,19 @@ const Profile = () => {
         toast({ title: "Arquivo muito grande", description: "A imagem deve ter no máximo 5MB", variant: "destructive" });
         return;
       }
+      // Convert to blob to handle camera photos properly
+      const reader = new FileReader();
+      reader.onload = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
       setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
     }
   };
 
   const uploadAvatar = async () => {
     if (!avatarFile || !user) return null;
-    const fileExt = avatarFile.name.split(".").pop();
+    const fileExt = avatarFile.name.split(".").pop() || "jpg";
     const fileName = `${user.id}/${Date.now()}.${fileExt}`;
     const { error: uploadError } = await supabase.storage.from("avatars").upload(fileName, avatarFile, { upsert: true });
     if (uploadError) throw uploadError;
@@ -205,11 +210,12 @@ const Profile = () => {
       if (profileEditAllowed) {
         updateData.full_name = fullName;
         updateData.phone = phone;
-        updateData.profile_edit_allowed = false; // Reset after edit
+        updateData.profile_edit_allowed = false;
       }
       const { error } = await supabase.from("profiles").update(updateData).eq("id", user.id);
       if (error) throw error;
       toast({ title: "Perfil atualizado!", description: "Suas informações foram salvas com sucesso." });
+      setAvatarFile(null);
       fetchProfile();
     } catch (error: any) {
       toast({ title: "Erro ao salvar perfil", description: error.message, variant: "destructive" });
@@ -236,12 +242,12 @@ const Profile = () => {
     if (!user) return;
     setUploadingReceiptId(id);
     try {
-      const ext = file.name.split('.').pop();
+      const ext = file.name.split('.').pop() || "jpg";
       const filePath = `${user.id}/${Date.now()}.${ext}`;
       const { error: uploadError } = await supabase.storage.from("payment-receipts").upload(filePath, file);
       if (uploadError) throw uploadError;
-      const { data: urlData } = supabase.storage.from("payment-receipts").getPublicUrl(filePath);
-      const receiptUrl = urlData?.publicUrl || null;
+      // Use the path directly since bucket is private
+      const receiptUrl = filePath;
 
       const table = type === "course" ? "course_enrollments" : "scholarship_requests";
       const { error } = await supabase.from(table).update({ receipt_url: receiptUrl, payment_status: "paid" } as any).eq("id", id);
@@ -254,6 +260,34 @@ const Profile = () => {
       toast({ title: "Erro ao enviar comprovativo", description: error.message, variant: "destructive" });
     }
     setUploadingReceiptId(null);
+  };
+
+  const renderPaymentSection = (item: any, type: "course" | "scholarship", isFree?: boolean) => {
+    if (item.status !== "approved") return null;
+    if (isFree) return <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs"><CheckCircle2 className="h-3 w-3 mr-1" />Gratuito</Badge>;
+
+    return (
+      <>
+        <PaymentInfoCard type={type} publicationTitle={item.publications?.title} coursePrice={item.publications?.value} />
+        {item.payment_status === "confirmed" ? (
+          <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs"><CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado</Badge>
+        ) : item.payment_status === "paid" ? (
+          <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs"><Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação</Badge>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => { e.stopPropagation(); markAsPaid(item.id, type); }} disabled={markingPaidId === item.id}>
+              {markingPaidId === item.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
+            </Button>
+            <label className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
+              <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadReceipt(item.id, type, f); }} />
+              <span className="inline-flex items-center gap-1 text-xs h-7 px-2 rounded border border-primary/30 text-primary hover:bg-primary/5 cursor-pointer">
+                {uploadingReceiptId === item.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Upload className="h-3 w-3" />Enviar Recibo</>}
+              </span>
+            </label>
+          </div>
+        )}
+      </>
+    );
   };
 
   if (loading || isLoadingProfile) {
@@ -329,7 +363,12 @@ const Profile = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Informações Pessoais</CardTitle>
-                  <CardDescription>Atualize suas informações de perfil</CardDescription>
+                  <CardDescription>
+                    Atualize suas informações de perfil
+                    {profileEditAllowed && (
+                      <Badge className="ml-2 bg-green-500/10 text-green-600 border-green-500/20">Edição liberada pelo administrador</Badge>
+                    )}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSave} className="space-y-6">
@@ -339,12 +378,20 @@ const Profile = () => {
                         <AvatarFallback>{fullName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col items-center gap-2">
-                        <Label htmlFor="avatar" className="cursor-pointer">
-                          <div className="flex items-center gap-2 text-sm text-primary hover:underline">
-                            <Upload className="h-4 w-4" />Alterar foto
-                          </div>
-                        </Label>
-                        <Input id="avatar" type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                        <div className="flex gap-2">
+                          <Label htmlFor="avatar" className="cursor-pointer">
+                            <div className="flex items-center gap-2 text-sm text-primary hover:underline">
+                              <Upload className="h-4 w-4" />Galeria
+                            </div>
+                          </Label>
+                          <Input id="avatar" type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                          <Label htmlFor="avatar-camera" className="cursor-pointer">
+                            <div className="flex items-center gap-2 text-sm text-primary hover:underline">
+                              <Camera className="h-4 w-4" />Câmera
+                            </div>
+                          </Label>
+                          <Input id="avatar-camera" type="file" accept="image/*" capture="user" className="hidden" onChange={handleAvatarChange} />
+                        </div>
                         <p className="text-xs text-muted-foreground">PNG, JPG ou WEBP (máx. 5MB)</p>
                       </div>
                     </div>
@@ -406,28 +453,7 @@ const Profile = () => {
                               <Badge variant={enrollment.status === "approved" ? "default" : enrollment.status === "pending" ? "secondary" : "destructive"} className="text-xs">
                                 {enrollment.status === "pending" ? "Pendente" : enrollment.status === "approved" ? "Aprovado" : enrollment.status}
                               </Badge>
-                              {enrollment.status === "approved" && (
-                                <>
-                                  <PaymentInfoCard type="course" publicationTitle={enrollment.publications?.title} coursePrice={enrollment.publications?.value} />
-                                  {enrollment.payment_status === "confirmed" ? (
-                                    <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs"><CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado</Badge>
-                                  ) : enrollment.payment_status === "paid" ? (
-                                    <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs"><Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação</Badge>
-                                  ) : (
-                                    <div className="flex items-center gap-2">
-                                      <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => { e.stopPropagation(); markAsPaid(enrollment.id, "course"); }} disabled={markingPaidId === enrollment.id}>
-                                        {markingPaidId === enrollment.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
-                                      </Button>
-                                      <label className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                                        <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadReceipt(enrollment.id, "course", f); }} />
-                                        <span className="inline-flex items-center gap-1 text-xs h-7 px-2 rounded border border-primary/30 text-primary hover:bg-primary/5 cursor-pointer">
-                                          {uploadingReceiptId === enrollment.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Upload className="h-3 w-3" />Enviar Recibo</>}
-                                        </span>
-                                      </label>
-                                    </div>
-                                  )}
-                                </>
-                              )}
+                              {renderPaymentSection(enrollment, "course")}
                               <span className="text-xs">Inscrito em {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
                             </div>
                           </div>
@@ -457,60 +483,36 @@ const Profile = () => {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {scholarshipRequests.map((request: any) => (
-                        <div key={request.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${request.publication_id}`)}>
-                          {request.publications?.image_url && (
-                            <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-foreground line-clamp-1">{request.publications?.title}</h3>
-                            <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                              {request.publications?.country && (
-                                <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
-                              )}
-                              <Badge variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"} className="text-xs">
-                                {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
-                              </Badge>
-                              {request.status === "approved" && (() => {
-                                const isMozambique = request.publications?.country?.toLowerCase()?.includes("moçambique") || request.publications?.country?.toLowerCase()?.includes("mozambique");
-                                if (isMozambique) {
-                                  return <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs"><CheckCircle2 className="h-3 w-3 mr-1" />Gratuito</Badge>;
-                                }
-                                return (
-                                  <>
-                                    <PaymentInfoCard type="scholarship" />
-                                    {request.payment_status === "confirmed" ? (
-                                      <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs"><CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado</Badge>
-                                    ) : request.payment_status === "paid" ? (
-                                      <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs"><Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação</Badge>
-                                    ) : (
-                                      <div className="flex items-center gap-2">
-                                        <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => { e.stopPropagation(); markAsPaid(request.id, "scholarship"); }} disabled={markingPaidId === request.id}>
-                                          {markingPaidId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
-                                        </Button>
-                                        <label className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
-                                          <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadReceipt(request.id, "scholarship", f); }} />
-                                          <span className="inline-flex items-center gap-1 text-xs h-7 px-2 rounded border border-primary/30 text-primary hover:bg-primary/5 cursor-pointer">
-                                            {uploadingReceiptId === request.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Upload className="h-3 w-3" />Enviar Recibo</>}
-                                          </span>
-                                        </label>
-                                      </div>
-                                    )}
-                                  </>
-                                );
-                              })()}
-                              <span className="text-xs">Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                      {scholarshipRequests.map((request: any) => {
+                        const isFree = request.publications?.country?.toLowerCase()?.includes("moçambique") || request.publications?.country?.toLowerCase()?.includes("mozambique");
+                        return (
+                          <div key={request.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${request.publication_id}`)}>
+                            {request.publications?.image_url && (
+                              <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-foreground line-clamp-1">{request.publications?.title}</h3>
+                              <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                                {request.publications?.country && (
+                                  <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
+                                )}
+                                <Badge variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"} className="text-xs">
+                                  {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
+                                </Badge>
+                                {renderPaymentSection(request, "scholarship", isFree)}
+                                <span className="text-xs">Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Universities Tab */}
+            {/* Universities Tab - NOW WITH PAYMENT */}
             <TabsContent value="universities">
               <Card>
                 <CardHeader>
@@ -540,6 +542,7 @@ const Profile = () => {
                               <Badge variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"} className="text-xs">
                                 {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
                               </Badge>
+                              {renderPaymentSection(request, "scholarship")}
                               <span className="text-xs">Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
                             </div>
                           </div>
@@ -555,8 +558,8 @@ const Profile = () => {
             <TabsContent value="cvs">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" />Histórico de CVs Baixados</CardTitle>
-                  <CardDescription>Currículos que você gerou e baixou</CardDescription>
+                  <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5 text-primary" />Histórico de CVs e Cartas</CardTitle>
+                  <CardDescription>Currículos e cartas de motivação que você gerou</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {isLoadingCvDownloads ? (
@@ -564,8 +567,11 @@ const Profile = () => {
                   ) : cvDownloads.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
                       <FileText className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                      <p>Você ainda não baixou nenhum currículo</p>
-                      <Button variant="outline" className="mt-4" onClick={() => navigate("/cv-builder")}>Criar Currículo</Button>
+                      <p>Você ainda não baixou nenhum currículo ou carta</p>
+                      <div className="flex gap-3 justify-center mt-4">
+                        <Button variant="outline" onClick={() => navigate("/cv-builder")}>Criar Currículo</Button>
+                        <Button variant="outline" onClick={() => navigate("/motivation-letter")}>Criar Carta</Button>
+                      </div>
                     </div>
                   ) : (
                     <div className="space-y-3">

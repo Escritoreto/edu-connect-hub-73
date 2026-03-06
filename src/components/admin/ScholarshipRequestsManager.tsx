@@ -41,6 +41,7 @@ const ScholarshipRequestsManager = () => {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [receiptUrls, setReceiptUrls] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -50,6 +51,12 @@ const ScholarshipRequestsManager = () => {
 
   const cleanupOldRecords = async () => {
     await supabase.rpc("cleanup_old_requests");
+  };
+
+  const getSignedReceiptUrl = async (path: string): Promise<string> => {
+    if (path.startsWith("http")) return path;
+    const { data } = await supabase.storage.from("payment-receipts").createSignedUrl(path, 3600);
+    return data?.signedUrl || path;
   };
 
   const fetchRequests = async () => {
@@ -63,6 +70,13 @@ const ScholarshipRequestsManager = () => {
       toast({ title: "Erro ao carregar solicitações", description: error.message, variant: "destructive" });
     } else {
       setRequests(data || []);
+      const urls: Record<string, string> = {};
+      for (const r of (data || [])) {
+        if ((r as any).receipt_url) {
+          urls[r.id] = await getSignedReceiptUrl((r as any).receipt_url);
+        }
+      }
+      setReceiptUrls(urls);
     }
     setLoading(false);
   };
@@ -237,8 +251,8 @@ const ScholarshipRequestsManager = () => {
                       <TableCell>{getStatusBadge(request.status)}</TableCell>
                       <TableCell>
                         <div className="space-y-1">
-                          {(request as any).receipt_url && (
-                            <a href={(request as any).receipt_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+                          {receiptUrls[request.id] && (
+                            <a href={receiptUrls[request.id]} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
                               <FileImage className="h-3 w-3" />Ver Recibo <ExternalLink className="h-3 w-3" />
                             </a>
                           )}
