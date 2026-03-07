@@ -306,6 +306,33 @@ const Profile = () => {
     );
   };
 
+  const toggleCourseSelection = (id: string) => {
+    setSelectedCourses(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const toggleScholarshipSelection = (id: string) => {
+    setSelectedScholarships(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const deleteSelectedCourses = async () => {
+    setDeletingSelected(true);
+    for (const id of selectedCourses) {
+      await supabase.from("course_enrollments").delete().eq("id", id);
+    }
+    toast({ title: `${selectedCourses.size} inscrição(ões) cancelada(s)` });
+    setSelectedCourses(new Set());
+    fetchEnrolledCourses();
+    setDeletingSelected(false);
+  };
+  const deleteSelectedScholarships = async () => {
+    setDeletingSelected(true);
+    for (const id of selectedScholarships) {
+      await supabase.from("scholarship_requests").delete().eq("id", id);
+    }
+    toast({ title: `${selectedScholarships.size} solicitação(ões) cancelada(s)` });
+    setSelectedScholarships(new Set());
+    fetchScholarshipRequests();
+    setDeletingSelected(false);
+  };
+
   if (loading || isLoadingProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
