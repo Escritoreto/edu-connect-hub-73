@@ -245,6 +245,7 @@ const EnrollmentsManager = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10"><Checkbox checked={selectedIds.size === filteredEnrollments.length && filteredEnrollments.length > 0} onCheckedChange={toggleSelectAll} /></TableHead>
                     <TableHead>Aluno</TableHead>
                     <TableHead>Curso</TableHead>
                     <TableHead>Contacto</TableHead>
