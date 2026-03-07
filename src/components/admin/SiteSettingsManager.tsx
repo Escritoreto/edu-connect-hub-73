@@ -109,24 +109,14 @@ const SiteSettingsManager = () => {
                 rows={3}
               />
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-slate-300">Email de Contacto</Label>
-                <Input
-                  type="email"
-                  value={settings.contact_email || ""}
-                  onChange={(e) => updateSetting("contact_email", e.target.value)}
-                  placeholder="contato@upmentor.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-slate-300">Telefone de Contacto</Label>
-                <Input
-                  value={settings.contact_phone || ""}
-                  onChange={(e) => updateSetting("contact_phone", e.target.value)}
-                  placeholder="+258 84 000 0000"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label className="text-slate-300">Email de Contacto</Label>
+              <Input
+                type="email"
+                value={settings.contact_email || ""}
+                onChange={(e) => updateSetting("contact_email", e.target.value)}
+                placeholder="contato@upmentor.com"
+              />
             </div>
           </TabsContent>
 
@@ -161,12 +151,13 @@ const SiteSettingsManager = () => {
 
           <TabsContent value="social" className="space-y-4 mt-4">
             <div className="space-y-2">
-              <Label className="text-slate-300">WhatsApp</Label>
+              <Label className="text-slate-300">WhatsApp (link ou número)</Label>
               <Input
                 value={settings.whatsapp || ""}
                 onChange={(e) => updateSetting("whatsapp", e.target.value)}
-                placeholder="+258 84 000 0000"
+                placeholder="https://wa.me/258840000000"
               />
+              <p className="text-xs text-slate-500">Ex: https://wa.me/258840000000 ou +258 84 000 0000</p>
             </div>
             <div className="space-y-2">
               <Label className="text-slate-300">Facebook</Label>

@@ -10,6 +10,7 @@ import { GraduationCap, Eye, EyeOff } from "lucide-react";
 import { lovable } from "@/integrations/lovable/index";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const Auth = () => {
   const [signupPhone, setSignupPhone] = useState("");
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showSignupConfirmPassword, setShowSignupConfirmPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
     if (user && !loading) {
@@ -53,6 +55,14 @@ const Auth = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptedTerms) {
+      toast({
+        title: "Termos obrigatórios",
+        description: "Você deve aceitar os termos e condições para criar uma conta.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (signupPassword !== signupConfirmPassword) {
       toast({
         title: "Senhas não coincidem",
@@ -72,8 +82,6 @@ const Auth = () => {
     setIsLoading(true);
     const { error } = await signUp(signupEmail, signupPassword, signupName, signupPhone);
     if (!error) {
-      // Save phone to profile after signup via metadata
-      // Phone will be saved when profile is created by trigger
       setShowVerificationMessage(true);
     }
     setIsLoading(false);
@@ -121,10 +129,10 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-primary p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-muted/30 p-4">
       <Link to="/" className="flex items-center space-x-2 mb-8 group">
-        <GraduationCap className="h-10 w-10 text-white transition-transform group-hover:scale-110" />
-        <span className="text-2xl font-bold text-white">UpMentor</span>
+        <GraduationCap className="h-10 w-10 text-primary transition-transform group-hover:scale-110" />
+        <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">UpMentor</span>
       </Link>
 
       <Card className="w-full max-w-md">
@@ -315,7 +323,24 @@ const Auth = () => {
                           <p className="text-xs text-destructive">As senhas não coincidem</p>
                         )}
                       </div>
-                      <Button type="submit" className="w-full" disabled={isLoading}>
+
+                      {/* Terms & Conditions */}
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="terms"
+                          checked={acceptedTerms}
+                          onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
+                          className="mt-0.5"
+                        />
+                        <label htmlFor="terms" className="text-xs text-muted-foreground leading-tight">
+                          Ao criar conta, concordo com os{" "}
+                          <Link to="/terms" className="text-primary hover:underline" target="_blank">Termos de Uso</Link>
+                          {" "}e{" "}
+                          <Link to="/privacy" className="text-primary hover:underline" target="_blank">Política de Privacidade</Link>
+                        </label>
+                      </div>
+
+                      <Button type="submit" className="w-full" disabled={isLoading || !acceptedTerms}>
                         {isLoading ? "Criando conta..." : "Criar Conta"}
                       </Button>
                     </form>
@@ -348,6 +373,14 @@ const Auth = () => {
                 </svg>
                 Entrar com Google
               </Button>
+
+              {/* Terms links for login tab too */}
+              <p className="mt-4 text-center text-xs text-muted-foreground">
+                Ao entrar, você concorda com os{" "}
+                <Link to="/terms" className="text-primary hover:underline">Termos de Uso</Link>
+                {" "}e{" "}
+                <Link to="/privacy" className="text-primary hover:underline">Política de Privacidade</Link>
+              </p>
             </>
           )}
         </CardContent>
