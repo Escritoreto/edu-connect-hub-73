@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Loader2, CheckCircle, XCircle, Clock, BookOpen, Mail, Phone, MapPin, Trash2, Banknote, FileImage, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -39,7 +40,31 @@ const EnrollmentsManager = () => {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [receiptUrls, setReceiptUrls] = useState<Record<string, string>>({});
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deletingBulk, setDeletingBulk] = useState(false);
   const { toast } = useToast();
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const toggleSelectAll = () => {
+    const filtered = filterStatus === "all" ? enrollments : enrollments.filter(e => e.status === filterStatus);
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map(e => e.id)));
+    }
+  };
+  const deleteBulk = async () => {
+    setDeletingBulk(true);
+    for (const id of selectedIds) {
+      await supabase.from("course_enrollments").delete().eq("id", id);
+    }
+    toast({ title: `${selectedIds.size} inscrição(ões) eliminada(s)` });
+    setSelectedIds(new Set());
+    fetchEnrollments();
+    setDeletingBulk(false);
+  };
 
   useEffect(() => {
     fetchEnrollments();
@@ -176,15 +201,37 @@ const EnrollmentsManager = () => {
               <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5" />Inscrições em Cursos</CardTitle>
               <CardDescription>Gerencie as inscrições dos usuários nos cursos</CardDescription>
             </div>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px]"><SelectValue placeholder="Filtrar por status" /></SelectTrigger>
-              <SelectContent className="bg-background">
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="pending">Pendentes</SelectItem>
-                <SelectItem value="approved">Aprovados</SelectItem>
-                <SelectItem value="rejected">Rejeitados</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-2">
+              {selectedIds.size > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="destructive" disabled={deletingBulk}>
+                      {deletingBulk ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
+                      Eliminar ({selectedIds.size})
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Eliminar {selectedIds.size} inscrição(ões)?</AlertDialogTitle>
+                      <AlertDialogDescription>Esta ação não pode ser desfeita.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={deleteBulk} className="bg-destructive text-destructive-foreground">Eliminar</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-[180px]"><SelectValue placeholder="Filtrar por status" /></SelectTrigger>
+                <SelectContent className="bg-background">
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="pending">Pendentes</SelectItem>
+                  <SelectItem value="approved">Aprovados</SelectItem>
+                  <SelectItem value="rejected">Rejeitados</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -198,6 +245,7 @@ const EnrollmentsManager = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10"><Checkbox checked={selectedIds.size === filteredEnrollments.length && filteredEnrollments.length > 0} onCheckedChange={toggleSelectAll} /></TableHead>
                     <TableHead>Aluno</TableHead>
                     <TableHead>Curso</TableHead>
                     <TableHead>Contacto</TableHead>
@@ -210,6 +258,7 @@ const EnrollmentsManager = () => {
                 <TableBody>
                   {filteredEnrollments.map((enrollment) => (
                     <TableRow key={enrollment.id}>
+                      <TableCell><Checkbox checked={selectedIds.has(enrollment.id)} onCheckedChange={() => toggleSelect(enrollment.id)} /></TableCell>
                       <TableCell>
                         <div>
                           <p className="font-medium">{enrollment.name}</p>

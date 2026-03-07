@@ -13,7 +13,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb, User, MessageSquare, Star, FileImage, Camera } from "lucide-react";
+import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, FileText, Banknote, CheckCircle2, School, Lightbulb, User, MessageSquare, Star, FileImage, Camera, Trash2, XCircle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { PaymentInfoCard } from "@/components/PaymentInfoCard";
 import { MyProjectsSection } from "@/components/profile/MyProjectsSection";
 import { format } from "date-fns";
@@ -53,6 +58,10 @@ const Profile = () => {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [favoritePublications, setFavoritePublications] = useState<any[]>([]);
   const [isLoadingFavorites, setIsLoadingFavorites] = useState(true);
+  const [myProjectsCount, setMyProjectsCount] = useState(0);
+  const [selectedCourses, setSelectedCourses] = useState<Set<string>>(new Set());
+  const [selectedScholarships, setSelectedScholarships] = useState<Set<string>>(new Set());
+  const [deletingSelected, setDeletingSelected] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
@@ -73,10 +82,17 @@ const Profile = () => {
         fetchCvDownloads();
         fetchMyReview();
         fetchFavoritePublications();
+        fetchMyProjectsCount();
       };
       init();
     }
   }, [user]);
+
+  const fetchMyProjectsCount = async () => {
+    if (!user) return;
+    const { count } = await supabase.from("projects").select("id", { count: "exact", head: true }).eq("creator_id", user.id);
+    setMyProjectsCount(count || 0);
+  };
 
   const fetchEnrolledCourses = async () => {
     if (!user) return;
@@ -290,6 +306,33 @@ const Profile = () => {
     );
   };
 
+  const toggleCourseSelection = (id: string) => {
+    setSelectedCourses(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const toggleScholarshipSelection = (id: string) => {
+    setSelectedScholarships(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const deleteSelectedCourses = async () => {
+    setDeletingSelected(true);
+    for (const id of selectedCourses) {
+      await supabase.from("course_enrollments").delete().eq("id", id);
+    }
+    toast({ title: `${selectedCourses.size} inscrição(ões) cancelada(s)` });
+    setSelectedCourses(new Set());
+    fetchEnrolledCourses();
+    setDeletingSelected(false);
+  };
+  const deleteSelectedScholarships = async () => {
+    setDeletingSelected(true);
+    for (const id of selectedScholarships) {
+      await supabase.from("scholarship_requests").delete().eq("id", id);
+    }
+    toast({ title: `${selectedScholarships.size} solicitação(ões) cancelada(s)` });
+    setSelectedScholarships(new Set());
+    fetchScholarshipRequests();
+    setDeletingSelected(false);
+  };
+
   if (loading || isLoadingProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -316,7 +359,7 @@ const Profile = () => {
           </div>
 
           {/* Stats Row */}
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
             <div className="bg-card border border-border rounded-xl p-3 text-center">
               <BookOpen className="h-5 w-5 text-primary mx-auto mb-1" />
               <div className="text-lg font-bold">{enrolledCourses.length}</div>
@@ -331,6 +374,11 @@ const Profile = () => {
               <School className="h-5 w-5 text-primary mx-auto mb-1" />
               <div className="text-lg font-bold">{universityRequests.length}</div>
               <div className="text-xs text-muted-foreground">Universidades</div>
+            </div>
+            <div className="bg-card border border-border rounded-xl p-3 text-center cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => navigate("/profile?tab=projects")}>
+              <Lightbulb className="h-5 w-5 text-primary mx-auto mb-1" />
+              <div className="text-lg font-bold">{myProjectsCount}</div>
+              <div className="text-xs text-muted-foreground">Projetos</div>
             </div>
             <div className="bg-card border border-border rounded-xl p-3 text-center">
               <Heart className="h-5 w-5 text-destructive mx-auto mb-1" />
@@ -427,8 +475,32 @@ const Profile = () => {
             <TabsContent value="courses">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" />Cursos Inscritos</CardTitle>
-                  <CardDescription>Cursos em que você se inscreveu</CardDescription>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" />Cursos Inscritos</CardTitle>
+                      <CardDescription>Cursos em que você se inscreveu</CardDescription>
+                    </div>
+                    {selectedCourses.size > 0 && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="destructive" disabled={deletingSelected}>
+                            {deletingSelected ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
+                            Cancelar ({selectedCourses.size})
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Cancelar {selectedCourses.size} inscrição(ões)?</AlertDialogTitle>
+                            <AlertDialogDescription>Esta ação não pode ser desfeita.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Voltar</AlertDialogCancel>
+                            <AlertDialogAction onClick={deleteSelectedCourses} className="bg-destructive text-destructive-foreground">Confirmar</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {isLoadingCourses ? (
@@ -442,19 +514,28 @@ const Profile = () => {
                   ) : (
                     <div className="space-y-4">
                       {enrolledCourses.map((enrollment: any) => (
-                        <div key={enrollment.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${enrollment.publication_id}`)}>
-                          {enrollment.publications?.image_url && (
-                            <img src={enrollment.publications.image_url} alt={enrollment.publications.title} className="w-16 h-16 object-cover rounded" />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-foreground line-clamp-1">{enrollment.publications?.title}</h3>
-                            <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                              {enrollment.publications?.value && <span className="font-medium text-primary">{enrollment.publications.value}</span>}
-                              <Badge variant={enrollment.status === "approved" ? "default" : enrollment.status === "pending" ? "secondary" : "destructive"} className="text-xs">
-                                {enrollment.status === "pending" ? "Pendente" : enrollment.status === "approved" ? "Aprovado" : enrollment.status}
-                              </Badge>
-                              {renderPaymentSection(enrollment, "course")}
-                              <span className="text-xs">Inscrito em {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                        <div key={enrollment.id} className="flex items-start gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                          <Checkbox
+                            checked={selectedCourses.has(enrollment.id)}
+                            onCheckedChange={() => toggleCourseSelection(enrollment.id)}
+                            className="mt-1"
+                          />
+                          <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/publication/${enrollment.publication_id}`)}>
+                            <div className="flex items-start gap-3">
+                              {enrollment.publications?.image_url && (
+                                <img src={enrollment.publications.image_url} alt={enrollment.publications.title} className="w-16 h-16 object-cover rounded" />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-foreground line-clamp-1">{enrollment.publications?.title}</h3>
+                                <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                                  {enrollment.publications?.value && <span className="font-medium text-primary">{enrollment.publications.value}</span>}
+                                  <Badge variant={enrollment.status === "approved" ? "default" : enrollment.status === "pending" ? "secondary" : "destructive"} className="text-xs">
+                                    {enrollment.status === "pending" ? "Pendente" : enrollment.status === "approved" ? "Aprovado" : enrollment.status}
+                                  </Badge>
+                                  {renderPaymentSection(enrollment, "course")}
+                                  <span className="text-xs">Inscrito em {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -469,8 +550,32 @@ const Profile = () => {
             <TabsContent value="scholarships">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><GraduationCap className="h-5 w-5 text-primary" />Bolsas Solicitadas</CardTitle>
-                  <CardDescription>Bolsas de estudo que você solicitou orientação</CardDescription>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2"><GraduationCap className="h-5 w-5 text-primary" />Bolsas Solicitadas</CardTitle>
+                      <CardDescription>Bolsas de estudo que você solicitou orientação</CardDescription>
+                    </div>
+                    {selectedScholarships.size > 0 && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="destructive" disabled={deletingSelected}>
+                            {deletingSelected ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
+                            Cancelar ({selectedScholarships.size})
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Cancelar {selectedScholarships.size} solicitação(ões)?</AlertDialogTitle>
+                            <AlertDialogDescription>Esta ação não pode ser desfeita.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Voltar</AlertDialogCancel>
+                            <AlertDialogAction onClick={deleteSelectedScholarships} className="bg-destructive text-destructive-foreground">Confirmar</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {isLoadingScholarships ? (
@@ -486,21 +591,30 @@ const Profile = () => {
                       {scholarshipRequests.map((request: any) => {
                         const isFree = request.publications?.country?.toLowerCase()?.includes("moçambique") || request.publications?.country?.toLowerCase()?.includes("mozambique");
                         return (
-                          <div key={request.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${request.publication_id}`)}>
-                            {request.publications?.image_url && (
-                              <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
-                            )}
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-foreground line-clamp-1">{request.publications?.title}</h3>
-                              <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                                {request.publications?.country && (
-                                  <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
+                          <div key={request.id} className="flex items-start gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                            <Checkbox
+                              checked={selectedScholarships.has(request.id)}
+                              onCheckedChange={() => toggleScholarshipSelection(request.id)}
+                              className="mt-1"
+                            />
+                            <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/publication/${request.publication_id}`)}>
+                              <div className="flex items-start gap-3">
+                                {request.publications?.image_url && (
+                                  <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
                                 )}
-                                <Badge variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"} className="text-xs">
-                                  {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
-                                </Badge>
-                                {renderPaymentSection(request, "scholarship", isFree)}
-                                <span className="text-xs">Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-semibold text-foreground line-clamp-1">{request.publications?.title}</h3>
+                                  <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                                    {request.publications?.country && (
+                                      <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
+                                    )}
+                                    <Badge variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"} className="text-xs">
+                                      {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
+                                    </Badge>
+                                    {renderPaymentSection(request, "scholarship", isFree)}
+                                    <span className="text-xs">Solicitado em {format(new Date(request.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>

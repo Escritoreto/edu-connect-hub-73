@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+
+const IDLE_TIMEOUT = 15 * 60 * 1000; // 15 minutes
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -12,6 +14,35 @@ export function useAuth() {
   const [adminChecked, setAdminChecked] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Idle timeout logic
+  const resetIdleTimer = useCallback(() => {
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      if (currentSession) {
+        await supabase.auth.signOut();
+        toast({
+          title: "Sessão expirada",
+          description: "Você foi desconectado por inatividade.",
+        });
+        navigate("/auth");
+      }
+    }, IDLE_TIMEOUT);
+  }, [navigate, toast]);
+
+  useEffect(() => {
+    if (!user) return;
+    const events = ["mousedown", "keydown", "scroll", "touchstart", "mousemove"];
+    const handler = () => resetIdleTimer();
+    events.forEach((e) => window.addEventListener(e, handler, { passive: true }));
+    resetIdleTimer();
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, handler));
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+  }, [user, resetIdleTimer]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -119,6 +150,7 @@ export function useAuth() {
   };
 
   const signOut = async () => {
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     const { error } = await supabase.auth.signOut();
     
     if (error) {
