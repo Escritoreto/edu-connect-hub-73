@@ -43,7 +43,28 @@ const ScholarshipRequestsManager = () => {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [receiptUrls, setReceiptUrls] = useState<Record<string, string>>({});
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deletingBulk, setDeletingBulk] = useState(false);
   const { toast } = useToast();
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const toggleSelectAll = () => {
+    const filtered = filterStatus === "all" ? requests : requests.filter(r => r.status === filterStatus);
+    if (selectedIds.size === filtered.length) setSelectedIds(new Set());
+    else setSelectedIds(new Set(filtered.map(r => r.id)));
+  };
+  const deleteBulk = async () => {
+    setDeletingBulk(true);
+    for (const id of selectedIds) {
+      await supabase.from("scholarship_requests").delete().eq("id", id);
+    }
+    toast({ title: `${selectedIds.size} solicitação(ões) eliminada(s)` });
+    setSelectedIds(new Set());
+    fetchRequests();
+    setDeletingBulk(false);
+  };
 
   useEffect(() => {
     fetchRequests();
