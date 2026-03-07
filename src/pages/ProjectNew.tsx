@@ -68,9 +68,9 @@ const ProjectNew = () => {
       if (imageFile) {
         const ext = imageFile.name.split(".").pop();
         const path = `projects/${user.id}/${Date.now()}.${ext}`;
-        const { error: uploadErr } = await supabase.storage.from("publication-images").upload(path, imageFile);
+        const { error: uploadErr } = await supabase.storage.from("project-images").upload(path, imageFile);
         if (uploadErr) throw uploadErr;
-        const { data: { publicUrl } } = supabase.storage.from("publication-images").getPublicUrl(path);
+        const { data: { publicUrl } } = supabase.storage.from("project-images").getPublicUrl(path);
         imageUrl = publicUrl;
       }
 
