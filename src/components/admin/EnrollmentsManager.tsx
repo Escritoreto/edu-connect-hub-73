@@ -258,6 +258,7 @@ const EnrollmentsManager = () => {
                 <TableBody>
                   {filteredEnrollments.map((enrollment) => (
                     <TableRow key={enrollment.id}>
+                      <TableCell><Checkbox checked={selectedIds.has(enrollment.id)} onCheckedChange={() => toggleSelect(enrollment.id)} /></TableCell>
                       <TableCell>
                         <div>
                           <p className="font-medium">{enrollment.name}</p>
