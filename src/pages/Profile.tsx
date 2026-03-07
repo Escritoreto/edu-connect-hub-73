@@ -77,10 +77,17 @@ const Profile = () => {
         fetchCvDownloads();
         fetchMyReview();
         fetchFavoritePublications();
+        fetchMyProjectsCount();
       };
       init();
     }
   }, [user]);
+
+  const fetchMyProjectsCount = async () => {
+    if (!user) return;
+    const { count } = await supabase.from("projects").select("id", { count: "exact", head: true }).eq("creator_id", user.id);
+    setMyProjectsCount(count || 0);
+  };
 
   const fetchEnrolledCourses = async () => {
     if (!user) return;
