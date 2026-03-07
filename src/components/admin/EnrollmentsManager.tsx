@@ -48,10 +48,11 @@ const EnrollmentsManager = () => {
     setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
   };
   const toggleSelectAll = () => {
-    if (selectedIds.size === filteredEnrollments.length) {
+    const filtered = filterStatus === "all" ? enrollments : enrollments.filter(e => e.status === filterStatus);
+    if (selectedIds.size === filtered.length) {
       setSelectedIds(new Set());
     } else {
-      setSelectedIds(new Set(filteredEnrollments.map(e => e.id)));
+      setSelectedIds(new Set(filtered.map(e => e.id)));
     }
   };
   const deleteBulk = async () => {
