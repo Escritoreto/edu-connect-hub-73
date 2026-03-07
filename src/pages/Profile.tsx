@@ -53,6 +53,10 @@ const Profile = () => {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [favoritePublications, setFavoritePublications] = useState<any[]>([]);
   const [isLoadingFavorites, setIsLoadingFavorites] = useState(true);
+  const [myProjectsCount, setMyProjectsCount] = useState(0);
+  const [selectedCourses, setSelectedCourses] = useState<Set<string>>(new Set());
+  const [selectedScholarships, setSelectedScholarships] = useState<Set<string>>(new Set());
+  const [deletingSelected, setDeletingSelected] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
