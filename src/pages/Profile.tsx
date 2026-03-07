@@ -475,8 +475,32 @@ const Profile = () => {
             <TabsContent value="courses">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" />Cursos Inscritos</CardTitle>
-                  <CardDescription>Cursos em que você se inscreveu</CardDescription>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" />Cursos Inscritos</CardTitle>
+                      <CardDescription>Cursos em que você se inscreveu</CardDescription>
+                    </div>
+                    {selectedCourses.size > 0 && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button size="sm" variant="destructive" disabled={deletingSelected}>
+                            {deletingSelected ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
+                            Cancelar ({selectedCourses.size})
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Cancelar {selectedCourses.size} inscrição(ões)?</AlertDialogTitle>
+                            <AlertDialogDescription>Esta ação não pode ser desfeita.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Voltar</AlertDialogCancel>
+                            <AlertDialogAction onClick={deleteSelectedCourses} className="bg-destructive text-destructive-foreground">Confirmar</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {isLoadingCourses ? (
@@ -490,19 +514,28 @@ const Profile = () => {
                   ) : (
                     <div className="space-y-4">
                       {enrolledCourses.map((enrollment: any) => (
-                        <div key={enrollment.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${enrollment.publication_id}`)}>
-                          {enrollment.publications?.image_url && (
-                            <img src={enrollment.publications.image_url} alt={enrollment.publications.title} className="w-16 h-16 object-cover rounded" />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-foreground line-clamp-1">{enrollment.publications?.title}</h3>
-                            <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                              {enrollment.publications?.value && <span className="font-medium text-primary">{enrollment.publications.value}</span>}
-                              <Badge variant={enrollment.status === "approved" ? "default" : enrollment.status === "pending" ? "secondary" : "destructive"} className="text-xs">
-                                {enrollment.status === "pending" ? "Pendente" : enrollment.status === "approved" ? "Aprovado" : enrollment.status}
-                              </Badge>
-                              {renderPaymentSection(enrollment, "course")}
-                              <span className="text-xs">Inscrito em {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                        <div key={enrollment.id} className="flex items-start gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                          <Checkbox
+                            checked={selectedCourses.has(enrollment.id)}
+                            onCheckedChange={() => toggleCourseSelection(enrollment.id)}
+                            className="mt-1"
+                          />
+                          <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/publication/${enrollment.publication_id}`)}>
+                            <div className="flex items-start gap-3">
+                              {enrollment.publications?.image_url && (
+                                <img src={enrollment.publications.image_url} alt={enrollment.publications.title} className="w-16 h-16 object-cover rounded" />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-foreground line-clamp-1">{enrollment.publications?.title}</h3>
+                                <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
+                                  {enrollment.publications?.value && <span className="font-medium text-primary">{enrollment.publications.value}</span>}
+                                  <Badge variant={enrollment.status === "approved" ? "default" : enrollment.status === "pending" ? "secondary" : "destructive"} className="text-xs">
+                                    {enrollment.status === "pending" ? "Pendente" : enrollment.status === "approved" ? "Aprovado" : enrollment.status}
+                                  </Badge>
+                                  {renderPaymentSection(enrollment, "course")}
+                                  <span className="text-xs">Inscrito em {format(new Date(enrollment.created_at), "dd/MM/yyyy", { locale: ptBR })}</span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
