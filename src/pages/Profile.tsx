@@ -327,7 +327,7 @@ const Profile = () => {
           </div>
 
           {/* Stats Row */}
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
             <div className="bg-card border border-border rounded-xl p-3 text-center">
               <BookOpen className="h-5 w-5 text-primary mx-auto mb-1" />
               <div className="text-lg font-bold">{enrolledCourses.length}</div>
@@ -342,6 +342,11 @@ const Profile = () => {
               <School className="h-5 w-5 text-primary mx-auto mb-1" />
               <div className="text-lg font-bold">{universityRequests.length}</div>
               <div className="text-xs text-muted-foreground">Universidades</div>
+            </div>
+            <div className="bg-card border border-border rounded-xl p-3 text-center cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => navigate("/profile?tab=projects")}>
+              <Lightbulb className="h-5 w-5 text-primary mx-auto mb-1" />
+              <div className="text-lg font-bold">{myProjectsCount}</div>
+              <div className="text-xs text-muted-foreground">Projetos</div>
             </div>
             <div className="bg-card border border-border rounded-xl p-3 text-center">
               <Heart className="h-5 w-5 text-destructive mx-auto mb-1" />
