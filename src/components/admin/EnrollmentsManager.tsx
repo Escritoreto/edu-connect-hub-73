@@ -201,15 +201,37 @@ const EnrollmentsManager = () => {
               <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5" />Inscrições em Cursos</CardTitle>
               <CardDescription>Gerencie as inscrições dos usuários nos cursos</CardDescription>
             </div>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px]"><SelectValue placeholder="Filtrar por status" /></SelectTrigger>
-              <SelectContent className="bg-background">
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="pending">Pendentes</SelectItem>
-                <SelectItem value="approved">Aprovados</SelectItem>
-                <SelectItem value="rejected">Rejeitados</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-2">
+              {selectedIds.size > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button size="sm" variant="destructive" disabled={deletingBulk}>
+                      {deletingBulk ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
+                      Eliminar ({selectedIds.size})
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Eliminar {selectedIds.size} inscrição(ões)?</AlertDialogTitle>
+                      <AlertDialogDescription>Esta ação não pode ser desfeita.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={deleteBulk} className="bg-destructive text-destructive-foreground">Eliminar</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-[180px]"><SelectValue placeholder="Filtrar por status" /></SelectTrigger>
+                <SelectContent className="bg-background">
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="pending">Pendentes</SelectItem>
+                  <SelectItem value="approved">Aprovados</SelectItem>
+                  <SelectItem value="rejected">Rejeitados</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
