@@ -17,8 +17,8 @@ import { Loader2, Upload, Heart, Calendar, MapPin, BookOpen, GraduationCap, File
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from
+"@/components/ui/alert-dialog";
 import { PaymentInfoCard } from "@/components/PaymentInfoCard";
 import { MyProjectsSection } from "@/components/profile/MyProjectsSection";
 import { format } from "date-fns";
@@ -97,11 +97,11 @@ const Profile = () => {
   const fetchEnrolledCourses = async () => {
     if (!user) return;
     setIsLoadingCourses(true);
-    const { data, error } = await supabase
-      .from("course_enrollments")
-      .select(`*, publications:publication_id (id, title, image_url, value, category)`)
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+    const { data, error } = await supabase.
+    from("course_enrollments").
+    select(`*, publications:publication_id (id, title, image_url, value, category)`).
+    eq("user_id", user.id).
+    order("created_at", { ascending: false });
     if (!error && data) setEnrolledCourses(data);
     setIsLoadingCourses(false);
   };
@@ -109,11 +109,11 @@ const Profile = () => {
   const fetchScholarshipRequests = async () => {
     if (!user) return;
     setIsLoadingScholarships(true);
-    const { data, error } = await supabase
-      .from("scholarship_requests")
-      .select(`*, publications:publication_id (id, title, image_url, country, category)`)
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+    const { data, error } = await supabase.
+    from("scholarship_requests").
+    select(`*, publications:publication_id (id, title, image_url, country, category)`).
+    eq("user_id", user.id).
+    order("created_at", { ascending: false });
     if (!error && data) {
       setScholarshipRequests(data.filter((r: any) => r.publications?.category !== "university"));
       setUniversityRequests(data.filter((r: any) => r.publications?.category === "university"));
@@ -248,8 +248,8 @@ const Profile = () => {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Marcado como pago!", description: "O administrador será notificado para confirmar." });
-      if (type === "course") fetchEnrolledCourses();
-      else fetchScholarshipRequests();
+      if (type === "course") fetchEnrolledCourses();else
+      fetchScholarshipRequests();
     }
     setMarkingPaidId(null);
   };
@@ -270,8 +270,8 @@ const Profile = () => {
       if (error) throw error;
 
       toast({ title: "Comprovativo enviado!", description: "O administrador será notificado para confirmar o pagamento." });
-      if (type === "course") fetchEnrolledCourses();
-      else fetchScholarshipRequests();
+      if (type === "course") fetchEnrolledCourses();else
+      fetchScholarshipRequests();
     } catch (error: any) {
       toast({ title: "Erro ao enviar comprovativo", description: error.message, variant: "destructive" });
     }
@@ -285,32 +285,32 @@ const Profile = () => {
     return (
       <>
         <PaymentInfoCard type={type} publicationTitle={item.publications?.title} coursePrice={item.publications?.value} />
-        {item.payment_status === "confirmed" ? (
-          <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs"><CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado</Badge>
-        ) : item.payment_status === "paid" ? (
-          <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs"><Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação</Badge>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => { e.stopPropagation(); markAsPaid(item.id, type); }} disabled={markingPaidId === item.id}>
+        {item.payment_status === "confirmed" ?
+        <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs"><CheckCircle2 className="h-3 w-3 mr-1" />Pagamento Confirmado</Badge> :
+        item.payment_status === "paid" ?
+        <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs"><Banknote className="h-3 w-3 mr-1" />Aguardando Confirmação</Badge> :
+
+        <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" className="text-amber-600 border-amber-500/30 hover:bg-amber-50 dark:hover:bg-amber-950/30 text-xs h-7" onClick={(e) => {e.stopPropagation();markAsPaid(item.id, type);}} disabled={markingPaidId === item.id}>
               {markingPaidId === item.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Banknote className="h-3 w-3 mr-1" />Pago</>}
             </Button>
             <label className="cursor-pointer" onClick={(e) => e.stopPropagation()}>
-              <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadReceipt(item.id, type, f); }} />
+              <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => {const f = e.target.files?.[0];if (f) uploadReceipt(item.id, type, f);}} />
               <span className="inline-flex items-center gap-1 text-xs h-7 px-2 rounded border border-primary/30 text-primary hover:bg-primary/5 cursor-pointer">
                 {uploadingReceiptId === item.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <><Upload className="h-3 w-3" />Enviar Recibo</>}
               </span>
             </label>
           </div>
-        )}
-      </>
-    );
+        }
+      </>);
+
   };
 
   const toggleCourseSelection = (id: string) => {
-    setSelectedCourses(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+    setSelectedCourses((prev) => {const n = new Set(prev);n.has(id) ? n.delete(id) : n.add(id);return n;});
   };
   const toggleScholarshipSelection = (id: string) => {
-    setSelectedScholarships(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+    setSelectedScholarships((prev) => {const n = new Set(prev);n.has(id) ? n.delete(id) : n.add(id);return n;});
   };
   const deleteSelectedCourses = async () => {
     setDeletingSelected(true);
@@ -337,8 +337,8 @@ const Profile = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -413,9 +413,9 @@ const Profile = () => {
                   <CardTitle>Informações Pessoais</CardTitle>
                   <CardDescription>
                     Atualize suas informações de perfil
-                    {profileEditAllowed && (
-                      <Badge className="ml-2 bg-green-500/10 text-green-600 border-green-500/20">Edição liberada pelo administrador</Badge>
-                    )}
+                    {profileEditAllowed &&
+                    <Badge className="ml-2 bg-green-500/10 text-green-600 border-green-500/20">Edição liberada pelo administrador</Badge>
+                    }
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -434,9 +434,9 @@ const Profile = () => {
                           </Label>
                           <Input id="avatar" type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
                           <Label htmlFor="avatar-camera" className="cursor-pointer">
-                            <div className="flex items-center gap-2 text-sm text-primary hover:underline">
-                              <Camera className="h-4 w-4" />Câmera
-                            </div>
+                            
+
+                            
                           </Label>
                           <Input id="avatar-camera" type="file" accept="image/*" capture="user" className="hidden" onChange={handleAvatarChange} />
                         </div>
@@ -447,16 +447,16 @@ const Profile = () => {
                     <div className="space-y-2">
                       <Label htmlFor="fullName">Nome Completo</Label>
                       <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Digite seu nome completo" disabled={!profileEditAllowed} className={!profileEditAllowed ? "bg-muted" : ""} />
-                      {!profileEditAllowed && fullName && (
-                        <p className="text-xs text-muted-foreground">Para alterar o nome, solicite ao administrador via mensagens.</p>
-                      )}
+                      {!profileEditAllowed && fullName &&
+                      <p className="text-xs text-muted-foreground">Para alterar o nome, solicite ao administrador via mensagens.</p>
+                      }
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone">Número de Celular</Label>
                       <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Digite seu número de celular" disabled={!profileEditAllowed} className={!profileEditAllowed ? "bg-muted" : ""} />
-                      {!profileEditAllowed && phone && (
-                        <p className="text-xs text-muted-foreground">Para alterar o número, solicite ao administrador via mensagens.</p>
-                      )}
+                      {!profileEditAllowed && phone &&
+                      <p className="text-xs text-muted-foreground">Para alterar o número, solicite ao administrador via mensagens.</p>
+                      }
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
@@ -480,8 +480,8 @@ const Profile = () => {
                       <CardTitle className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" />Cursos Inscritos</CardTitle>
                       <CardDescription>Cursos em que você se inscreveu</CardDescription>
                     </div>
-                    {selectedCourses.size > 0 && (
-                      <AlertDialog>
+                    {selectedCourses.size > 0 &&
+                    <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button size="sm" variant="destructive" disabled={deletingSelected}>
                             {deletingSelected ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
@@ -499,32 +499,32 @@ const Profile = () => {
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
-                    )}
+                    }
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {isLoadingCourses ? (
-                    <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-                  ) : enrolledCourses.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
+                  {isLoadingCourses ?
+                  <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div> :
+                  enrolledCourses.length === 0 ?
+                  <div className="text-center py-8 text-muted-foreground">
                       <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-20" />
                       <p>Você ainda não se inscreveu em nenhum curso</p>
                       <Button variant="outline" className="mt-4" onClick={() => navigate("/courses")}>Explorar Cursos</Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {enrolledCourses.map((enrollment: any) => (
-                        <div key={enrollment.id} className="flex items-start gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                    </div> :
+
+                  <div className="space-y-4">
+                      {enrolledCourses.map((enrollment: any) =>
+                    <div key={enrollment.id} className="flex items-start gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
                           <Checkbox
-                            checked={selectedCourses.has(enrollment.id)}
-                            onCheckedChange={() => toggleCourseSelection(enrollment.id)}
-                            className="mt-1"
-                          />
+                        checked={selectedCourses.has(enrollment.id)}
+                        onCheckedChange={() => toggleCourseSelection(enrollment.id)}
+                        className="mt-1" />
+                      
                           <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/publication/${enrollment.publication_id}`)}>
                             <div className="flex items-start gap-3">
-                              {enrollment.publications?.image_url && (
-                                <img src={enrollment.publications.image_url} alt={enrollment.publications.title} className="w-16 h-16 object-cover rounded" />
-                              )}
+                              {enrollment.publications?.image_url &&
+                          <img src={enrollment.publications.image_url} alt={enrollment.publications.title} className="w-16 h-16 object-cover rounded" />
+                          }
                               <div className="flex-1 min-w-0">
                                 <h3 className="font-semibold text-foreground line-clamp-1">{enrollment.publications?.title}</h3>
                                 <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
@@ -539,9 +539,9 @@ const Profile = () => {
                             </div>
                           </div>
                         </div>
-                      ))}
+                    )}
                     </div>
-                  )}
+                  }
                 </CardContent>
               </Card>
             </TabsContent>
@@ -555,8 +555,8 @@ const Profile = () => {
                       <CardTitle className="flex items-center gap-2"><GraduationCap className="h-5 w-5 text-primary" />Bolsas Solicitadas</CardTitle>
                       <CardDescription>Bolsas de estudo que você solicitou orientação</CardDescription>
                     </div>
-                    {selectedScholarships.size > 0 && (
-                      <AlertDialog>
+                    {selectedScholarships.size > 0 &&
+                    <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button size="sm" variant="destructive" disabled={deletingSelected}>
                             {deletingSelected ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Trash2 className="h-4 w-4 mr-1" />}
@@ -574,40 +574,40 @@ const Profile = () => {
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
-                    )}
+                    }
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {isLoadingScholarships ? (
-                    <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-                  ) : scholarshipRequests.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
+                  {isLoadingScholarships ?
+                  <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div> :
+                  scholarshipRequests.length === 0 ?
+                  <div className="text-center py-8 text-muted-foreground">
                       <GraduationCap className="h-12 w-12 mx-auto mb-4 opacity-20" />
                       <p>Você ainda não solicitou orientação para nenhuma bolsa</p>
                       <Button variant="outline" className="mt-4" onClick={() => navigate("/scholarships")}>Explorar Bolsas</Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
+                    </div> :
+
+                  <div className="space-y-4">
                       {scholarshipRequests.map((request: any) => {
-                        const isFree = request.publications?.country?.toLowerCase()?.includes("moçambique") || request.publications?.country?.toLowerCase()?.includes("mozambique");
-                        return (
-                          <div key={request.id} className="flex items-start gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                      const isFree = request.publications?.country?.toLowerCase()?.includes("moçambique") || request.publications?.country?.toLowerCase()?.includes("mozambique");
+                      return (
+                        <div key={request.id} className="flex items-start gap-3 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors">
                             <Checkbox
-                              checked={selectedScholarships.has(request.id)}
-                              onCheckedChange={() => toggleScholarshipSelection(request.id)}
-                              className="mt-1"
-                            />
+                            checked={selectedScholarships.has(request.id)}
+                            onCheckedChange={() => toggleScholarshipSelection(request.id)}
+                            className="mt-1" />
+                          
                             <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/publication/${request.publication_id}`)}>
                               <div className="flex items-start gap-3">
-                                {request.publications?.image_url && (
-                                  <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
-                                )}
+                                {request.publications?.image_url &&
+                              <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
+                              }
                                 <div className="flex-1 min-w-0">
                                   <h3 className="font-semibold text-foreground line-clamp-1">{request.publications?.title}</h3>
                                   <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                                    {request.publications?.country && (
-                                      <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
-                                    )}
+                                    {request.publications?.country &&
+                                  <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
+                                  }
                                     <Badge variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"} className="text-xs">
                                       {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
                                     </Badge>
@@ -617,11 +617,11 @@ const Profile = () => {
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          </div>);
+
+                    })}
                     </div>
-                  )}
+                  }
                 </CardContent>
               </Card>
             </TabsContent>
@@ -634,25 +634,25 @@ const Profile = () => {
                   <CardDescription>Universidades privadas que você solicitou informações</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {universityRequests.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
+                  {universityRequests.length === 0 ?
+                  <div className="text-center py-8 text-muted-foreground">
                       <School className="h-12 w-12 mx-auto mb-4 opacity-20" />
                       <p>Você ainda não solicitou informações sobre nenhuma universidade</p>
                       <Button variant="outline" className="mt-4" onClick={() => navigate("/universities")}>Explorar Universidades</Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {universityRequests.map((request: any) => (
-                        <div key={request.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${request.publication_id}`)}>
-                          {request.publications?.image_url && (
-                            <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
-                          )}
+                    </div> :
+
+                  <div className="space-y-4">
+                      {universityRequests.map((request: any) =>
+                    <div key={request.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${request.publication_id}`)}>
+                          {request.publications?.image_url &&
+                      <img src={request.publications.image_url} alt={request.publications.title} className="w-16 h-16 object-cover rounded" />
+                      }
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-foreground line-clamp-1">{request.publications?.title}</h3>
                             <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted-foreground">
-                              {request.publications?.country && (
-                                <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
-                              )}
+                              {request.publications?.country &&
+                          <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /><span>{request.publications.country}</span></div>
+                          }
                               <Badge variant={request.status === "approved" ? "default" : request.status === "pending" ? "secondary" : "destructive"} className="text-xs">
                                 {request.status === "pending" ? "Pendente" : request.status === "approved" ? "Aprovado" : request.status === "rejected" ? "Rejeitado" : request.status}
                               </Badge>
@@ -661,9 +661,9 @@ const Profile = () => {
                             </div>
                           </div>
                         </div>
-                      ))}
+                    )}
                     </div>
-                  )}
+                  }
                 </CardContent>
               </Card>
             </TabsContent>
@@ -676,21 +676,21 @@ const Profile = () => {
                   <CardDescription>Currículos e cartas de motivação que você gerou</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {isLoadingCvDownloads ? (
-                    <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-                  ) : cvDownloads.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
+                  {isLoadingCvDownloads ?
+                  <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div> :
+                  cvDownloads.length === 0 ?
+                  <div className="text-center py-8 text-muted-foreground">
                       <FileText className="h-12 w-12 mx-auto mb-4 opacity-20" />
                       <p>Você ainda não baixou nenhum currículo ou carta</p>
                       <div className="flex gap-3 justify-center mt-4">
                         <Button variant="outline" onClick={() => navigate("/cv-builder")}>Criar Currículo</Button>
                         <Button variant="outline" onClick={() => navigate("/motivation-letter")}>Criar Carta</Button>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {cvDownloads.map((dl: any) => (
-                        <div key={dl.id} className="flex items-center gap-4 p-3 rounded-lg border border-border">
+                    </div> :
+
+                  <div className="space-y-3">
+                      {cvDownloads.map((dl: any) =>
+                    <div key={dl.id} className="flex items-center gap-4 p-3 rounded-lg border border-border">
                           <FileText className="h-8 w-8 text-primary shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-foreground text-sm">{dl.cv_name}</p>
@@ -700,9 +700,9 @@ const Profile = () => {
                             {format(new Date(dl.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                           </span>
                         </div>
-                      ))}
+                    )}
                     </div>
-                  )}
+                  }
                 </CardContent>
               </Card>
             </TabsContent>
@@ -720,18 +720,18 @@ const Profile = () => {
                   <CardDescription>Publicações que você salvou como favoritas</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {isLoadingFavorites ? (
-                    <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>
-                  ) : favoritePublications.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
+                  {isLoadingFavorites ?
+                  <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div> :
+                  favoritePublications.length === 0 ?
+                  <div className="text-center py-8 text-muted-foreground">
                       <Heart className="h-12 w-12 mx-auto mb-4 opacity-20" />
                       <p>Você ainda não tem favoritos</p>
                       <Button variant="outline" className="mt-4" onClick={() => navigate("/scholarships")}>Explorar Bolsas</Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {favoritePublications.map((pub: any) => (
-                        <div key={pub.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${pub.id}`)}>
+                    </div> :
+
+                  <div className="space-y-4">
+                      {favoritePublications.map((pub: any) =>
+                    <div key={pub.id} className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => navigate(`/publication/${pub.id}`)}>
                           {pub.image_url && <img src={pub.image_url} alt={pub.title} className="w-16 h-16 object-cover rounded" />}
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-foreground line-clamp-1">{pub.title}</h3>
@@ -741,9 +741,9 @@ const Profile = () => {
                             </div>
                           </div>
                         </div>
-                      ))}
+                    )}
                     </div>
-                  )}
+                  }
                 </CardContent>
               </Card>
             </TabsContent>
@@ -755,22 +755,22 @@ const Profile = () => {
                   <CardTitle className="flex items-center gap-2"><Star className="h-5 w-5 text-secondary" />Avaliar o UpMentor</CardTitle>
                   <CardDescription>
                     Partilhe a sua experiência com a plataforma. Após aprovação, será exibida na página inicial.
-                    {myReview && (
-                      <Badge variant={myReview.status === "approved" ? "default" : myReview.status === "pending" ? "secondary" : "destructive"} className="ml-2">
+                    {myReview &&
+                    <Badge variant={myReview.status === "approved" ? "default" : myReview.status === "pending" ? "secondary" : "destructive"} className="ml-2">
                         {myReview.status === "approved" ? "Aprovada" : myReview.status === "pending" ? "Pendente" : "Rejeitada"}
                       </Badge>
-                    )}
+                    }
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
                     <Label>Classificação</Label>
                     <div className="flex gap-1 mt-2">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button key={star} type="button" onClick={() => setReviewRating(star)}>
+                      {[1, 2, 3, 4, 5].map((star) =>
+                      <button key={star} type="button" onClick={() => setReviewRating(star)}>
                           <Star className={`h-6 w-6 cursor-pointer transition-colors ${star <= reviewRating ? "fill-secondary text-secondary" : "text-muted-foreground/30"}`} />
                         </button>
-                      ))}
+                      )}
                     </div>
                   </div>
                   <div>
@@ -793,8 +793,8 @@ const Profile = () => {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>);
+
 };
 
 export default Profile;
