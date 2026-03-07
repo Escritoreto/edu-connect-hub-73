@@ -40,7 +40,30 @@ const EnrollmentsManager = () => {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [receiptUrls, setReceiptUrls] = useState<Record<string, string>>({});
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deletingBulk, setDeletingBulk] = useState(false);
   const { toast } = useToast();
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredEnrollments.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredEnrollments.map(e => e.id)));
+    }
+  };
+  const deleteBulk = async () => {
+    setDeletingBulk(true);
+    for (const id of selectedIds) {
+      await supabase.from("course_enrollments").delete().eq("id", id);
+    }
+    toast({ title: `${selectedIds.size} inscrição(ões) eliminada(s)` });
+    setSelectedIds(new Set());
+    fetchEnrollments();
+    setDeletingBulk(false);
+  };
 
   useEffect(() => {
     fetchEnrollments();
